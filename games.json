@@ -162,6 +162,59 @@
         "fla/client/gfx/foreuse.bae": "Modèles 3D",
         "fla/client/gfx/door.md": "Modèles 3D"
       }
+    },
+    {
+      "id": "kube",
+      "name": "Kube",
+      "year": 2010,
+      "folder": "Muxxu/Kube",
+      "summary": "Monde en cubes à explorer et à bâtir, sur Muxxu.",
+      "notes": [
+        "Pas de son dans l'archive.",
+        "Captures de constructions de joueurs exclues."
+      ],
+      "scan": ["client/bmp", "client/game_gfx", "www/img"],
+      "exclude": ["**/Thumbs.db"],
+      "swf": [
+        {"file": "client/gfx.swf", "work": "kube/gfx", "also": ["client2/gfx.swf"]}
+      ],
+      "collections": {
+        "client/bmp": "Jeu · textures des blocs",
+        "client/game_gfx": "Jeu · interface",
+        "client/gfx.swf": "Jeu · ressources du client (SWF)",
+        "www/img/icons": "Site · icônes",
+        "www/img/loc": "Site · images localisées",
+        "www/img/muxxu": "Site · Muxxu",
+        "www/img": "Site"
+      }
+    },
+    {
+      "id": "kingdom",
+      "name": "Kingdom",
+      "year": 2009,
+      "folder": "Muxxu/Kingdom",
+      "summary": "Conquête et gestion d'un royaume, sur Muxxu.",
+      "notes": [
+        "Pas de son dans l'archive."
+      ],
+      "scan": ["www/img", "gfx/mapview/img", "gfx/puzzle/img"],
+      "swf": [
+        {"file": "gfx/mapview/gfx.swf", "work": "kingdom/mapview"},
+        {"file": "gfx/battle/gfx.swf", "work": "kingdom/battle"},
+        {"file": "gfx/puzzle/gfx.swf", "work": "kingdom/puzzle"}
+      ],
+      "collections": {
+        "gfx/mapview/img": "Jeu · carte",
+        "gfx/mapview/gfx.swf": "Jeu · carte (SWF)",
+        "gfx/battle/gfx.swf": "Jeu · bataille (SWF)",
+        "gfx/puzzle/img": "Jeu · puzzle",
+        "gfx/puzzle/gfx.swf": "Jeu · puzzle (SWF)",
+        "www/img/icons": "Site · icônes",
+        "www/img/loc": "Site · images localisées",
+        "www/img/menu": "Site · menu",
+        "www/img/muxxu": "Site · Muxxu",
+        "www/img": "Site"
+      }
     }
   ]
 }

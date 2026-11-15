@@ -70,11 +70,11 @@ index.html + viewer/*.js ◄── catalog.js, gen/, sources/ (images de l'archi
 
 ### 5.1 Archive
 
-`git clone --filter=blob:none --depth 1 --sparse` puis `git sparse-checkout set Mush Alphabounce Galaxy55` (un dossier par
+`git clone --filter=blob:none --depth 1 --sparse` puis `git sparse-checkout set Mush Alphabounce Galaxy55 Muxxu/Kube Muxxu/Kingdom` (un dossier par
 jeu de `games.json`). L'archive complète pèse environ 1,3 Go ; Mush + Alphabounce, environ 110 Mo de fichiers ; Galaxy55,
-environ 3 Mo.
+environ 3 Mo ; Kube et Kingdom, environ 12 Mo.
 
-Ce qu'on y trouve (Mush / Alphabounce / Galaxy55) :
+Ce qu'on y trouve :
 - Mush : `www/img/**` (site : illustrations, cartes, icônes, habillage, teasing), `clients/iso/gfx/**` (planches du
   client isométrique, animations GraphicsGale `.gal` + leurs exports PNG), 3 SWF AS3 (`iso_deResources.swf` =
   `iso_testResources.swf`, `loading.swf`), des tableurs `.ods` (données, pas de graphismes).
@@ -85,6 +85,12 @@ Ce qu'on y trouve (Mush / Alphabounce / Galaxy55) :
   `fla/explore/gfx/tiles.png` (carte de l'espace), 5 SWF, des modèles 3D (`.bae`, `door.md`), des sources Haxe et un
   tableur `com/data.ods` (définition des blocs). Seule l'archive compte : les blocs et textures ajoutés depuis par les
   portages du jeu (galaxy55-offline…) n'y sont pas et ne sont pas montrés.
+- Kube (Muxxu) : `client/bmp/*.png` (une image par face de bloc), `client/game_gfx` (interface), `www/img/**` (site),
+  `client/gfx.swf` AS3 (= `client2/gfx.swf`, textures des blocs nommées `BNoel`, `u.BNoel`, `d.BNoel`…, et interface),
+  `client2/blocks.ods` (données), `gfx/events/*.jpg` (captures de constructions de joueurs, exclues, §9).
+- Kingdom (Muxxu) : `www/img/**` (site, icônes, captures d'aide), `gfx/mapview/img` (éléments de la carte),
+  `gfx/puzzle/img`, trois SWF : `gfx/mapview/gfx.swf` et `gfx/battle/gfx.swf` (AS3), `gfx/puzzle/gfx.swf` (AS2),
+  des `.fla`.
 
 ### 5.2 Inventaire des SWF
 
@@ -262,8 +268,9 @@ clair et sombre selon le système ; mise en page mobile avec volet de filtres.
 7. `python tools/rebuild.py`, relire les erreurs « clip non rendu », vérifier la page, puis versionner `games.json`,
    `catalog.js` et `gen/`.
 
-Les SWF AS3 (Flash 9+) exposent leurs symboles par `SymbolClass` (balise 76), que `swfrender` ne lit pas encore :
-leurs bitmaps, formes et sons sont extraits, mais leurs clips ne sont pas rendus (cas de `loading.swf` de Mush). Les
+Les SWF AS3 (Flash 9+) exposent leurs symboles par `SymbolClass` (balise 76), que `swfrender` ne lit pas :
+`tools/swf_symbols.py` la lit et ajoute ces symboles aux exports, pour le rendu comme pour le catalogue. Leurs clips
+sont rendus comme les autres, timeline seulement (le code AS3 n'est pas exécuté). Les
 formes animées (`DefineMorphShape`) ne sont pas exportées en PNG par FFDec : un clip qui en contient est signalé « non
 rendu » ; la solution de kadokadeo est de faire rendre ce clip image par image par FFDec
 (`-format sprite:png -selectid <id> -export sprite`).
@@ -300,6 +307,8 @@ d'images, `sh` planche, `cols` colonnes de la planche, `fps` cadence, `d` délai
   IG Magazine, Canard PC, Massively, N-Gamz, Rock Paper Shotgun, RomStation, Selectbutton, USgamer). Gardés : l'image
   Facebook, la boîte et les captures du jeu.
 - Alphabounce : `web/img/bank/cat_cb*` (bannières de paiement avec les logos PayPal, Visa et MasterCard).
+- Kube : `gfx/events/*` (56 captures de constructions de joueurs pour des événements de la communauté, dont des
+  personnages d'autres sociétés), dossier non parcouru.
 - Partout : polices embarquées, `Thumbs.db`, tableurs de données.
 
 ## 10. Limites connues
@@ -313,7 +322,7 @@ d'images, `sh` planche, `cols` colonnes de la planche, `fps` cadence, `d` délai
 - Les `.fla` d'Alphabounce (Flash 8, format binaire OLE) ne sont pas lus ; leur contenu est dans les SWF compilés.
 - Les champs texte dynamiques (remplis par le code du jeu) restent vides dans les rendus ; les textes statiques sont là.
 - Rendus à 2 px par pixel Flash : agrandir au-delà dans la fiche pixellise ; les formes, elles, sont en SVG.
-- Clips AS3 non rendus et formes animées, voir §6.
+- Formes animées, voir §6 ; clips AS3 : timeline seulement, sans leur code.
 - « Image courante (PNG) » ne marche pas en `file://` (sécurité du canvas) : passer par `tools/serve.py`.
 
 ## 11. Dépannage
@@ -364,3 +373,10 @@ Volumes : `catalog.js` 1,2 Mo, `gen/` 32 Mo, dossier de travail 60 Mo, archive (
 4. Page : l'en-tête restait en haut du document au lieu de suivre le défilement (`body` de hauteur 100 % : un en-tête
    `sticky` ne colle que dans son parent). `body` prend `min-height: 100vh` et la hauteur réelle de l'en-tête
    (`--top-h`, mesurée par un `ResizeObserver`) cale la barre d'outils et le volet des filtres au lieu de 64 px fixes.
+
+**2026-11-15** — Kube et Kingdom (Muxxu) :
+1. Dossiers `Muxxu/Kube` et `Muxxu/Kingdom` de l'archive, même commit épinglé ; images du jeu et du site, SWF.
+   Kube : captures de constructions de joueurs (`gfx/events`) exclues (§9) ; rien de tiers dans Kingdom.
+2. Symboles AS3 (`SymbolClass`) lus par `tools/swf_symbols.py` : les clips de `client/gfx.swf` (Kube),
+   `gfx/mapview/gfx.swf` et `gfx/battle/gfx.swf` (Kingdom) sont rendus, et celui de `loading.swf` de Mush
+   (`Mc_whole_loader`) l'est désormais aussi.

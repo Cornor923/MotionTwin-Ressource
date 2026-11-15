@@ -5,7 +5,8 @@ Motion Twin les a publiées dans son archive [motion-twin/WebGamesArchives](http
 (licence CC BY-NC-SA 4.0). Uniquement du matériel d'origine : rien de refait après coup (pas de remake, pas de création
 de fans), et les éléments tiers présents dans l'archive (images jQuery UI, logos de presse, logos de paiement) sont exclus.
 
-Jeux : **Mush** (2012), **Alphabounce** (2007) et **Galaxy55** (alpha, 2012).
+Jeux : **Mush** (2012), **Alphabounce** (2007), **Galaxy55** (alpha, 2012), **Kube** (Muxxu, 2010) et **Kingdom**
+(Muxxu, 2009).
 
 ![Clips Flash d'Alphabounce](docs/img/apercu.png)
 
@@ -13,9 +14,11 @@ Jeux : **Mush** (2012), **Alphabounce** (2007) et **Galaxy55** (alpha, 2012).
 
 | Jeu | Images | GIF animés | Animations GraphicsGale | Clips Flash rendus | Formes vectorielles (SVG) | Sons |
 |---|---:|---:|---:|---:|---:|---:|
-| Mush | 1 337 | 22 | 50 | 1 | 3 | 0 |
+| Mush | 1 337 | 22 | 50 | 2 | 3 | 0 |
 | Alphabounce | 200 | 1 | 0 | 188 | 916 | 0 |
 | Galaxy55 | 460 | 0 | 0 | 0 | 0 | 12 |
+| Kube | 291 | 2 | 0 | 12 | 27 | 0 |
+| Kingdom | 584 | 6 | 0 | 33 | 145 | 0 |
 
 Galaxy55 a aussi **3 modèles 3D** (cosmonaute, foreuse, porte ouverte) et **12 réglages de son LabChirp**. Ses planches
 (`texture.png`, `tiles.png`, `icons.png`) sont découpées en morceaux aux pixels d'origine, nommés d'après le tableur et le
@@ -23,7 +26,8 @@ code du jeu (250 tuiles de blocs) ; les repères de travail peints par Motion Tw
 des ressources. Seuls les fichiers publiés par Motion Twin sont montrés, pas les blocs ni les textures ajoutés depuis
 par les portages du jeu.
 
-Ni Mush ni Alphabounce n'ont de son dans l'archive officielle ; Galaxy55 a ses 12 bruitages (WAV).
+Mush, Alphabounce, Kube et Kingdom n'ont pas de son dans l'archive officielle ; Galaxy55 a ses 12 bruitages (WAV).
+Pour Kube, les captures de constructions de joueurs (événements de la communauté) ne sont pas montrées.
 
 La page permet de :
 - chercher par nom, chemin dans l'archive, nom de symbole Flash ou étiquette d'animation (sans tenir compte des accents) ;
@@ -41,7 +45,7 @@ La page permet de :
 ## Afficher la page
 
 Il faut seulement Git et Python 3.11 ou plus. Le catalogue (`catalog.js`) et les fichiers dérivés (`gen/`) sont versionnés ;
-seules les images de l'archive Motion Twin sont à récupérer (sparse checkout des dossiers des jeux, environ 115 Mo) :
+seules les images de l'archive Motion Twin sont à récupérer (sparse checkout des dossiers des jeux, environ 130 Mo) :
 
 ```bash
 git clone https://github.com/Cornor923/MotionTwin-Ressource.git

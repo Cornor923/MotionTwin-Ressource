@@ -6,9 +6,12 @@ Toutes les images d'un clip sont montrées (scripts du clip lui-même ignorés),
 """
 import json, math, os, struct, sys, time, zlib
 
+sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 sys.path.insert(0, os.path.join(os.path.dirname(os.path.abspath(__file__)), 'flash'))
 import swfrender as R
 from PIL import Image
+
+import swf_symbols
 
 SCALE = 2          # pixels par pixel Flash
 MAX_FRAMES = 120
@@ -66,6 +69,7 @@ def sheet(frames):
 def main(work, out, only=None):
     os.makedirs(out, exist_ok=True)
     swf = R.SWF(os.path.join(work, 'src.swf'), os.path.join(work, 'shp4'), Z=4)
+    swf_symbols.add_symbol_classes(swf, os.path.join(work, 'src.swf'))  # symboles AS3
     swf.flash_replace = True
     swf.blur_filters = True
     swf.inner_filters = True

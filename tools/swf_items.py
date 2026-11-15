@@ -7,6 +7,7 @@ import hashlib, json, os, re, shutil
 from PIL import Image
 
 import swfrender as R
+import swf_symbols
 
 
 def add_swf(game, entry, ctx):
@@ -17,6 +18,7 @@ def add_swf(game, entry, ctx):
     out = os.path.join(ctx.GEN, game.cfg['id'], 'swf', folder)
     shutil.rmtree(out, ignore_errors=True)
     swf = R.SWF(os.path.join(work, 'src.swf'), os.path.join(work, 'shp4'))
+    swf_symbols.add_symbol_classes(swf, os.path.join(work, 'src.swf'))
     coll = ctx.collection(game.cfg, path)
     primary = game.clips.get(entry.get('variant_of'), {})
     mine = game.clips.setdefault(path, {})

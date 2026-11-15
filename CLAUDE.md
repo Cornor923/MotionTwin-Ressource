@@ -39,7 +39,8 @@ Après une reconstruction, versionner `catalog.js` et `gen/` avec `games.json` (
 - `game.swf` d'Alphabounce : environ 35 min de rendu ; lancer `rebuild.py` en arrière-plan.
 - FFDec n'écrit pas de PNG pour une forme de largeur nulle ni pour une forme animée (morph) : la première est gérée,
   la seconde donne « clip non rendu ».
-- SWF AS3 : symboles dans `SymbolClass`, non lus par `swfrender` ; seuls bitmaps, formes et sons sont extraits.
+- SWF AS3 : symboles dans `SymbolClass`, non lus par `swfrender` : `tools/swf_symbols.py` les ajoute aux exports
+  (rendu et catalogue). Les scripts lancés avec `-P` doivent ajouter `tools/` à `sys.path` eux-mêmes.
 - Bitmaps Flash = alpha prémultiplié : comparer avec une tolérance de 1 (fait par `build_catalog.py`).
 - Le navigateur garde `catalog.js` en cache : tester avec `tools/serve.py`.
 - Lancer Python sans `-I` quand Pillow est dans les paquets utilisateur : `rebuild.py` utilise `-E -P`.
