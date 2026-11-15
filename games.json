@@ -13,11 +13,9 @@
       "name": "Mush",
       "year": 2012,
       "folder": "Mush",
-      "summary": "Jeu de survie spatial en équipe sur le vaisseau Daedalus.",
+      "summary": "Survie spatiale en équipe à bord du Daedalus.",
       "notes": [
-        "Aucun son dans l'archive officielle de Mush.",
-        "Animations GraphicsGale (.gal) décodées image par image ; les PNG exportés par Motion Twin sont listés à côté.",
-        "Exclus : images jQuery UI et logos de sites de presse (dossier social), qui ne sont pas de Motion Twin."
+        "Pas de son dans l'archive."
       ],
       "scan": ["www", "clients/iso/gfx"],
       "exclude": [
@@ -72,13 +70,10 @@
       "name": "Alphabounce",
       "year": 2007,
       "folder": "Alphabounce",
-      "summary": "Casse-briques d'exploration spatiale : minage, missions et planètes.",
+      "summary": "Casse-briques d'exploration spatiale.",
       "notes": [
-        "Aucun son dans l'archive officielle d'Alphabounce.",
-        "Graphismes vectoriels rendus depuis les SWF (2 px par pixel Flash) ; formes disponibles en SVG.",
-        "Les .fla (Flash 8) ne sont pas lisibles : leur contenu est couvert par les SWF compilés.",
-        "Champs texte dynamiques non rendus (remplis par le code du jeu).",
-        "Exclus : bannières de paiement contenant les logos PayPal / Visa / MasterCard."
+        "Pas de son dans l'archive.",
+        "Formes vectorielles en SVG."
       ],
       "scan": ["web/img", "client/bmp", "design/fla"],
       "exclude": ["web/img/bank/cat_cb*", "**/Thumbs.db"],
@@ -108,6 +103,64 @@
         "design/fla/inventaire/swf/gfx.swf": "Inventaire · version de travail (gfx.swf)",
         "web/swf/planet.swf": "Carte des planètes (planet.swf)",
         "design/fla/design.swf": "Maquette du site (design.swf)"
+      }
+    },
+    {
+      "id": "galaxy55",
+      "name": "Galaxy55",
+      "year": 2012,
+      "folder": "Galaxy55",
+      "summary": "Jeu spatial en cubes, resté en alpha.",
+      "notes": [
+        "Tuiles nommées d'après les blocs du jeu.",
+        "Modèles 3D : glisser pour tourner."
+      ],
+      "scan": ["fla/client/gfx", "fla/client/sfx", "fla/explore/gfx"],
+      "sheets": [
+        {"file": "fla/client/gfx/texture.png", "grid": 32, "cells": "galaxy55_blocks", "marks": "galaxy55_marks"},
+        {"file": "fla/explore/gfx/tiles.png", "slices": [
+          {"name": "lock", "rect": [0, 0, 16, 16]},
+          {"name": "deleted", "rect": [16, 0, 16, 16]},
+          {"name": "unknown", "rect": [32, 0, 16, 16]},
+          {"name": "flag", "rect": [48, 0, 16, 16]},
+          {"name": "counter", "rect": [64, 0, 16, 16]},
+          {"name": "system", "rect": [0, 32, 32, 32], "n": 3},
+          {"name": "asteroid", "rect": [0, 64, 32, 32]},
+          {"name": "hex", "rect": [0, 96, 38, 20]},
+          {"name": "planet", "rect": [0, 160, 64, 64], "n": 3},
+          {"name": "brush", "rect": [0, 368, 208, 64]}
+        ]},
+        {"file": "fla/client/gfx/icons.png", "slices": [
+          {"name": "charge", "rect": [0, 0, 16, 16], "n": 4},
+          {"name": "status_unknown", "rect": [0, 32, 16, 16]},
+          {"name": "status_power", "rect": [16, 32, 16, 16]}
+        ]}
+      ],
+      "models": [
+        {"file": "fla/client/gfx/cosmo.bae"},
+        {"file": "fla/client/gfx/foreuse.bae"},
+        {"file": "fla/client/gfx/door.md", "texture": "fla/client/gfx/texture.png", "cell": [14, 2]}
+      ],
+      "swf": [
+        {"file": "fla/explore/swf/explore.swf", "work": "galaxy55/explore"}
+      ],
+      "collections": {
+        "fla/client/gfx": "Jeu · graphismes",
+        "fla/client/gfx/texture.png": "Jeu · textures des blocs",
+        "fla/client/gfx/hud.png": "Jeu · interface",
+        "fla/client/gfx/hud_jetpack.png": "Jeu · interface",
+        "fla/client/gfx/icons.png": "Jeu · interface",
+        "fla/client/gfx/lazer.png": "Jeu · rayons laser",
+        "fla/client/gfx/lazer2.png": "Jeu · rayons laser",
+        "fla/client/gfx/lazer3.png": "Jeu · rayons laser",
+        "fla/client/gfx/lazer4.png": "Jeu · rayons laser",
+        "fla/client/gfx/lazer_04.png": "Jeu · rayons laser",
+        "fla/client/sfx": "Jeu · sons",
+        "fla/explore/gfx": "Carte de l'espace",
+        "fla/explore/swf/explore.swf": "Carte de l'espace (explore.swf)",
+        "fla/client/gfx/cosmo.bae": "Modèles 3D",
+        "fla/client/gfx/foreuse.bae": "Modèles 3D",
+        "fla/client/gfx/door.md": "Modèles 3D"
       }
     }
   ]

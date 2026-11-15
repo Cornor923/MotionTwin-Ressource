@@ -56,8 +56,8 @@ MT.Grid = class {
     const fit = this.fit(item);
     const up = fit && fit.up;
     const thumb = MT.el('div', { class: 'thumb' });
-    if (item.t === 'snd') {
-      thumb.append(MT.el('span', { class: 'snd', text: '♪' }));
+    if (item.t === 'snd' || item.t === 'lch') {
+      thumb.append(MT.el('span', { class: item.t, text: item.t === 'snd' ? '♪' : '≋' }));
     } else {
       const img = MT.el('img', { src: item.s, alt: '', loading: 'lazy', decoding: 'async', class: up ? 'up' : null });
       if (fit) Object.assign(img.style, { width: `${fit.w}px`, height: `${fit.h}px` });
@@ -66,7 +66,8 @@ MT.Grid = class {
     }
     const sub = [MT.dims(item)];
     if (item.f > 1) sub.push(`${item.f} img`);
-    if (item.t === 'snd' || !item.w) sub.push(MT.bytes(item.z));
+    if (item.t === 'mdl') sub.push(`${item.x.tris.toLocaleString('fr-FR')} triangles`);
+    else if (item.t === 'snd' || !item.w) sub.push(MT.bytes(item.z));
     const card = MT.el('button', { class: 'card', title: item.p, onclick: () => this.onOpen(index) },
       thumb,
       MT.el('span', { class: `badge t-${item.t}`, text: MT.TYPES[item.t].label.split(' ')[0] }),

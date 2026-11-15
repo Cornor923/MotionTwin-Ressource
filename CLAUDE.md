@@ -43,3 +43,9 @@ Après une reconstruction, versionner `catalog.js` et `gen/` avec `games.json` (
 - Bitmaps Flash = alpha prémultiplié : comparer avec une tolérance de 1 (fait par `build_catalog.py`).
 - Le navigateur garde `catalog.js` en cache : tester avec `tools/serve.py`.
 - Lancer Python sans `-I` quand Pillow est dans les paquets utilisateur : `rebuild.py` utilise `-E -P`.
+- Ne jamais rien ajouter ni modifier dans une ressource : une planche se découpe (`sheets` de games.json, pixels
+  d'origine seulement), on ne retouche pas ses pixels. Les repères de travail de Motion Twin seuls sur du transparent
+  ne sont pas des ressources ; un repère posé sur un dessin reste (voir docs/METHODE.md §5.7).
+- `git grep` ou `ls-tree -l` sur un dossier de l'archive hors sparse checkout télécharge ses blobs (plusieurs minutes) :
+  ajouter le dossier au sparse checkout d'abord.
+- Modèles `.bae` : COLLADA binaire décodé à la main dans `models.py` (aucun lecteur dans l'archive).

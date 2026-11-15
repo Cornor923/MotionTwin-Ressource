@@ -21,15 +21,17 @@
   }
   $('detail').addEventListener('close', () => MT.writeHash());
 
-  function chip(label, count, pressed, onclick) {
-    return el('button', { class: 'chip', 'aria-pressed': pressed, onclick }, label, el('small', { text: count }));
+  function row(label, count, pressed, onclick) {
+    return el('button', { 'aria-pressed': String(pressed), onclick }, label, el('span', { class: 'n', text: count }));
   }
+
+  const usedTypes = new Set(MT.items.map((item) => item.t));  // liste fixe : la colonne ne saute pas au filtrage
 
   function renderSide(f) {
     const total = Object.values(f.games).reduce((a, b) => a + b, 0);
     $('f-games').replaceChildren(
-      chip('Tous', total, !s.game, () => update({ game: '', coll: '' })),
-      ...MT.catalog.games.map((g) => chip(g.name, f.games[g.id] || 0, s.game === g.id,
+      row('Tous', total, !s.game, () => update({ game: '', coll: '' })),
+      ...MT.catalog.games.map((g) => row(g.name, f.games[g.id] || 0, s.game === g.id,
         () => update({ game: s.game === g.id ? '' : g.id, coll: '' }))));
     const game = MT.catalog.games.find((g) => g.id === s.game);
     $('f-game-info').replaceChildren(...(game ? [
@@ -37,8 +39,8 @@
       el('ul', {}, game.notes.map((note) => el('li', { text: note }))),
     ] : []));
 
-    $('f-types').replaceChildren(...Object.entries(MT.TYPES).filter(([t]) => f.types[t] || s.types.has(t)).map(([t, def]) =>
-      el('label', {},
+    $('f-types').replaceChildren(...Object.entries(MT.TYPES).filter(([t]) => usedTypes.has(t)).map(([t, def]) =>
+      el('label', { class: f.types[t] || s.types.has(t) ? null : 'zero' },
         el('input', { type: 'checkbox', checked: s.types.has(t), onchange: (e) => {
           const types = new Set(s.types);
           if (e.target.checked) types.add(t); else types.delete(t);
@@ -56,7 +58,7 @@
       if (!colls.length) continue;
       blocks.push(el('h3', { text: g.name }));
       for (const [key, n] of colls) {
-        blocks.push(el('button', { 'aria-pressed': s.coll === key, title: key.split('|')[1],
+        blocks.push(el('button', { 'aria-pressed': String(s.coll === key), title: key.split('|')[1],
           onclick: () => update({ coll: s.coll === key ? '' : key }) },
           key.split('|')[1], el('span', { class: 'n', text: n })));
       }
@@ -100,6 +102,8 @@
     $('bg').querySelectorAll('button').forEach((b) => b.setAttribute('aria-pressed', b === btn));
     try { localStorage.setItem('mt-bg', s.bg); } catch { /* stockage indisponible */ }
   });
+  const top = document.querySelector('.top');
+  new ResizeObserver(() => document.documentElement.style.setProperty('--top-h', `${top.offsetHeight}px`)).observe(top);
   const side = (open) => document.body.classList.toggle('side-open', open);
   $('toggle-side').addEventListener('click', () => side(true));
   $('close-side').addEventListener('click', () => side(false));

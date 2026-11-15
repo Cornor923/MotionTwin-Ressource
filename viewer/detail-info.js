@@ -21,7 +21,7 @@ MT.detailInfo = (item, $) => {
     rows.push(['Images', anim]);
   }
   if (item.fmt) rows.push(['Format', item.fmt]);
-  if (item.z && !item.x) rows.push(['Poids', MT.bytes(item.z)]);
+  if (item.z && (!item.x || item.t === 'mdl' || item.t === 'lch')) rows.push(['Poids', MT.bytes(item.z)]);
   const x = item.x || {};
   if (x.swf) {
     rows.push(['SWF', x.swf]);
@@ -33,17 +33,45 @@ MT.detailInfo = (item, $) => {
       el('a', { href: '#', text: name, onclick: (e) => { e.preventDefault(); MT.searchFor(name); } })]))]);
   }
   if (x.same && x.same.length) rows.push(['Formes identiques', x.same.map((id) => `#${id}`).join(', ')]);
-  rows.push(['Archive', el('a', { href: item.u, target: '_blank', rel: 'noopener', text: x.swf ? x.swf : item.p })]);
+  if (x.sheet) {
+    rows.push(['Planche', x.sheet]);
+    rows.push(['Position', `x ${x.rect[0]}, y ${x.rect[1]} · ${x.rect[2]}×${x.rect[3]} px`]);
+    if (x.cell) rows.push(['Case', `${x.cell[0]},${x.cell[1]} (grille de 32 px)`]);
+    if (x.slice) rows.push(['Découpe du jeu', x.slice]);
+    if (x.blocks) rows.push(['Utilisée par', el('span', {}, x.blocks.map((b, i) => [i ? el('br') : '', b]))]);
+    if (x.sheet_dup) rows.push(['Planche aussi dans', x.sheet_dup.join(', ')]);
+  }
+  if (item.t === 'mdl') {
+    rows.push(['Objets', x.objects.join(', ')]);
+    rows.push(['Triangles', x.tris.toLocaleString('fr-FR')]);
+    rows.push(['Matériaux', x.mats.join(', ')]);
+    rows.push(['Axe vertical', x.up.toUpperCase()]);
+    if (x.texture) rows.push(['Texture', x.texture]);
+  }
+  if (item.t === 'lch') {
+    rows.push(['En-tête', x.header]);
+    if (x.snd_id) {
+      rows.push(['Son du même nom', el('a', { href: `#res=${encodeURIComponent(x.snd_id)}`, text: x.snd_name })]);
+    }
+  }
+  rows.push(['Archive', el('a', { href: item.u, target: '_blank', rel: 'noopener', text: x.swf || x.sheet || item.p })]);
   $('d-meta').replaceChildren(...rows.flatMap(([k, v]) => [el('dt', { text: k }), el('dd', {}, v)]));
 
   const ext = item.s.slice(item.s.lastIndexOf('.'));
-  const actions = [
-    el('a', { class: 'primary', href: item.s, download: MT.fileName(item, ext),
-      text: item.t === 'svg' ? 'Télécharger le SVG' : item.f > 1 && item.sh ? 'Télécharger (PNG, 1re image)' : 'Télécharger' }),
-  ];
-  if (item.o) {
+  const actions = [];
+  if (item.t === 'mdl') {
     const oext = item.o.slice(item.o.lastIndexOf('.'));
-    actions.push(el('a', { href: item.o, download: MT.fileName(item, oext), text: `Fichier source (${oext})` }));
+    actions.push(el('a', { class: 'primary', href: item.o, download: MT.fileName(item, oext), text: `Télécharger (${oext})` }));
+    actions.push(el('a', { href: x.obj, download: MT.fileName(item, '.obj'), text: 'OBJ (converti)' }));
+    actions.push(el('a', { href: item.s, download: MT.fileName(item, '_apercu.png'), text: 'Aperçu (PNG)' }));
+  } else {
+    actions.push(el('a', { class: 'primary', href: item.s, download: MT.fileName(item, ext),
+      text: item.t === 'svg' ? 'Télécharger le SVG' : item.f > 1 && item.sh ? 'Télécharger (PNG, 1re image)' : 'Télécharger' }));
+    if (item.o) {
+      const oext = item.o.slice(item.o.lastIndexOf('.'));
+      actions.push(el('a', { href: item.o, download: MT.fileName(item, oext),
+        text: x.sheet ? `Planche d'origine (${oext})` : `Fichier source (${oext})` }));
+    }
   }
   if (item.sh) {
     actions.push(el('a', { href: item.sh, download: MT.fileName(item, '_planche.png'), text: 'Planche d\'animation' }));
@@ -58,7 +86,8 @@ MT.detailInfo = (item, $) => {
   $('d-dups').replaceChildren(...(dups.length ? [
     el('h3', { text: `Aussi dans l'archive (${dups.length})` }),
     el('ul', {}, dups.map((p) => el('li', { text: p }))),
-  ] : []));
+  ] : []), ...(x.script ? [el('details', { class: 'script' },
+    el('summary', { text: 'Script de l’éditeur 3D (dans le fichier)' }), el('pre', { text: x.script }))] : []));
 };
 
 MT.saveFrame = (item) => {

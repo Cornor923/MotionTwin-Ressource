@@ -5,7 +5,7 @@ Motion Twin les a publiées dans son archive [motion-twin/WebGamesArchives](http
 (licence CC BY-NC-SA 4.0). Uniquement du matériel d'origine : rien de refait après coup (pas de remake, pas de création
 de fans), et les éléments tiers présents dans l'archive (images jQuery UI, logos de presse, logos de paiement) sont exclus.
 
-Premiers jeux : **Mush** (2012) et **Alphabounce** (2007).
+Jeux : **Mush** (2012), **Alphabounce** (2007) et **Galaxy55** (alpha, 2012).
 
 ![Clips Flash d'Alphabounce](docs/img/apercu.png)
 
@@ -15,14 +15,22 @@ Premiers jeux : **Mush** (2012) et **Alphabounce** (2007).
 |---|---:|---:|---:|---:|---:|---:|
 | Mush | 1 337 | 22 | 50 | 1 | 3 | 0 |
 | Alphabounce | 200 | 1 | 0 | 188 | 916 | 0 |
+| Galaxy55 | 460 | 0 | 0 | 0 | 0 | 12 |
 
-Ni Mush ni Alphabounce n'ont de son dans l'archive officielle ; la page sait les lire pour les jeux suivants.
+Galaxy55 a aussi **3 modèles 3D** (cosmonaute, foreuse, porte ouverte) et **12 réglages de son LabChirp**. Ses planches
+(`texture.png`, `tiles.png`, `icons.png`) sont découpées en morceaux aux pixels d'origine, nommés d'après le tableur et le
+code du jeu (250 tuiles de blocs) ; les repères de travail peints par Motion Twin dans la planche des blocs ne sont pas
+des ressources. Seuls les fichiers publiés par Motion Twin sont montrés, pas les blocs ni les textures ajoutés depuis
+par les portages du jeu.
+
+Ni Mush ni Alphabounce n'ont de son dans l'archive officielle ; Galaxy55 a ses 12 bruitages (WAV).
 
 La page permet de :
 - chercher par nom, chemin dans l'archive, nom de symbole Flash ou étiquette d'animation (sans tenir compte des accents) ;
 - filtrer par jeu, type et collection (compteurs à jour selon les autres filtres) et trier (collection, nom, taille,
   nombre d'images, poids) ;
 - régler la taille des miniatures et le fond (damier, sombre, clair) ; les animations se jouent au survol ;
+- tourner autour des modèles 3D (glisser, molette, double-clic) et écouter le son associé à un réglage LabChirp ;
 - ouvrir une fiche : zoom (ajusté, 1× à 8×, Ctrl + molette), lecture image par image, vitesse, métadonnées (dimensions,
   images, SWF, n° de caractère, étiquettes, clips qui utilisent une forme), doublons dans l'archive, téléchargements
   (fichier, SVG, planche d'animation, image courante), attribution prête à copier, lien vers le fichier source sur GitHub ;
@@ -33,7 +41,7 @@ La page permet de :
 ## Afficher la page
 
 Il faut seulement Git et Python 3.11 ou plus. Le catalogue (`catalog.js`) et les fichiers dérivés (`gen/`) sont versionnés ;
-seules les images de l'archive Motion Twin sont à récupérer (sparse checkout de Mush et Alphabounce, environ 110 Mo) :
+seules les images de l'archive Motion Twin sont à récupérer (sparse checkout des dossiers des jeux, environ 115 Mo) :
 
 ```bash
 git clone https://github.com/Cornor923/MotionTwin-Ressource.git
@@ -67,7 +75,9 @@ catalog.js                 catalogue généré (window.MT_CATALOG)
 gen/                       fichiers dérivés générés : clips rendus, SVG, bitmaps de SWF, animations .gal décodées
 games.json                 configuration des jeux : dossiers, exclusions, SWF, collections, notes
 tools/rebuild.py           chaîne complète (archive, FFDec, rendus, catalogue)
-tools/build_catalog.py     catalogue + gen/ (avec swf_items.py et gal.py)
+tools/build_catalog.py     catalogue + gen/ (avec swf_items.py, gal.py, sheets.py, models.py, presets.py)
+tools/sheets.py            découpe des planches (pixels d'origine), galaxy55.py : noms des blocs et repères
+tools/models.py            modèles 3D (.bae, .md) : maillage, OBJ, aperçu (render3d.py)
 tools/render_symbols.py    rendu des clips exportés d'un SWF
 tools/swf_diff.py          clips qui diffèrent entre deux versions d'un SWF
 tools/swf_inventory.py     inventaire rapide des balises d'un SWF (sons, bitmaps, symboles exportés…)

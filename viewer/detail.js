@@ -47,9 +47,21 @@ MT.Detail = class {
     this.zoom = 'fit';
     this.press('zoom', 'fit', 'z');
     this.$('anim-bar').hidden = !item.sh;
+    this.stage.parentElement.classList.toggle('flat', ['snd', 'lch', 'mdl'].includes(item.t));
     let view;
     if (item.t === 'snd') {
       view = MT.el('audio', { controls: true, src: item.s, preload: 'metadata' });
+    } else if (item.t === 'lch') {
+      view = MT.el('div', { class: 'preset' },
+        MT.el('span', { text: 'Réglage LabChirp : fichier de paramètres, pas un son.' }),
+        item.x.snd ? [MT.el('span', { text: `Son du même nom : ${item.x.snd_name}` }),
+          MT.el('audio', { controls: true, src: item.x.snd, preload: 'metadata' })] : null);
+    } else if (item.t === 'mdl') {
+      view = MT.el('canvas', { class: 'model-view', title: 'Glisser pour tourner, molette pour zoomer, double-clic pour recadrer' });
+      this.model = new MT.ModelViewer(item, view);
+      this.model.load().catch(() => {
+        this.stage.replaceChildren(MT.el('img', { class: 'view', src: item.s, alt: item.n }));
+      });
     } else if (item.sh) {
       view = MT.el('canvas', { class: 'view' });
       this.player = new MT.SheetPlayer(item, view, (f) => this.frameChanged(f));
@@ -69,6 +81,8 @@ MT.Detail = class {
   unload() {
     if (this.player) this.player.stop();
     this.player = null;
+    if (this.model) this.model.stop();
+    this.model = null;
   }
 
   layout() {

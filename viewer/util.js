@@ -7,6 +7,8 @@ MT.TYPES = {
   clip: { label: 'Clip Flash', plural: 'Clips Flash (rendus)' },
   svg: { label: 'Forme vectorielle', plural: 'Formes vectorielles (SVG)' },
   snd: { label: 'Son', plural: 'Sons' },
+  lch: { label: 'Réglage de son', plural: 'Réglages de son (LabChirp)' },
+  mdl: { label: 'Modèle 3D', plural: 'Modèles 3D' },
 };
 
 MT.el = (tag, attrs, ...children) => {

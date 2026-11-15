@@ -62,6 +62,7 @@ games.json ──► rebuild.py
                  3. render_symbols.py (swfrender) → MT_WORK/render/<work>/ {<id>.png, <id>_sheet.png, symbols.json}
                     (version de travail d'un SWF : swf_diff.py, seuls les clips différents sont rendus)
                  4. build_catalog.py → gen/ (fichiers dérivés) + catalog.js
+                    (avec sheets.py : planches découpées ; models.py + render3d.py : modèles 3D)
 index.html + viewer/*.js ◄── catalog.js, gen/, sources/ (images de l'archive référencées sur place)
 ```
 
@@ -69,15 +70,21 @@ index.html + viewer/*.js ◄── catalog.js, gen/, sources/ (images de l'archi
 
 ### 5.1 Archive
 
-`git clone --filter=blob:none --depth 1 --sparse` puis `git sparse-checkout set Mush Alphabounce` (un dossier par jeu
-de `games.json`). L'archive complète pèse environ 1,3 Go ; Mush + Alphabounce, environ 110 Mo de fichiers.
+`git clone --filter=blob:none --depth 1 --sparse` puis `git sparse-checkout set Mush Alphabounce Galaxy55` (un dossier par
+jeu de `games.json`). L'archive complète pèse environ 1,3 Go ; Mush + Alphabounce, environ 110 Mo de fichiers ; Galaxy55,
+environ 3 Mo.
 
-Ce qu'on y trouve (Mush / Alphabounce) :
+Ce qu'on y trouve (Mush / Alphabounce / Galaxy55) :
 - Mush : `www/img/**` (site : illustrations, cartes, icônes, habillage, teasing), `clients/iso/gfx/**` (planches du
   client isométrique, animations GraphicsGale `.gal` + leurs exports PNG), 3 SWF AS3 (`iso_deResources.swf` =
   `iso_testResources.swf`, `loading.swf`), des tableurs `.ods` (données, pas de graphismes).
 - Alphabounce : `web/img/**` (site), `web/swf/*.swf` (jeu, inventaire, carte des planètes), `client/swf/gfx.swf` et
   `design/fla/inventaire/swf/*.swf` (versions de travail), `design/fla/design.swf` (maquette du site), des `.fla`.
+- Galaxy55 (alpha, client 3D Flash compilé absent de l'archive) : `fla/client/gfx/*.png` (atlas des blocs `texture.png`,
+  HUD, icônes, rayons laser, halo du vaisseau, particules), `fla/client/sfx/*.wav` (12 bruitages) et leurs `.lch`,
+  `fla/explore/gfx/tiles.png` (carte de l'espace), 5 SWF, des modèles 3D (`.bae`, `door.md`), des sources Haxe et un
+  tableur `com/data.ods` (définition des blocs). Seule l'archive compte : les blocs et textures ajoutés depuis par les
+  portages du jeu (galaxy55-offline…) n'y sont pas et ne sont pas montrés.
 
 ### 5.2 Inventaire des SWF
 
@@ -85,7 +92,10 @@ Ce qu'on y trouve (Mush / Alphabounce) :
 bitmaps, sons (`DefineSound`), polices, symboles exportés. C'est ce qui a montré :
 - qu'il n'y a **aucun son** dans les SWF de Mush et d'Alphabounce (et aucun mp3/wav dans leurs dossiers) ;
 - que les graphismes d'Alphabounce sont presque tous vectoriels (`game.swf` : 763 formes, 550 clips, 163 symboles exportés) ;
-- que le SWF de ressources de Mush ne contient que 14 bitmaps (les planches du client) et un écran de chargement.
+- que le SWF de ressources de Mush ne contient que 14 bitmaps (les planches du client) et un écran de chargement ;
+- que les SWF de Galaxy55 n'apportent rien de neuf : `explore.swf` embarque `texture.png` et `tiles.png` (mêmes octets)
+  et des données Haxe, `clientResources.swf` et `exploreResources.swf` une police, `engine.swf` du code, `ui.swf` est vide
+  (36 octets).
 
 Doublons de SWF : comparer les empreintes (`md5sum`). `iso_deResources.swf` = `iso_testResources.swf` et
 `web/swf/inv.swf` = `design/fla/inventaire/swf/client.swf` (champ `also` de `games.json`). Les versions de travail
@@ -151,10 +161,11 @@ fichier (les deux sont montrés). Chaque animation garde ses délais, sa planche
 `gen/` est vidé puis reconstruit à chaque fois. Pour chaque jeu de `games.json` :
 - **fichiers de l'archive** sous les dossiers `scan` (moins `exclude`) : images (png, jpg, gif, bmp, ico, webp),
   SVG, sons (mp3, wav, ogg) et `.gal` ; les images sont référencées sur place (`sources/…`), rien n'est copié ;
-- **SWF** : clips rendus, formes SVG, bitmaps et sons exportés, copiés dans `gen/<jeu>/swf/<chemin du SWF>/`.
+- **SWF** : clips rendus, formes SVG, bitmaps et sons exportés, copiés dans `gen/<jeu>/swf/<chemin du SWF>/` ;
+- **planches** (§5.7) dans `gen/<jeu>/sheets/`, **modèles 3D** et réglages LabChirp (§5.8).
 
 Types : `img` (image), `gif` (GIF animé), `anim` (GraphicsGale), `clip` (clip Flash rendu), `svg` (forme vectorielle),
-`snd` (son).
+`snd` (son), `lch` (réglage de son LabChirp), `mdl` (modèle 3D).
 
 Dédoublonnage :
 - images : pixels décodés identiques (RGBA + taille) → une seule fiche, les autres chemins dans `dup` ;
@@ -171,7 +182,55 @@ bitmaps et sons d'un SWF ont la collection du SWF suivie de « · formes vectori
 Mots-clés de recherche : nom entier et morceaux (`mcHeroRun` → `mcherorun`, `mc`, `hero`, `run`), étiquettes des
 clips, et pour une forme les noms des clips exportés qui l'affichent (« Utilisée par »).
 
-### 5.7 La page
+### 5.7 Planches découpées (`sheets.py`, `galaxy55.py`, `pixels.py`)
+
+Une planche (sprite sheet) n'est pas montrée telle quelle : elle mélange des dizaines d'éléments, et celle des blocs de
+Galaxy55 porte des repères de travail. Chaque planche déclarée dans `sheets` (games.json) est découpée en morceaux qui
+gardent **les pixels d'origine, sans modification ni ajout** ; la planche entière reste téléchargeable depuis chaque
+fiche (« Planche d'origine »), et ses copies ailleurs (bitmaps d'un SWF) sont notées sur ses morceaux.
+
+1. **Découpes du jeu** (`slices`) : rectangles repris tels quels du code (`SpriteLib.slice` / `sliceUnit`), avec leur
+   nom. Galaxy55 : `tiles.png` d'après `fla/explore/src/exp/Manager.hx` (lock, deleted, unknown, flag, counter,
+   system ×3, asteroid, hex, planet ×3, brush), `icons.png` d'après `fla/client/src/Interface.hx` (charge ×4,
+   status_unknown, status_power).
+2. **Cases nommées** (`grid` + `cells`) : `texture.png` est une grille de 64 × 64 cases de 32 px. Chaque bloc du tableur
+   officiel `com/data.ods` (feuille `blocks`) y désigne ses faces : `texture` (côtés), `texUp` (dessus), `texDown`
+   (dessous), drapeau `Textures(…)` (faces avant, arrière, gauche, droite), lus comme `com/Block.hx`. Une case utilisée
+   donne un morceau au nom français du bloc (colonne `name`, sinon son identifiant) ; la fiche liste tous les blocs qui
+   l'utilisent. 250 cases pour 213 blocs.
+3. **Reste de la planche** : pixels non transparents restants, regroupés quand 2 px ou moins les séparent ; un fragment
+   de moins de 64 px rejoint le morceau le plus proche à 6 px ou moins (dessins en points séparés), deux morceaux plus
+   grands ne fusionnent jamais. Un groupe aligné sur la grille est coupé case par case (« case x,y »), sinon il forme un
+   morceau nommé par sa position (« texture x,y »). Collection « · autres éléments de la planche ». Un bord de moins de
+   24 px collé à une case déjà découpée (dessin qui déborde de sa case) n'est pas un morceau à part.
+
+**Repères de `texture.png`** : Motion Twin a peint dans la planche les numéros de colonne (0 à 63, ligne 5, orange) et
+de ligne (1 à 12, colonne 26, bleu), avec contour noir et ombre. Ce sont des repères de travail, pas des ressources :
+un repère qui ne touche aucun dessin (peint sur du transparent) n'apparaît dans aucun morceau. Sept dessins hors grille
+sont recouverts par un repère (deux dalles de glace, trois parties des lianes, la caisse « 52 53 », les pavés « 11 12 ») :
+ils le gardent, car le dessin d'origine n'existe plus sous les chiffres et les retirer laisserait des trous.
+
+### 5.8 Modèles 3D (`models.py`, `render3d.py`) et réglages de son
+
+Entrée `models` de games.json. Formats lus (aucun lecteur dans l'archive, décodés à la main, lecture vérifiée jusqu'au
+dernier octet) :
+- `.bae` (cosmonaute `cosmo.bae` : objets visi_re, combi, jetpack ; foreuse `foreuse.bae`) : COLLADA binaire,
+  structure décrite en tête de `models.py`. Les `<input>` et `<asset>` ne sont pas dans le fichier : les indices de
+  `<p>` donnent position puis normale (vérifié par les bornes de chaque source) ; sans `<up_axis>`, COLLADA est en Y
+  vers le haut (le cosmonaute a les pieds à y = 0). Matériaux nommés sans couleur ni texture : rendu gris uni.
+- `door.md` (porte ouverte, `Model(DoorOpenX)` du bloc `ShipDoorOpen`) : sommets x, y, z, u, v, ombrage (comme
+  `Macro.getModel`) puis le script de l'éditeur 3D de Motion Twin qui l'a construite, montré dans la fiche. Texture :
+  case 14,2 de `texture.png` (celle du bloc dans data.ods et du script), ombrage du fichier.
+
+Pour chaque modèle : maillage pour la page (`gen/<jeu>/models/<nom>.js`, chargé à la demande), OBJ converti
+(géométrie seule) et aperçu PNG (projection orthographique, sans rien ajouter). La fiche montre une vue 3D WebGL
+(glisser pour tourner, molette, double-clic pour recadrer) et propose le fichier d'origine, l'OBJ et l'aperçu.
+
+Réglages LabChirp (`.lch`, en-tête `LabChirp100`) : fichiers de paramètres du générateur de sons qui a servi aux
+bruitages ; type `lch`, collection « · réglages LabChirp », fiche avec le WAV du même nom. Leurs paramètres ne sont pas
+décodés.
+
+### 5.9 La page
 
 `index.html` + `viewer/` : scripts classiques sans module ni dépendance (fonctionne aussi en `file://`), espace de noms
 `MT`.
@@ -182,6 +241,7 @@ clips, et pour une forme les noms des clips exportés qui l'affichent (« Utilis
 | `filters.js` | état des filtres, facettes avec compteurs, tris, adresse (`#…`) |
 | `grid.js` | grille par paquets de 160 au défilement, en-têtes de collection, miniatures, animation au survol |
 | `player.js` | lecture d'une planche dans un canvas (cadence du SWF ou délais du `.gal`) |
+| `model.js` | vue 3D WebGL d'un modèle (sans bibliothèque) |
 | `detail.js`, `detail-info.js` | fiche : zoom, lecture, clavier (← → ressource, espace, `,` `.` image), infos, téléchargements |
 | `app.js` | barre latérale, barre d'outils, liens |
 
@@ -218,6 +278,8 @@ rendu » ; la solution de kadokadeo est de faire rendre ce clip image par image 
 | `games[].scan` | dossiers parcourus (relatifs au dossier du jeu) |
 | `games[].exclude` | motifs `fnmatch` exclus (éléments tiers) |
 | `games[].swf[]` | `file`, `work`, et au besoin `also` (copies identiques) ou `variant_of` (autre version) |
+| `games[].sheets[]` | planches à découper : `file`, `slices` (`name`, `rect`, `n`), `grid`, `cells`, `marks` (§5.7) |
+| `games[].models[]` | modèles 3D : `file`, et pour un `.md` `texture` + `cell` (§5.8) |
 | `games[].collections` | préfixe de chemin → nom de collection |
 
 ## 8. `catalog.js`
@@ -227,7 +289,9 @@ rendu » ; la solution de kadokadeo est de faire rendre ce clip image par image 
 `#shapeN`, `#bitmapN`, `#soundN` dans un SWF), `u` lien GitHub, `w` `h` taille (clips : pixels du rendu ×2), `f` nombre
 d'images, `sh` planche, `cols` colonnes de la planche, `fps` cadence, `d` délais en ms (`.gal`), `fmt` format,
 `z` poids, `k` mots-clés, `dup` autres emplacements, `o` fichier d'origine (`.gal`), `vec` vectoriel, `px` pixel art,
-`x` infos SWF (`swf`, `id`, `timeline`, `labels`, `owners`, `same`).
+`x` infos SWF (`swf`, `id`, `timeline`, `labels`, `owners`, `same`), de planche (`sheet`, `rect`, `cell`, `slice`,
+`blocks`, `sheet_dup`), de modèle (`objects`, `tris`, `mats`, `up`, `mesh`, `obj`, `texture`, `script`) ou de réglage
+(`header`, `snd`, `snd_name`, `snd_id`).
 
 ## 9. Exclusions (ce qui n'est pas de Motion Twin)
 
@@ -240,7 +304,12 @@ d'images, `sh` planche, `cols` colonnes de la planche, `fps` cadence, `d` délai
 
 ## 10. Limites connues
 
-- Pas de son pour Mush et Alphabounce (absent de l'archive).
+- Pas de son pour Mush et Alphabounce (absent de l'archive) ; Galaxy55 a ses 12 bruitages en WAV.
+- Les planches de Mush (`clients/iso/gfx` : BigFill, MidFill, gfx_01, fx, raluca…) sont encore montrées entières :
+  elles n'ont pas de repères, mais ne sont pas découpées comme celles de Galaxy55.
+- Galaxy55 : paramètres LabChirp non décodés ; `.bae` sans couleurs de matériaux (gris) ; en `file://` le navigateur
+  refuse la texture dans WebGL, la porte s'affiche alors sans texture (l'aperçu PNG la montre) ; données Haxe chiffrées
+  de explore.swf non lues ; `ui.fla` / `ui.swf` vides.
 - Les `.fla` d'Alphabounce (Flash 8, format binaire OLE) ne sont pas lus ; leur contenu est dans les SWF compilés.
 - Les champs texte dynamiques (remplis par le code du jeu) restent vides dans les rendus ; les textes statiques sont là.
 - Rendus à 2 px par pixel Flash : agrandir au-delà dans la fiche pixellise ; les formes, elles, sont en SVG.
@@ -283,3 +352,15 @@ Volumes : `catalog.js` 1,2 Mo, `gen/` 32 Mo, dossier de travail 60 Mo, archive (
 7. Page de visualisation, testée sur bureau, mobile, thème sombre et en `file://`.
 8. Chaîne rendue reproductible (`rebuild.py`, commit d'archive épinglé, `--fetch`) et documentée ; publication dans
    ce dépôt sous la licence de Galaxy55 (CC BY-NC-SA 4.0).
+
+**2026-11-15** — Galaxy55 et barre du haut :
+1. Ajout de Galaxy55 (dossier `Galaxy55/` de l'archive, même commit épinglé) : images de `fla/client/gfx` et
+   `fla/explore/gfx`, 12 sons WAV, `explore.swf` (ses deux bitmaps sont des copies des PNG). Rien des portages du jeu.
+   Aucun élément tiers trouvé sur la planche contact.
+2. La planche des blocs montrée entière exposait les repères numérotés de Motion Twin et des dizaines d'éléments
+   mêlés : planches découpées en morceaux aux pixels d'origine, nommés par le tableur et le code du jeu (§5.7).
+3. Tout le matériel officiel, même absent du jeu : modèles 3D `.bae` et porte `door.md` décodés, vue 3D dans la page,
+   réglages LabChirp (§5.8).
+4. Page : l'en-tête restait en haut du document au lieu de suivre le défilement (`body` de hauteur 100 % : un en-tête
+   `sticky` ne colle que dans son parent). `body` prend `min-height: 100vh` et la hauteur réelle de l'en-tête
+   (`--top-h`, mesurée par un `ResizeObserver`) cale la barre d'outils et le volet des filtres au lieu de 64 px fixes.

@@ -2,7 +2,8 @@
 
 usage : python build_catalog.py            (depuis n'importe où ; MT_WORK = dossier des exports FFDec et rendus)
 Sources : fichiers de l'archive Motion Twin (référencés sur place), animations GraphicsGale décodées, clips Flash
-rendus par render_symbols.py, formes SVG / bitmaps / sons exportés par FFDec (rebuild.py), copiés dans gen/.
+rendus par render_symbols.py, formes SVG / bitmaps / sons exportés par FFDec (rebuild.py), copiés dans gen/, morceaux
+des planches découpées (sheets.py), modèles 3D (models.py), réglages de son LabChirp (.lch, avec le son du même nom).
 """
 import fnmatch, hashlib, json, os, re, shutil, subprocess, sys, time
 import numpy as np
@@ -12,8 +13,7 @@ HERE = os.path.dirname(os.path.abspath(__file__))
 ROOT = os.path.dirname(HERE)
 sys.path.insert(0, HERE)
 sys.path.insert(0, os.path.join(HERE, 'flash'))
-import gal
-import swf_items
+import gal, models, presets, sheets, swf_items
 
 WORK = os.environ.get('MT_WORK', os.path.join(os.path.expanduser('~'), 'motiontwin-assets-work'))
 GEN = os.path.join(ROOT, 'gen')
@@ -93,13 +93,14 @@ class Game:
         self.items.append(item)
 
     def scan(self):
+        own = {e['file'] for e in self.cfg.get('sheets', []) + self.cfg.get('models', [])}  # traités à part
         for top in self.cfg['scan']:
             for dirpath, _, files in os.walk(os.path.join(self.base, top)):
                 for fn in sorted(files):
                     full = os.path.join(dirpath, fn)
                     path = os.path.relpath(full, self.base).replace(os.sep, '/')
                     ext = os.path.splitext(fn)[1].lower()
-                    if self.excluded(path):
+                    if self.excluded(path) or path in own:
                         continue
                     if ext in RASTER:
                         self.raster(full, path)
@@ -111,6 +112,8 @@ class Game:
                                       z=os.path.getsize(full), u=self.source_url(path)))
                     elif ext == '.gal':
                         self.gal(full, path)
+                    elif ext == '.lch':
+                        self.add(presets.item(self, full, path, sys.modules[__name__]))
 
     def raster(self, full, path):
         try:
@@ -168,8 +171,12 @@ def main():
         g = Game(gcfg, archive, cfg['repo'])
         print('==', gcfg['name'])
         g.scan()
+        presets.pair(g)
+        sheets.add_sheets(g, sys.modules[__name__])
+        models.add_models(g, sys.modules[__name__])
         for entry in gcfg.get('swf', []):
             swf_items.add_swf(g, entry, sys.modules[__name__])
+        sheets.finish(g)
         for it in g.items:
             it.setdefault('k', words(it['n']))
         games.append(dict(id=gcfg['id'], name=gcfg['name'], year=gcfg['year'], folder=gcfg['folder'],
