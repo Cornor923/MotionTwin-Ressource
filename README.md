@@ -15,7 +15,7 @@ Jeux : **Mush** (2012), **Alphabounce** (2007), **Galaxy55** (alpha, 2012) et se
 
 | Jeu | Images | GIF animés | Animations GraphicsGale | Clips Flash rendus | Formes vectorielles (SVG) | Sons |
 |---|---:|---:|---:|---:|---:|---:|
-| Mush | 1 337 | 22 | 50 | 1 | 3 | 0 |
+| Mush | 3 652 | 22 | 50 | 1 | 3 | 0 |
 | Alphabounce | 229 | 1 | 0 | 187 | 1 679 | 0 |
 | Galaxy55 | 462 | 0 | 0 | 0 | 0 | 12 |
 | Kube | 291 | 2 | 0 | 12 | 35 | 0 |

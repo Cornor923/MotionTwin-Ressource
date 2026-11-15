@@ -25,6 +25,22 @@
         "www/img/social/rockpapershotgun3.*", "www/img/social/rom-station.png",
         "www/img/social/selectbutton.png", "www/img/social/usGamer.jpg"
       ],
+      "sheets": [
+        {"file": "clients/iso/gfx/gfx_01.png", "slices_from": ["mush_tiles", "BmpGfx2"]},
+        {"file": "clients/iso/gfx/fx.png", "slices_from": ["mush_tiles", "BmpGfxFx"]},
+        {"file": "clients/iso/gfx/SmallFill.png", "slices_from": ["mush_tiles", "BmpSmallFill"]},
+        {"file": "clients/iso/gfx/MidFill.png", "slices_from": ["mush_tiles", "BmpMidFill"]},
+        {"file": "clients/iso/gfx/MidFill2.png", "slices_from": ["mush_tiles", "BmpMidFill2"]},
+        {"file": "clients/iso/gfx/BigFill.png", "slices_from": ["mush_tiles", "BmpBigFill"]},
+        {"file": "clients/iso/gfx/BigFill2.png", "slices_from": ["mush_tiles", "BmpBigFill2"]},
+        {"file": "clients/iso/gfx/dev.png", "slices_from": ["mush_tiles", "BmpGfxDev"]},
+        {"file": "clients/iso/gfx/char.png", "slices_from": ["mush_chars"]},
+        {"file": "clients/iso/gfx/Masks.png"},
+        {"file": "clients/iso/gfx/char_flipped.png"},
+        {"file": "clients/iso/gfx/char_02.png"},
+        {"file": "clients/iso/gfx/raluca.png"},
+        {"file": "clients/iso/gfx/gfx_02.png"}
+      ],
       "swf": [
         {"file": "clients/iso/obj/iso_deResources.swf", "work": "mush/iso_resources", "also": ["clients/iso/obj/iso_testResources.swf"]},
         {"file": "clients/iso/gfx/loading.swf", "work": "mush/loading"}
@@ -60,6 +76,20 @@
         "clients/iso/gfx/anim/perso": "Jeu · personnages animés",
         "clients/iso/gfx/anim": "Jeu · animations",
         "clients/iso/gfx/planets": "Jeu · planètes",
+        "clients/iso/gfx/gfx_01.png": "Jeu · sol, murs et portes",
+        "clients/iso/gfx/fx.png": "Jeu · effets",
+        "clients/iso/gfx/SmallFill.png": "Jeu · petits équipements",
+        "clients/iso/gfx/MidFill.png": "Jeu · équipements",
+        "clients/iso/gfx/MidFill2.png": "Jeu · équipements",
+        "clients/iso/gfx/BigFill.png": "Jeu · grands équipements",
+        "clients/iso/gfx/BigFill2.png": "Jeu · grands équipements",
+        "clients/iso/gfx/dev.png": "Jeu · planche de développement",
+        "clients/iso/gfx/char.png": "Jeu · personnages",
+        "clients/iso/gfx/Masks.png": "Jeu · masques",
+        "clients/iso/gfx/char_flipped.png": "Jeu · personnages (planche retournée)",
+        "clients/iso/gfx/char_02.png": "Jeu · personnages (autres planches)",
+        "clients/iso/gfx/raluca.png": "Jeu · personnages (autres planches)",
+        "clients/iso/gfx/gfx_02.png": "Jeu · décor (autre planche)",
         "clients/iso/gfx": "Jeu · planches du client isométrique",
         "clients/iso/obj/iso_deResources.swf": "Jeu · ressources du client (SWF)",
         "clients/iso/gfx/loading.swf": "Jeu · écran de chargement (SWF)"

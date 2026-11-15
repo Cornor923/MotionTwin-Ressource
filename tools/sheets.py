@@ -4,6 +4,7 @@ Entrée `sheets` d'un jeu dans games.json :
   file        planche dans le dossier du jeu (elle n'apparaît plus comme une image : ses morceaux la remplacent)
   slices      découpes reprises du code du jeu : {"name", "rect": [x, y, l, h], "cols", "rows"} (images en grille,
               ligne par ligne ; "n" = "cols"), "names" : nom de chaque image (liste, ou {"ods", "sheet", "column"})
+  slices_from découpes lues par le module d'un jeu : ["mush_tiles", "BmpGfx2"] (tiles.xml), ["mush_chars"]
   grid        taille de case quand le jeu adresse la planche par cases ; `cells` = nommage des cases (voir CELLS)
   marks       repères de travail peints dans la planche (voir MARKS) : un repère seul est écarté
   background  couleur de fond de la planche (« #ffffff ») que le jeu rend transparente : ignorée pour trouver les
@@ -16,11 +17,12 @@ import os
 import numpy as np
 from PIL import Image
 
-import galaxy55
+import galaxy55, mush
 from ods import rows as ods_rows
 from pixels import components, groups
 
 CELLS = {'galaxy55_blocks': galaxy55.block_cells}
+SLICES = {'mush_tiles': mush.tile_slices, 'mush_chars': mush.char_slices}
 MARKS = {'galaxy55_marks': galaxy55.texture_marks}
 OTHER = ' · autres éléments de la planche'
 
@@ -93,7 +95,11 @@ class Sheet:
 
     def cut(self):
         os.makedirs(self.out, exist_ok=True)
-        for s in self.entry.get('slices', []):
+        lists = self.entry.get('slices', [])
+        if 'slices_from' in self.entry:  # découpes lues dans le code ou les données du jeu (voir SLICES)
+            name, *args = self.entry['slices_from']
+            lists = lists + SLICES[name](self.game.base, *args)
+        for s in lists:
             x, y, w, h = s['rect']
             cols, rows = s.get('cols', s.get('n', 1)), s.get('rows', 1)
             names = self.names(s) or []

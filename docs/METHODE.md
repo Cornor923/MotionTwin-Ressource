@@ -228,6 +228,18 @@ fiche (« Planche d'origine »), et ses copies ailleurs (bitmaps d'un SWF) sont 
    montrée telle quelle (collection « · planche entière ») ; c'est le cas de `texture.png` (46 px de débords),
    `tiles.png` (24 px) de Galaxy55, `fx.png` (2 px) et `elements.png` (16 px) de Snake.
 
+**Planches de Mush** (`slices_from`, `mush.py`) : le client isométrique décrit ses découpes dans
+`clients/iso/xml/tiles.xml` (`<sheet src="BmpGfx2">`, `<slice id params="x,y,l,h,nb_x,nb_y">`, lu par
+`Data.addToStore`) ; la classe de chaque planche est reliée à son PNG par les bitmaps de `iso_deResources.swf`
+(BmpGfx2 = gfx_01, BmpGfxFx = fx, BmpSmallFill, BmpMidFill, BmpMidFill2, BmpBigFill, BmpBigFill2, BmpGfxDev = dev).
+Les personnages (`char.png`, BmpGfxChar) sont découpés par `Data.hx` (regChar, cases de 32 × 48) : une ligne par
+héros de `data/Data.ods` (feuille `heros`), Derek Hogan et Andie Graham, puis les apparences de `data/DataEco.ods`
+(feuille `heroSkins`, nom « HÉROS$n ») ; poses, marches à droite et à gauche, ligoté, couché. Les découpes
+retournées (`flipX`, `WALK_DOWN`…) reprennent les mêmes pixels et ne sont pas refaites. `Masks.png`,
+`char_flipped.png` (miroir de char.png), `char_02.png`, `raluca.png` et `gfx_02.png`, absents du code, sont découpés
+par groupes de pixels. `ShipMap.png` (carte de données), `bg.png`, `starship_map.png` et `vaisseaux.png` restent
+entiers.
+
 **Planches à fond** (`background`, Snake et Odyssey) : le code du jeu rend transparent le blanc pur
 (`makeTransp(…, 0xFFFFFFFF)`). Ce blanc est ignoré pour trouver les morceaux et pour sauter les cases vides, mais il
 reste dans les pixels montrés. Un morceau dont le dessin (fond ôté) est identique à une ressource déjà présente,
@@ -374,8 +386,6 @@ d'images, `sh` planche, `cols` colonnes de la planche, `fps` cadence, `d` délai
 ## 10. Limites connues
 
 - Pas de son pour Mush et Alphabounce (absent de l'archive) ; Galaxy55 a ses 12 bruitages en WAV.
-- Les planches de Mush (`clients/iso/gfx` : BigFill, MidFill, gfx_01, fx, raluca…) sont encore montrées entières :
-  elles n'ont pas de repères, mais ne sont pas découpées comme celles de Galaxy55.
 - Galaxy55 : paramètres LabChirp non décodés ; `.bae` sans couleurs de matériaux (gris) ; en `file://` le navigateur
   refuse la texture dans WebGL, la porte s'affiche alors sans texture (l'aperçu PNG la montre) ; données Haxe chiffrées
   de explore.swf non lues ; `ui.fla` / `ui.swf` vides.
@@ -460,3 +470,7 @@ des décors, chaque image étant un fond entier), `build_catalog.py` environ 2 �
 3. Nouvelle méthode pour les `.fla` (§5.9) : XFL lus et composés (`xfl.py`), binaires lus avec fla-decoder (MIT,
    ajouté à `tools/` avec l'accord de l'utilisateur) ; rendu SVG commun ; bitmaps décodés au pixel près ; doublons
    et symboles de même nom qu'un clip SWF signalés. 16 293 ressources en tout ; `gen/` environ 226 Mo.
+
+**2026-11-15** — planches de Mush découpées d'après `tiles.xml` et `Data.hx` (mush.py) : 14 planches, 2 323
+morceaux dont 1 279 nommés (décor, équipements, effets, personnages et apparences) ; les six planches qui gardent
+quelques pixels hors morceaux sont aussi montrées entières.
