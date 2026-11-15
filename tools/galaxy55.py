@@ -6,41 +6,14 @@ Motion Twin a peint dans la planche des numéros de colonne (0 à 63, ligne 5, o
 bleu) : des repères de travail, pas des ressources. Un repère seul est écarté ; un dessin que Motion Twin a recouvert
 d'un repère le garde, car le dessin d'origine n'existe plus sous les chiffres.
 """
-import os, re, zipfile
-import xml.etree.ElementTree as ET
+import os, re
 import numpy as np
 
+from ods import rows as ods_rows
 from pixels import components
 
-T = '{urn:oasis:names:tc:opendocument:xmlns:table:1.0}'
-P = '{urn:oasis:names:tc:opendocument:xmlns:text:1.0}p'
 ROLES = {'texture': 'côtés', 'texUp': 'dessus', 'texDown': 'dessous'}
 FACES = ['face avant', 'face arrière', 'face gauche', 'face droite']
-
-
-def ods_rows(path, sheet):
-    root = ET.fromstring(zipfile.ZipFile(path).read('content.xml'))
-    for table in root.iter(T + 'table'):
-        if table.get(T + 'name') != sheet:
-            continue
-        rows = []
-        for r in table.iter(T + 'table-row'):
-            cells = []
-            for c in r.findall(T + 'table-cell'):
-                n = min(int(c.get(T + 'number-columns-repeated', '1')), 64)
-                cells += ['\n'.join(''.join(p.itertext()) for p in c.findall(P))] * n
-            while cells and cells[-1] == '':
-                cells.pop()
-            if cells:
-                rows.append(cells)
-        head = rows[0]
-        out = []
-        for r in rows[1:]:
-            if r[0].startswith('$'):  # fin de table du format ods.Data de Motion Twin
-                break
-            out.append(dict(zip(head, r + [''] * (len(head) - len(r)))))
-        return out
-    raise KeyError(sheet)
 
 
 def block_cells(game_dir):

@@ -215,6 +215,388 @@
         "www/img/muxxu": "Site · Muxxu",
         "www/img": "Site"
       }
+    },
+    {
+      "id": "croquemotel",
+      "name": "CroqueMotel",
+      "year": 2011,
+      "folder": "Muxxu/Hotel",
+      "summary": "Gestion d'un hôtel pour monstres, sur Muxxu.",
+      "notes": [
+        "Pas de son dans l'archive."
+      ],
+      "scan": [
+        "flash/gfx",
+        "art",
+        "www/img"
+      ],
+      "swf": [
+        {"file": "flash/swf/_gfx.swf", "work": "croquemotel/gfx"}
+      ],
+      "collections": {
+        "flash/gfx/sceneries": "Jeu · décors",
+        "flash/gfx/peoples": "Jeu · personnages",
+        "flash/gfx": "Jeu · graphismes",
+        "flash/swf/_gfx.swf": "Jeu · ressources (SWF)",
+        "art": "Illustrations",
+        "www/img/icons": "Site · icônes",
+        "www/img/design": "Site · habillage",
+        "www/img/screenshots": "Site · captures",
+        "www/img/art": "Site · illustrations",
+        "www/img/muxxu": "Site · Muxxu",
+        "www/img": "Site"
+      }
+    },
+    {
+      "id": "intrusion",
+      "name": "Intrusion",
+      "year": 2009,
+      "folder": "Muxxu/Intrusion",
+      "summary": "Piratage de réseaux informatiques, sur Muxxu.",
+      "notes": [
+        "Photos (visages, objets) issues de banques d’images, telles que dans l’archive."
+      ],
+      "scan": [
+        "client/img",
+        "client/img_cine",
+        "client/img_faces",
+        "client/dockIcons",
+        "www/img",
+        "www/sfx"
+      ],
+      "swf": [
+        {"file": "client/swf/_gfx.swf", "work": "intrusion/gfx"},
+        {"file": "client/swf/_cinematics.swf", "work": "intrusion/cinematics"}
+      ],
+      "collections": {
+        "client/img_faces": "Jeu · visages",
+        "client/img_cine": "Jeu · cinématiques",
+        "client/dockIcons": "Jeu · icônes",
+        "client/img": "Jeu · graphismes",
+        "client/swf/_gfx.swf": "Jeu · ressources (SWF)",
+        "client/swf/_cinematics.swf": "Jeu · cinématiques (SWF)",
+        "www/sfx": "Sons",
+        "www/img/dockicons": "Site · icônes",
+        "www/img/icons": "Site · icônes",
+        "www/img/design": "Site · habillage",
+        "www/img/screenshots": "Site · captures",
+        "www/img/muxxu": "Site · Muxxu",
+        "www/img": "Site"
+      }
+    },
+    {
+      "id": "labrute",
+      "name": "La Brute",
+      "year": 2010,
+      "folder": "Muxxu/LaBrute",
+      "summary": "Combats automatiques de brutes, sur Muxxu.",
+      "notes": [
+        "Pas de son dans l'archive.",
+        "Corps des brutes : seulement dans des .fla, non lisibles."
+      ],
+      "scan": [
+        "www/img",
+        "gfx",
+        "fla/client/fla"
+      ],
+      "swf": [
+        {"file": "fla/client/swf/gfx.swf", "work": "labrute/client"},
+        {"file": "fla/inventory/gfx.swf", "work": "labrute/inventory"},
+        {"file": "fla/tournoi/gfx.swf", "work": "labrute/tournoi"}
+      ],
+      "collections": {
+        "fla/client/fla": "Jeu · arènes",
+        "gfx": "Site · éléments",
+        "fla/client/swf/gfx.swf": "Jeu · combat (SWF)",
+        "fla/inventory/gfx.swf": "Jeu · inventaire (SWF)",
+        "fla/tournoi/gfx.swf": "Jeu · tournoi (SWF)",
+        "www/img/icons": "Site · icônes",
+        "www/img/loc": "Site · images localisées",
+        "www/img/muxxu": "Site · Muxxu",
+        "www/img": "Site"
+      }
+    },
+    {
+      "id": "odyssey",
+      "name": "Odyssey",
+      "year": 2011,
+      "folder": "Muxxu/Odyssey",
+      "summary": "Exploration d'un archipel avec une équipe de héros, sur Muxxu.",
+      "notes": [
+        "Pas de son dans l'archive."
+      ],
+      "scan": [
+        "www/img",
+        "design",
+        "fla/map/bmp",
+        "fla/client/gfx"
+      ],
+      "exclude": ["fla/client/gfx/icons.gal"],
+      "sheets": [
+        {
+          "file": "fla/client/gfx/icons.png",
+          "background": "#ffffff",
+          "slices": [
+            {"name": "ball", "rect": [0, 0, 20, 20], "cols": 10, "rows": 5},
+            {"name": "stock", "rect": [0, 136, 8, 8], "cols": 10, "rows": 5},
+            {"name": "skills", "rect": [80, 136, 8, 8], "cols": 10, "rows": 5},
+            {"name": "small", "rect": [0, 120, 8, 8], "cols": 20},
+            {"name": "status", "rect": [160, 136, 8, 8], "cols": 5, "rows": 5},
+            {"name": "actions", "rect": [0, 128, 8, 8], "cols": 20},
+            {"name": "actions_big", "rect": [0, 208, 16, 16], "cols": 10, "rows": 3},
+            {"name": "grid_test", "rect": [0, 176, 16, 16], "cols": 16},
+            {"name": "text_buts", "rect": [0, 192, 48, 16], "cols": 3, "rows": 2}
+          ]
+        }
+      ],
+      "swf": [
+        {"file": "fla/client/obj/gameResources.swf", "work": "odyssey/resources"},
+        {"file": "fla/client/swf/gfx.swf", "work": "odyssey/gfx"},
+        {"file": "fla/client/swf/fx.swf", "work": "odyssey/fx"},
+        {"file": "fla/client/swf/heroes.swf", "work": "odyssey/heroes"},
+        {"file": "fla/client/swf/monsters.swf", "work": "odyssey/monsters"},
+        {"file": "fla/client/swf/decors.swf", "work": "odyssey/decors"},
+        {"file": "fla/client/swf/bumdum.swf", "work": "odyssey/bumdum"},
+        {"file": "fla/map/swf/gfx.swf", "work": "odyssey/map"},
+        {"file": "fla/map/swf/ui.swf", "work": "odyssey/map_ui"},
+        {"file": "fla/editor/swf/gfx.swf", "work": "odyssey/editor"},
+        {"file": "fla/client/swf/all.swf", "work": "odyssey/all"},
+        {"file": "fla/client/swf/all.mtswf", "work": "odyssey/all_mtswf"},
+        {"file": "fla/client/swf/heroes.mtswf", "work": "odyssey/heroes_mtswf"},
+        {"file": "fla/client/swf/game.swf", "work": "odyssey/game"}
+      ],
+      "collections": {
+        "design/heroes_HD": "Illustrations · héros",
+        "fla/map/bmp": "Jeu · carte",
+        "fla/client/gfx": "Jeu · icônes",
+        "fla/client/obj/gameResources.swf": "Jeu · ressources (SWF)",
+        "fla/client/swf/gfx.swf": "Jeu · interface (SWF)",
+        "fla/client/swf/fx.swf": "Jeu · effets (SWF)",
+        "fla/client/swf/heroes.swf": "Jeu · héros (SWF)",
+        "fla/client/swf/monsters.swf": "Jeu · monstres (SWF)",
+        "fla/client/swf/decors.swf": "Jeu · décors (SWF)",
+        "fla/client/swf/bumdum.swf": "Jeu · armure (SWF)",
+        "fla/map/swf/gfx.swf": "Carte · tuiles (SWF)",
+        "fla/map/swf/ui.swf": "Carte · interface (SWF)",
+        "fla/editor/swf/gfx.swf": "Éditeur (SWF)",
+        "fla/client/swf/all.swf": "Jeu · héros et monstres (all.swf)",
+        "fla/client/swf/all.mtswf": "Jeu · héros et monstres (all.mtswf)",
+        "fla/client/swf/heroes.mtswf": "Jeu · héros (heroes.mtswf)",
+        "fla/client/swf/game.swf": "Jeu · client compilé (game.swf)",
+        "www/img/heroes": "Site · héros",
+        "www/img/icons": "Site · icônes",
+        "www/img/skin": "Site · habillage",
+        "www/img/actions": "Site · actions",
+        "www/img/skills": "Site · compétences",
+        "www/img/status": "Site · statuts",
+        "www/img/font": "Site · chiffres",
+        "www/img/loc": "Site · images localisées",
+        "www/img": "Site"
+      }
+    },
+    {
+      "id": "snake",
+      "name": "Snake",
+      "year": 2010,
+      "folder": "Muxxu/Snake",
+      "summary": "Serpent mangeur de fruits, avec cartes à collectionner, sur Muxxu.",
+      "notes": [
+        "Pas de son dans l'archive.",
+        "Cartes nommées par leur identifiant dans les données du jeu."
+      ],
+      "scan": [
+        "clients/arene/gfx",
+        "clients/playground/gfx",
+        "clients/quest/gfx",
+        "clients/score/gfx",
+        "clients/fruit/gfx",
+        "www/img",
+        "docs/imgCards",
+        "docs/screenshots"
+      ],
+      "exclude": ["**/Thumbs.db", "clients/playground/gfx/src/elements.gal"],
+      "sheets": [
+        {
+          "file": "clients/arene/gfx/fruits.png",
+          "background": "#ffffff",
+          "slices": [
+            {"name": "fruits", "rect": [0, 0, 32, 32], "cols": 20, "rows": 16}
+          ]
+        },
+        {
+          "file": "clients/arene/gfx/bonus.png",
+          "background": "#ffffff",
+          "slices": [
+            {"name": "bonus", "rect": [0, 0, 32, 32], "cols": 6, "rows": 6}
+          ]
+        },
+        {
+          "file": "clients/arene/gfx/arts.png",
+          "slices": [
+            {
+              "name": "cards",
+              "rect": [0, 0, 37, 43],
+              "cols": 10,
+              "rows": 14,
+              "names": {"ods": "clients/com/data.ods", "sheet": "cartes", "column": "id"}
+            }
+          ]
+        },
+        {
+          "file": "clients/arene/gfx/fx.png",
+          "background": "#ffffff",
+          "slices": [
+            {"name": "bad_star", "rect": [0, 0, 24, 24], "cols": 3},
+            {"name": "burn", "rect": [48, 32, 16, 24], "cols": 8},
+            {"name": "blood", "rect": [0, 48, 32, 32]},
+            {"name": "blood_trace", "rect": [32, 66, 16, 12], "cols": 8},
+            {"name": "blood_mini_spot", "rect": [0, 80, 16, 16]},
+            {"name": "blood_mini_spot", "rect": [16, 80, 8, 8], "cols": 2, "rows": 2},
+            {"name": "slash", "rect": [32, 56, 32, 8]},
+            {"name": "bomb", "rect": [32, 80, 16, 16], "cols": 3},
+            {"name": "miniflame", "rect": [64, 56, 8, 8], "cols": 9},
+            {"name": "record", "rect": [80, 80, 29, 5], "rows": 2},
+            {"name": "onde", "rect": [80, 0, 32, 32], "cols": 6},
+            {"name": "blood_drop", "rect": [1, 62, 3, 3]},
+            {"name": "body_explode", "rect": [0, 96, 32, 32], "cols": 10},
+            {"name": "smiley", "rect": [192, 32, 32, 32]},
+            {"name": "pin", "rect": [112, 80, 16, 16]},
+            {"name": "spark_onde", "rect": [128, 80, 8, 8], "cols": 2, "rows": 2},
+            {"name": "volt", "rect": [144, 80, 8, 8], "cols": 2, "rows": 2},
+            {"name": "soap", "rect": [160, 64, 16, 16], "cols": 8},
+            {"name": "pink_ribbon", "rect": [224, 32, 32, 32]},
+            {"name": "tennis_ball", "rect": [160, 80, 8, 8], "cols": 3, "rows": 2},
+            {"name": "big_shield", "rect": [256, 32, 32, 32]},
+            {"name": "crane", "rect": [0, 128, 16, 24], "cols": 12},
+            {"name": "pulse", "rect": [192, 128, 32, 32], "cols": 3},
+            {"name": "line_fade", "rect": [144, 152, 8, 8], "cols": 5},
+            {"name": "spark_dust", "rect": [184, 80, 8, 8], "cols": 4, "rows": 2},
+            {"name": "grain", "rect": [216, 80, 8, 8], "cols": 5},
+            {"name": "snake_parts", "rect": [216, 88, 8, 8], "cols": 6},
+            {"name": "bubble", "rect": [0, 152, 16, 16], "cols": 5},
+            {"name": "runes", "rect": [80, 152, 16, 16], "cols": 4},
+            {"name": "cross", "rect": [165, 69, 3, 3]},
+            {"name": "mini_star", "rect": [256, 80, 8, 8]},
+            {"name": "soup", "rect": [144, 160, 32, 18], "cols": 5, "rows": 2},
+            {"name": "wisp", "rect": [0, 184, 24, 40], "cols": 4},
+            {"name": "ghost", "rect": [0, 168, 16, 16], "cols": 9}
+          ]
+        },
+        {
+          "file": "clients/arene/gfx/main.png",
+          "background": "#ffffff",
+          "slices": [
+            {"name": "cards", "rect": [0, 0, 43, 62], "cols": 2},
+            {"name": "frutibar", "rect": [0, 64, 12, 9], "cols": 2},
+            {"name": "frutibar_bg", "rect": [24, 64, 12, 8]},
+            {"name": "key", "rect": [0, 80, 16, 16]},
+            {"name": "round_key", "rect": [48, 80, 16, 16]},
+            {"name": "card_dark", "rect": [86, 0, 43, 62]},
+            {"name": "prime", "rect": [129, 0, 43, 62]},
+            {"name": "shield", "rect": [88, 64, 6, 8], "cols": 10},
+            {"name": "checkbox", "rect": [48, 80, 8, 8], "cols": 2},
+            {"name": "mojo", "rect": [172, 0, 76, 62], "cols": 2},
+            {"name": "loading_bar", "rect": [64, 80, 60, 5], "rows": 5},
+            {"name": "icon_play", "rect": [88, 72, 8, 8], "cols": 2},
+            {"name": "icon_skull", "rect": [112, 72, 8, 8]},
+            {"name": "icon_star", "rect": [120, 72, 8, 8]},
+            {"name": "icon_flash", "rect": [128, 72, 8, 8]},
+            {"name": "icon_freq", "rect": [136, 72, 3, 3], "cols": 3},
+            {"name": "art_control", "rect": [0, 128, 96, 64], "cols": 3},
+            {"name": "art_control", "rect": [0, 128, 192, 64]},
+            {"name": "mouse_icon", "rect": [160, 64, 16, 16], "cols": 3},
+            {"name": "icon_token", "rect": [16, 96, 9, 9]},
+            {"name": "icon_draft", "rect": [25, 96, 9, 9], "cols": 3},
+            {"name": "medium_card", "rect": [208, 64, 22, 32]}
+          ]
+        },
+        {
+          "file": "clients/arene/gfx/collection.png",
+          "background": "#ffffff",
+          "slices": [
+            {"name": "section_bg", "rect": [0, 0, 70, 70]},
+            {"name": "section_bg_small", "rect": [145, 0, 52, 52]},
+            {"name": "section_icons", "rect": [70, 0, 43, 36]},
+            {"name": "section_icons", "rect": [113, 0, 32, 36]},
+            {"name": "section_icons", "rect": [70, 36, 44, 22]},
+            {"name": "section_icons", "rect": [0, 0, 39, 30]},
+            {"name": "ticket", "rect": [70, 58, 12, 8]},
+            {"name": "perso", "rect": [0, 70, 104, 125]},
+            {"name": "perso", "rect": [104, 70, 108, 125]},
+            {"name": "perso", "rect": [212, 70, 99, 125]},
+            {"name": "arrow", "rect": [82, 58, 12, 12]}
+          ]
+        },
+        {
+          "file": "clients/arene/gfx/font.png",
+          "background": "#ffffff",
+          "slices": [
+            {"name": "fontA", "rect": [0, 0, 10, 14], "cols": 11},
+            {"name": "fontB", "rect": [0, 14, 10, 14], "cols": 11},
+            {"name": "fontD", "rect": [0, 58, 5, 7], "cols": 10}
+          ]
+        },
+        {
+          "file": "clients/arene/gfx/tiles_color.png",
+          "slices": [
+            {"name": "tilesColor", "rect": [0, 0, 16, 16], "cols": 16, "rows": 8}
+          ]
+        },
+        {
+          "file": "clients/arene/gfx/tiles_grey.png",
+          "background": "#ffffff",
+          "slices": [
+            {"name": "tilesGrey", "rect": [0, 0, 16, 16], "cols": 16, "rows": 8}
+          ]
+        },
+        {
+          "file": "clients/playground/gfx/elements.png",
+          "background": "#ffffff",
+          "slices": [
+            {"name": "title", "rect": [0, 55, 161, 32]},
+            {"name": "stars", "rect": [80, 40, 8, 8], "cols": 3}
+          ]
+        }
+      ],
+      "swf": [
+        {"file": "clients/arene/obj/gameResources.swf", "work": "snake/arene_res"},
+        {"file": "clients/arene/swf/game.swf", "work": "snake/arene"},
+        {"file": "clients/arene/swf/gfx.swf", "work": "snake/arene_gfx"},
+        {"file": "clients/collection/obj/collectionResources.swf", "work": "snake/collection"},
+        {"file": "clients/fruit/obj/gameResources.swf", "work": "snake/fruit"},
+        {"file": "clients/newcard/obj/newcardResources.swf", "work": "snake/newcard"},
+        {"file": "clients/playground/obj/playgroundResources.swf", "work": "snake/playground_res"},
+        {"file": "clients/playground/swf/playground.swf", "work": "snake/playground"},
+        {"file": "clients/quest/obj/questResources.swf", "work": "snake/quest"},
+        {"file": "clients/score/obj/gameResources.swf", "work": "snake/score"},
+        {"file": "clients/singleCard/obj/singleCardResources.swf", "work": "snake/singlecard"}
+      ],
+      "collections": {
+        "clients/arene/gfx/fruits.png": "Jeu · fruits",
+        "clients/arene/gfx/bonus.png": "Jeu · bonus",
+        "clients/arene/gfx/arts.png": "Jeu · illustrations des cartes",
+        "clients/arene/gfx/fx.png": "Jeu · effets",
+        "clients/arene/gfx/font.png": "Jeu · chiffres",
+        "clients/arene/gfx/tiles_color.png": "Jeu · tuiles",
+        "clients/arene/gfx/tiles_grey.png": "Jeu · tuiles",
+        "clients": "Jeu · graphismes",
+        "docs/imgCards": "Documents · cartes",
+        "docs/screenshots": "Documents · captures",
+        "www/img/icons": "Site · icônes",
+        "www/img/cards": "Site · cartes",
+        "www/img/loc": "Site · images localisées",
+        "www/img/muxxu": "Site · Muxxu",
+        "www/img": "Site",
+        "clients/arene/obj/gameResources.swf": "Jeu · ressources (SWF)",
+        "clients/arene/swf": "Jeu · client (SWF)",
+        "clients/collection/obj": "Collection (SWF)",
+        "clients/fruit/obj": "Fruit (SWF)",
+        "clients/newcard/obj": "Nouvelle carte (SWF)",
+        "clients/playground": "Terrain de jeu",
+        "clients/quest": "Quêtes",
+        "clients/score": "Score",
+        "clients/singleCard/obj": "Carte seule (SWF)"
+      }
     }
   ]
 }

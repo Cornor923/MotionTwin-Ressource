@@ -70,9 +70,9 @@ index.html + viewer/*.js ◄── catalog.js, gen/, sources/ (images de l'archi
 
 ### 5.1 Archive
 
-`git clone --filter=blob:none --depth 1 --sparse` puis `git sparse-checkout set Mush Alphabounce Galaxy55 Muxxu/Kube Muxxu/Kingdom` (un dossier par
+`git clone --filter=blob:none --depth 1 --sparse` puis `git sparse-checkout set Mush Alphabounce Galaxy55 Muxxu/Kube Muxxu/Kingdom …` (un dossier par
 jeu de `games.json`). L'archive complète pèse environ 1,3 Go ; Mush + Alphabounce, environ 110 Mo de fichiers ; Galaxy55,
-environ 3 Mo ; Kube et Kingdom, environ 12 Mo.
+environ 3 Mo ; les sept jeux Muxxu, environ 190 Mo (dont 94 Mo de `.fla` pour La Brute).
 
 Ce qu'on y trouve :
 - Mush : `www/img/**` (site : illustrations, cartes, icônes, habillage, teasing), `clients/iso/gfx/**` (planches du
@@ -91,6 +91,21 @@ Ce qu'on y trouve :
 - Kingdom (Muxxu) : `www/img/**` (site, icônes, captures d'aide), `gfx/mapview/img` (éléments de la carte),
   `gfx/puzzle/img`, trois SWF : `gfx/mapview/gfx.swf` et `gfx/battle/gfx.swf` (AS3), `gfx/puzzle/gfx.swf` (AS2),
   des `.fla`.
+- CroqueMotel (`Muxxu/Hotel`) : `flash/gfx/**` (décors, personnages, monstres, objets), `art/` (illustrations),
+  `www/img/**`, `flash/swf/_gfx.swf` (AS3), des `.fla`, des XML de textes.
+- Intrusion : `client/img*`, `client/dockIcons`, `www/img/**`, 49 sons MP3 (`www/sfx`), `client/swf/_gfx.swf` et
+  `_cinematics.swf` (AS2). `client/img_faces` (100 portraits), `client/img_cine` et deux autres images sont des
+  photographies (visages, objets) venues de banques d'images : montrées à la demande de l'utilisateur.
+- La Brute : `www/img/**`, `gfx/*.png`, les arènes (`fla/client/fla/*.png`), trois SWF AS2 (combat, inventaire,
+  tournoi). Le corps des brutes n'existe que dans des `.fla` (`perso.fla`, `mini_perso.fla`), non lus.
+- Odyssey : `www/img/**`, `design/heroes_HD`, `fla/map/bmp` (dont 16 `.tga`, vues d'un bateau sous 16 angles),
+  `fla/client/gfx/icons.png` (planche) et sa source `icons.gal`, dix SWF AS3, plus `all.swf` (mêmes symboles que
+  `heroes.swf` + `monsters.swf`), `game.swf` (jeu compilé qui embarque les autres SWF et des données) et deux
+  `.mtswf` (SWF ordinaires sous une autre extension) : traités aussi, seul ce qui diffère des autres SWF apparaît, le
+  reste est noté comme présent à plusieurs endroits. Neuf `.fla` XFL (§5.9).
+- Snake : planches du client `clients/arene/gfx` (fruits, bonus, effets, interface, illustrations des cartes,
+  chiffres, tuiles) et `clients/*/gfx`, `www/img/**` (dont chaque fruit et chaque carte en GIF), `docs/`, onze SWF
+  de ressources et de clients, des `.gal` (sources des PNG).
 
 ### 5.2 Inventaire des SWF
 
@@ -209,6 +224,17 @@ fiche (« Planche d'origine »), et ses copies ailleurs (bitmaps d'un SWF) sont 
    grands ne fusionnent jamais. Un groupe aligné sur la grille est coupé case par case (« case x,y »), sinon il forme un
    morceau nommé par sa position (« texture x,y »). Collection « · autres éléments de la planche ». Un bord de moins de
    24 px collé à une case déjà découpée (dessin qui déborde de sa case) n'est pas un morceau à part.
+4. **Planche entière** : si des pixels dessinés (hors repères seuls) ne sont dans aucun morceau, la planche est aussi
+   montrée telle quelle (collection « · planche entière ») ; c'est le cas de `texture.png` (46 px de débords),
+   `tiles.png` (24 px) de Galaxy55, `fx.png` (2 px) et `elements.png` (16 px) de Snake.
+
+**Planches à fond** (`background`, Snake et Odyssey) : le code du jeu rend transparent le blanc pur
+(`makeTransp(…, 0xFFFFFFFF)`). Ce blanc est ignoré pour trouver les morceaux et pour sauter les cases vides, mais il
+reste dans les pixels montrés. Un morceau dont le dessin (fond ôté) est identique à une ressource déjà présente,
+par exemple un fruit du site `www/img/icons/fruits_NNN.gif`, n'est pas montré deux fois : il est noté dans les
+« Aussi dans l'archive » de cette ressource. Les noms d'images peuvent venir d'un tableur (`names` : cartes de Snake,
+colonne `id` de `clients/com/data.ods`). Les découpes retournées par le code (miroir) ne sont pas reprises : ce ne
+sont pas des pixels de la planche.
 
 **Repères de `texture.png`** : Motion Twin a peint dans la planche les numéros de colonne (0 à 63, ligne 5, orange) et
 de ligne (1 à 12, colonne 26, bleu), avec contour noir et ombre. Ce sont des repères de travail, pas des ressources :
@@ -236,7 +262,39 @@ Réglages LabChirp (`.lch`, en-tête `LabChirp100`) : fichiers de paramètres du
 bruitages ; type `lch`, collection « · réglages LabChirp », fiche avec le WAV du même nom. Leurs paramètres ne sont pas
 décodés.
 
-### 5.9 La page
+### 5.9 Fichiers .fla (`fla_items.py`, `xfl.py`, `fla_bin.py`, `fla_compose.py`, `vector_svg.py`)
+
+Tous les `.fla` du dossier d'un jeu sont lus (sauf `exclude`) : leurs symboles sont rendus en SVG, leurs bitmaps
+et leurs sons extraits. Deux formats :
+- **XFL** (Flash CS5 et plus, archive ZIP de XML : les `.fla` d'Odyssey) — `xfl.py`. Flash écrit un répertoire
+  central ZIP non standard : l'archive est lue par ses en-têtes locaux. Formes `DOMShape` (bords en twips :
+  « ! x y », « | x y », « [ cx cy x y », nombres décimaux ou « #hex.hex » sur 24 bits signés, fraction en 256ᵉ),
+  instances `DOMSymbolInstance` (par nom, matrice, transformation de couleur), groupes, bitmaps (`bin/*.dat`),
+  calques de masque et de guide. Les symboles sont **composés entiers**, première image de chaque calque.
+- **Binaire** (Flash 5 à CS4, conteneur OLE : tous les autres) — `fla_bin.py` avec **fla-decoder** (MIT,
+  `tools/fla_decoder/`, et olefile, `tools/olefile/`, ajoutés avec l'accord de l'utilisateur). fla-decoder décode
+  la sérialisation MFC (`CPicPage`, `CPicLayer`, `CPicFrame`, `CPicShape`). Ce module corrige l'ordre des indices de
+  style des bords (trait, remplissage, remplissage : le seul compatible avec la taille des tables sur toutes les
+  formes) et retrouve les noms dans le flux `Contents` (chaque flux y est cité, suivi du nom de l'élément de
+  bibliothèque, puis de son identifiant = numéro du flux). Limite : fla-decoder ne relie pas les instances
+  (`CPicSprite`) à leur symbole et lit mal la structure de certains fichiers CS3/CS4 ; seules les **formes propres**
+  de chaque symbole sont dessinées (les symboles qu'il place ne sont pas assemblés, ce que la fiche indique).
+
+Rendu (`vector_svg.py`, `fla_compose.py`, le même pour les deux formats) : chaque remplissage est reconstitué en
+enchaînant ses bords (ceux de l'autre côté à l'envers), chaque trait en enchaînant les bords de son style ;
+dégradés linéaires et radiaux, remplissages bitmap, transformations de couleur (`feColorMatrix`), masques (`mask`
+alpha). Les bitmaps sont incorporés en data URI (un SVG affiché par `<img>` ne charge pas de fichier externe).
+
+Bitmaps (`fla_bitmaps.py`) : même format dans les flux `M n` des binaires et les `bin/*.dat` des XFL — `03 05`
+sans perte 32 bits (blocs zlib, A R G B prémultiplié), `03 03` 8 bits à palette A R G B, ou JPEG ; vérifié au pixel
+près contre les mêmes bitmaps exportés des SWF par FFDec. Sons : enregistrements `CMediaSound` de `Contents`
+(fla-decoder) et flux correspondants, en MP3 ou WAV.
+
+Doublons : un symbole au rendu identique à un autre, un bitmap ou un son identique à une ressource existante devient
+un doublon (« Aussi dans l'archive ») ; un symbole du même nom qu'un clip ou une forme d'un SWF du jeu est relié à
+celui-ci (« Même nom dans »), sans être fusionné, les deux rendus étant différents.
+
+### 5.10 La page
 
 `index.html` + `viewer/` : scripts classiques sans module ni dépendance (fonctionne aussi en `file://`), espace de noms
 `MT`.
@@ -285,7 +343,7 @@ rendu » ; la solution de kadokadeo est de faire rendre ce clip image par image 
 | `games[].scan` | dossiers parcourus (relatifs au dossier du jeu) |
 | `games[].exclude` | motifs `fnmatch` exclus (éléments tiers) |
 | `games[].swf[]` | `file`, `work`, et au besoin `also` (copies identiques) ou `variant_of` (autre version) |
-| `games[].sheets[]` | planches à découper : `file`, `slices` (`name`, `rect`, `n`), `grid`, `cells`, `marks` (§5.7) |
+| `games[].sheets[]` | planches à découper : `file`, `slices` (`name`, `rect`, `cols`, `rows`, `names`), `grid`, `cells`, `marks`, `background` (§5.7) |
 | `games[].models[]` | modèles 3D : `file`, et pour un `.md` `texture` + `cell` (§5.8) |
 | `games[].collections` | préfixe de chemin → nom de collection |
 
@@ -309,6 +367,8 @@ d'images, `sh` planche, `cols` colonnes de la planche, `fps` cadence, `d` délai
 - Alphabounce : `web/img/bank/cat_cb*` (bannières de paiement avec les logos PayPal, Visa et MasterCard).
 - Kube : `gfx/events/*` (56 captures de constructions de joueurs pour des événements de la communauté, dont des
   personnages d'autres sociétés), dossier non parcouru.
+- Odyssey `fla/client/gfx/icons.gal` et Snake `clients/playground/gfx/src/elements.gal` : sources GraphicsGale des
+  planches `icons.png` et `elements.png`, déjà découpées (elles les montreraient en entier).
 - Partout : polices embarquées, `Thumbs.db`, tableurs de données.
 
 ## 10. Limites connues
@@ -319,7 +379,7 @@ d'images, `sh` planche, `cols` colonnes de la planche, `fps` cadence, `d` délai
 - Galaxy55 : paramètres LabChirp non décodés ; `.bae` sans couleurs de matériaux (gris) ; en `file://` le navigateur
   refuse la texture dans WebGL, la porte s'affiche alors sans texture (l'aperçu PNG la montre) ; données Haxe chiffrées
   de explore.swf non lues ; `ui.fla` / `ui.swf` vides.
-- Les `.fla` d'Alphabounce (Flash 8, format binaire OLE) ne sont pas lus ; leur contenu est dans les SWF compilés.
+- `.fla` binaires : formes propres de chaque symbole seulement (pas d'assemblage des symboles placés, §5.9).
 - Les champs texte dynamiques (remplis par le code du jeu) restent vides dans les rendus ; les textes statiques sont là.
 - Rendus à 2 px par pixel Flash : agrandir au-delà dans la fiche pixellise ; les formes, elles, sont en SVG.
 - Formes animées, voir §6 ; clips AS3 : timeline seulement, sans leur code.
@@ -346,7 +406,9 @@ d'images, `sh` planche, `cols` colonnes de la planche, `fps` cadence, `d` délai
 | Rendu des 33 clips de la version de travail | environ 15 minutes |
 | `build_catalog.py` | 30 à 50 secondes |
 
-Volumes : `catalog.js` 1,2 Mo, `gen/` 32 Mo, dossier de travail 60 Mo, archive (2 jeux) environ 185 Mo avec git.
+Volumes (première version, 2 jeux) : `catalog.js` 1,2 Mo, `gen/` 32 Mo, dossier de travail 60 Mo, archive environ
+185 Mo avec git. Avec dix jeux : `catalog.js` 6 Mo, `gen/` 180 Mo (dont 124 Mo pour Odyssey : planches d'animation
+des décors, chaque image étant un fond entier), `build_catalog.py` environ 2 à 5 minutes.
 
 ## 13. Historique
 
@@ -380,3 +442,21 @@ Volumes : `catalog.js` 1,2 Mo, `gen/` 32 Mo, dossier de travail 60 Mo, archive (
 2. Symboles AS3 (`SymbolClass`) lus par `tools/swf_symbols.py` : les clips de `client/gfx.swf` (Kube),
    `gfx/mapview/gfx.swf` et `gfx/battle/gfx.swf` (Kingdom) sont rendus, et celui de `loading.swf` de Mush
    (`Mc_whole_loader`) l'est désormais aussi.
+
+**2026-11-15** — reste de Muxxu (sauf Fever) : CroqueMotel, Intrusion, La Brute, Odyssey, Snake :
+1. Dossiers `Muxxu/Hotel`, `Muxxu/Intrusion`, `Muxxu/LaBrute`, `Muxxu/Odyssey`, `Muxxu/Snake`. Rien de tiers ni de
+   fans ; les photos d'Intrusion (banques d'images) sont montrées à la demande de l'utilisateur.
+2. Planches de Snake et d'Odyssey découpées d'après leur code (`Gfx.hx`, `mt.pix.Store.slice`), avec un fond blanc
+   ignoré mais gardé (§5.7) ; cartes de Snake nommées d'après `clients/com/data.ods` ; les 301 fruits de la planche
+   rattachés aux GIF du site, identiques au dessin près.
+3. `.tga` (Odyssey) montrés par une copie PNG ; `.gal` d'une seule image dédoublonnés avec leur PNG ; un clip au
+   rendu identique dans un autre SWF du jeu (SWF embarqué) devient un doublon : le chargeur de Mush (dans
+   `iso_deResources.swf`) et `quarterAnim` d'Alphabounce (`inv.swf` = `game.swf`) ne sont plus montrés deux fois.
+
+**2026-11-15** — Odyssey complet, planches entières, fichiers .fla :
+1. Odyssey : `all.swf`, `game.swf`, `all.mtswf` et `heroes.mtswf` rendus ; seuls 65 clips des `.mtswf`, différents
+   de ceux des autres SWF, s'ajoutent, le reste est noté comme présent à plusieurs endroits.
+2. Une planche dont des pixels dessinés ne sont dans aucun morceau est aussi montrée entière (§5.7, quatre planches).
+3. Nouvelle méthode pour les `.fla` (§5.9) : XFL lus et composés (`xfl.py`), binaires lus avec fla-decoder (MIT,
+   ajouté à `tools/` avec l'accord de l'utilisateur) ; rendu SVG commun ; bitmaps décodés au pixel près ; doublons
+   et symboles de même nom qu'un clip SWF signalés. 16 293 ressources en tout ; `gen/` environ 226 Mo.

@@ -41,6 +41,18 @@ MT.detailInfo = (item, $) => {
     if (x.blocks) rows.push(['Utilisée par', el('span', {}, x.blocks.map((b, i) => [i ? el('br') : '', b]))]);
     if (x.sheet_dup) rows.push(['Planche aussi dans', x.sheet_dup.join(', ')]);
   }
+  if (x.fla) {
+    rows.push(['Fichier .fla', `${x.fla} (${x.kind})`]);
+    if (x.symbol) rows.push(['Symbole', x.symbol]);
+    if (x.kind === 'binaire' && item.t === 'svg') {
+      rows.push(['Rendu', 'formes du symbole seules : les symboles qu’il place ne sont pas assemblés']);
+    }
+    if (x.same_swf) rows.push(['Même nom dans', x.same_swf.join(', ')]);
+  }
+  if (x.whole) {
+    rows.push(['Planche entière', `découpée en ${x.pieces} morceaux ; ${x.whole.toLocaleString('fr-FR')} pixels dessinés `
+      + 'hors des morceaux, d’où la planche telle quelle']);
+  }
   if (item.t === 'mdl') {
     rows.push(['Objets', x.objects.join(', ')]);
     rows.push(['Triangles', x.tris.toLocaleString('fr-FR')]);

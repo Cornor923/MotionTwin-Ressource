@@ -5,8 +5,9 @@ Motion Twin les a publiées dans son archive [motion-twin/WebGamesArchives](http
 (licence CC BY-NC-SA 4.0). Uniquement du matériel d'origine : rien de refait après coup (pas de remake, pas de création
 de fans), et les éléments tiers présents dans l'archive (images jQuery UI, logos de presse, logos de paiement) sont exclus.
 
-Jeux : **Mush** (2012), **Alphabounce** (2007), **Galaxy55** (alpha, 2012), **Kube** (Muxxu, 2010) et **Kingdom**
-(Muxxu, 2009).
+Jeux : **Mush** (2012), **Alphabounce** (2007), **Galaxy55** (alpha, 2012) et sept jeux Muxxu : **Kube** (2010),
+**Kingdom** (2009), **CroqueMotel** (2011), **Intrusion** (2009), **La Brute** (2010), **Odyssey** (2011) et
+**Snake** (2010).
 
 ![Clips Flash d'Alphabounce](docs/img/apercu.png)
 
@@ -14,11 +15,16 @@ Jeux : **Mush** (2012), **Alphabounce** (2007), **Galaxy55** (alpha, 2012), **Ku
 
 | Jeu | Images | GIF animés | Animations GraphicsGale | Clips Flash rendus | Formes vectorielles (SVG) | Sons |
 |---|---:|---:|---:|---:|---:|---:|
-| Mush | 1 337 | 22 | 50 | 2 | 3 | 0 |
-| Alphabounce | 200 | 1 | 0 | 188 | 916 | 0 |
-| Galaxy55 | 460 | 0 | 0 | 0 | 0 | 12 |
-| Kube | 291 | 2 | 0 | 12 | 27 | 0 |
-| Kingdom | 584 | 6 | 0 | 33 | 145 | 0 |
+| Mush | 1 337 | 22 | 50 | 1 | 3 | 0 |
+| Alphabounce | 229 | 1 | 0 | 187 | 1 679 | 0 |
+| Galaxy55 | 462 | 0 | 0 | 0 | 0 | 12 |
+| Kube | 291 | 2 | 0 | 12 | 35 | 0 |
+| Kingdom | 632 | 6 | 0 | 33 | 156 | 0 |
+| CroqueMotel | 467 | 0 | 0 | 84 | 318 | 0 |
+| Intrusion | 459 | 1 | 0 | 50 | 248 | 49 |
+| La Brute | 162 | 0 | 0 | 40 | 906 | 0 |
+| Odyssey | 640 | 1 | 0 | 381 | 6 277 | 0 |
+| Snake | 1 030 | 0 | 5 | 4 | 6 | 0 |
 
 Galaxy55 a aussi **3 modèles 3D** (cosmonaute, foreuse, porte ouverte) et **12 réglages de son LabChirp**. Ses planches
 (`texture.png`, `tiles.png`, `icons.png`) sont découpées en morceaux aux pixels d'origine, nommés d'après le tableur et le
@@ -26,7 +32,9 @@ code du jeu (250 tuiles de blocs) ; les repères de travail peints par Motion Tw
 des ressources. Seuls les fichiers publiés par Motion Twin sont montrés, pas les blocs ni les textures ajoutés depuis
 par les portages du jeu.
 
-Mush, Alphabounce, Kube et Kingdom n'ont pas de son dans l'archive officielle ; Galaxy55 a ses 12 bruitages (WAV).
+Seuls Galaxy55 (12 bruitages WAV) et Intrusion (49 sons MP3) ont des sons dans l'archive officielle.
+Les fichiers sources `.fla` sont lus aussi : symboles en SVG (composés entiers pour les `.fla` XFL d'Odyssey,
+formes propres de chaque symbole pour les `.fla` binaires), bitmaps ; voir docs/METHODE.md §5.9.
 Pour Kube, les captures de constructions de joueurs (événements de la communauté) ne sont pas montrées.
 
 La page permet de :
@@ -45,7 +53,7 @@ La page permet de :
 ## Afficher la page
 
 Il faut seulement Git et Python 3.11 ou plus. Le catalogue (`catalog.js`) et les fichiers dérivés (`gen/`) sont versionnés ;
-seules les images de l'archive Motion Twin sont à récupérer (sparse checkout des dossiers des jeux, environ 130 Mo) :
+seules les images de l'archive Motion Twin sont à récupérer (sparse checkout des dossiers des jeux, environ 300 Mo) :
 
 ```bash
 git clone https://github.com/Cornor923/MotionTwin-Ressource.git
@@ -82,6 +90,8 @@ tools/rebuild.py           chaîne complète (archive, FFDec, rendus, catalogue)
 tools/build_catalog.py     catalogue + gen/ (avec swf_items.py, gal.py, sheets.py, models.py, presets.py)
 tools/sheets.py            découpe des planches (pixels d'origine), galaxy55.py : noms des blocs et repères
 tools/models.py            modèles 3D (.bae, .md) : maillage, OBJ, aperçu (render3d.py)
+tools/fla_items.py         symboles, bitmaps et sons des .fla (xfl.py, fla_bin.py, fla_compose.py, vector_svg.py)
+tools/fla_decoder/         lecteur des .fla binaires repris de eddiemoore/fla-decoder (MIT), avec tools/olefile/ (BSD)
 tools/render_symbols.py    rendu des clips exportés d'un SWF
 tools/swf_diff.py          clips qui diffèrent entre deux versions d'un SWF
 tools/swf_inventory.py     inventaire rapide des balises d'un SWF (sons, bitmaps, symboles exportés…)

@@ -12,7 +12,8 @@ import swf_symbols
 
 def add_swf(game, entry, ctx):
     path = entry['file']
-    folder = os.path.splitext(path)[0].replace('/', '_')
+    stem, ext = os.path.splitext(path)
+    folder = (stem if ext.lower() == '.swf' else stem + '_' + ext[1:]).replace('/', '_')  # all.swf ≠ all.mtswf
     work = os.path.join(ctx.WORK, entry['work'])
     render = os.path.join(ctx.WORK, 'render', entry['work'])
     out = os.path.join(ctx.GEN, game.cfg['id'], 'swf', folder)
@@ -38,6 +39,11 @@ def add_swf(game, entry, ctx):
         if sid in primary and primary[sid][1] == h:
             primary[sid][0].setdefault('dup', []).append(ref)
             continue
+        same = game.__dict__.setdefault('clip_seen', {}).get(h)
+        if same is not None and same['x']['swf'] != path:  # même rendu dans un autre SWF du jeu (SWF embarqué…)
+            same.setdefault('dup', []).append(ref)
+            same['k'] = sorted(set(same['k']) | set(ctx.words(s['name'])))
+            continue
         thumb = first_visible(render, s)
         if not thumb.getchannel('A').getbbox():
             continue  # clip entièrement vide (code AS3, repère invisible)
@@ -55,6 +61,7 @@ def add_swf(game, entry, ctx):
         if entry.get('also'):
             item['dup'] = ['%s#%d' % (a, sid) for a in entry['also']]
         mine[sid] = (item, h)
+        game.clip_seen.setdefault(h, item)
         game.add(item)
     for err in meta['errors']:
         print('  clip non rendu', path, err)

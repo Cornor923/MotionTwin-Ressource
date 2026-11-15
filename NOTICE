@@ -4,7 +4,8 @@ Ressources d'origine : (c) Motion Twin, CC BY-NC-SA 4.0
 https://creativecommons.org/licenses/by-nc-sa/4.0/
 Source : https://github.com/motion-twin/WebGamesArchives
 (commit 8b8e2f202e1fa8cdf1d96e4140dad0cba458054e, dossiers Mush/, Alphabounce/, Galaxy55/,
-Muxxu/Kube/ et Muxxu/Kingdom/)
+Muxxu/Kube/, Muxxu/Kingdom/, Muxxu/Hotel/, Muxxu/Intrusion/, Muxxu/LaBrute/, Muxxu/Odyssey/,
+Muxxu/Snake/)
 
 - Les fichiers de l'archive elle-même ne sont pas copiés dans ce dépôt : `python tools/rebuild.py --fetch` les récupère
   dans sources/ (ignoré par git).
@@ -19,6 +20,10 @@ mêmes conditions. Ce projet n'est ni affilié à Motion Twin ni approuvé par M
 Exception : tools/flash/ (swfdump.py, swfrender.py, swffilters.py, swftext.py) est repris sans modification de
 https://github.com/eternaltwin/kadokadeo (.opencode/skills/flash-port/scripts/tools, commit 2d12654c)
 et reste sous GNU AGPL-3.0 (texte complet dans tools/flash/LICENSE.md).
+
+Exception : tools/fla_decoder/ est repris sans modification de https://github.com/eddiemoore/fla-decoder
+(commit 1d368cbb, lecteur des .fla binaires d'avant CS5), sous licence MIT (tools/fla_decoder/LICENSE et NOTICE) ;
+tools/olefile/ est olefile 0.47 (https://github.com/decalage2/olefile), sous licence BSD (tools/olefile/LICENSE.txt).
 
 Outils externes utilisés pour reconstruire le catalogue, non inclus : JPEXS Free Flash Decompiler (FFDec, GPL-3.0)
 et un environnement Java (JRE 21).

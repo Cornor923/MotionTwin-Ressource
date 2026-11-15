@@ -86,3 +86,14 @@ def compose(g, frame):
 def frames(path):
     g = read(path)
     return [compose(g, f) for f in g['frames']], [f['delay'] for f in g['frames']]
+
+
+def save_sheet(frames, path):
+    w, h = frames[0].size
+    cols = max(1, min(len(frames), round((len(frames) * h / w) ** 0.5) or 1))
+    rows = -(-len(frames) // cols)
+    sheet = Image.new('RGBA', (cols * w, rows * h))
+    for i, f in enumerate(frames):
+        sheet.paste(f, ((i % cols) * w, (i // cols) * h))
+    sheet.save(path, optimize=True)
+    return cols

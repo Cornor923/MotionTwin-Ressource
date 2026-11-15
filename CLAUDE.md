@@ -50,3 +50,6 @@ Après une reconstruction, versionner `catalog.js` et `gen/` avec `games.json` (
 - `git grep` ou `ls-tree -l` sur un dossier de l'archive hors sparse checkout télécharge ses blobs (plusieurs minutes) :
   ajouter le dossier au sparse checkout d'abord.
 - Modèles `.bae` : COLLADA binaire décodé à la main dans `models.py` (aucun lecteur dans l'archive).
+- `.fla` : XFL lus par `xfl.py` (symboles composés) ; binaires par `tools/fla_decoder/` (MIT, ne pas modifier,
+  adapter dans `fla_bin.py`) : formes propres seulement, ordre des indices de style corrigé (trait, remplissage,
+  remplissage). Ne jamais lancer `build_catalog.py` derrière `| grep | head` : il vide `gen/` d'abord.

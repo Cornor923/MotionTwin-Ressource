@@ -3,7 +3,8 @@
 usage : python build_catalog.py            (depuis n'importe où ; MT_WORK = dossier des exports FFDec et rendus)
 Sources : fichiers de l'archive Motion Twin (référencés sur place), animations GraphicsGale décodées, clips Flash
 rendus par render_symbols.py, formes SVG / bitmaps / sons exportés par FFDec (rebuild.py), copiés dans gen/, morceaux
-des planches découpées (sheets.py), modèles 3D (models.py), réglages de son LabChirp (.lch, avec le son du même nom).
+des planches découpées (sheets.py), modèles 3D (models.py), réglages de son LabChirp (.lch, avec le son du même nom),
+symboles, bitmaps et sons des .fla (fla_items.py).
 """
 import fnmatch, hashlib, json, os, re, shutil, subprocess, sys, time
 import numpy as np
@@ -13,11 +14,11 @@ HERE = os.path.dirname(os.path.abspath(__file__))
 ROOT = os.path.dirname(HERE)
 sys.path.insert(0, HERE)
 sys.path.insert(0, os.path.join(HERE, 'flash'))
-import gal, models, presets, sheets, swf_items
+import fla_items, gal, models, presets, sheets, swf_items
 
 WORK = os.environ.get('MT_WORK', os.path.join(os.path.expanduser('~'), 'motiontwin-assets-work'))
 GEN = os.path.join(ROOT, 'gen')
-RASTER = {'.png', '.jpg', '.jpeg', '.gif', '.bmp', '.ico', '.webp'}
+RASTER = {'.png', '.jpg', '.jpeg', '.gif', '.bmp', '.ico', '.webp', '.tga'}  # .tga : copie PNG dans gen/
 AUDIO = {'.mp3', '.wav', '.ogg'}
 
 
@@ -50,17 +51,6 @@ def words(*parts):
         out.append(str(p))
         out += [w for w in re.split(r'[^0-9A-Za-zÀ-ÿ]+|(?<=[a-z])(?=[A-Z])', str(p)) if w]
     return sorted({w.lower() for w in out})
-
-
-def save_sheet(frames, path):
-    w, h = frames[0].size
-    cols = max(1, min(len(frames), round((len(frames) * h / w) ** 0.5) or 1))
-    rows = -(-len(frames) // cols)
-    sheet = Image.new('RGBA', (cols * w, rows * h))
-    for i, f in enumerate(frames):
-        sheet.paste(f, ((i % cols) * w, (i // cols) * h))
-    sheet.save(path, optimize=True)
-    return cols
 
 
 class Game:
@@ -96,7 +86,7 @@ class Game:
         own = {e['file'] for e in self.cfg.get('sheets', []) + self.cfg.get('models', [])}  # traités à part
         for top in self.cfg['scan']:
             for dirpath, _, files in os.walk(os.path.join(self.base, top)):
-                for fn in sorted(files):
+                for fn in sorted(files, key=lambda f: (f.lower().endswith('.gal'), f)):  # .gal après son PNG
                     full = os.path.join(dirpath, fn)
                     path = os.path.relpath(full, self.base).replace(os.sep, '/')
                     ext = os.path.splitext(fn)[1].lower()
@@ -127,6 +117,11 @@ class Game:
         t = 'gif' if n > 1 else 'img'
         item = dict(i=path, t=t, n=os.path.splitext(os.path.basename(path))[0], s=rel(full), p=path, w=w, h=h,
                     f=n, z=os.path.getsize(full), fmt=os.path.splitext(path)[1][1:].upper(), u=self.source_url(path))
+        if path.lower().endswith('.tga'):  # le navigateur ne lit pas le TGA : copie PNG, fichier d'origine en `o`
+            out = os.path.join(GEN, self.cfg['id'], 'conv', path + '.png')
+            os.makedirs(os.path.dirname(out), exist_ok=True)
+            im.convert('RGBA').save(out, optimize=True)
+            item.update(s=rel(out), o=rel(full))
         if ph not in self.by_hash:
             self.by_size.setdefault((w, h), []).append((item, full))
         self.add(item, ph)
@@ -148,10 +143,10 @@ class Game:
                     w=frames[0].width, h=frames[0].height, f=len(frames), z=os.path.getsize(full), fmt='GAL',
                     u=self.source_url(path), px=1, o=rel(full))
         if len(frames) > 1:
-            item['cols'] = save_sheet(frames, out + '_sheet.png')
+            item['cols'] = gal.save_sheet(frames, out + '_sheet.png')
             item['sh'] = rel(out + '_sheet.png')
             item['d'] = delays
-        self.add(item)
+        self.add(item, pixel_hash(frames[0]) if len(frames) == 1 else None)
 
 
 def git_commit(path):
@@ -170,12 +165,14 @@ def main():
     for gcfg in cfg['games']:
         g = Game(gcfg, archive, cfg['repo'])
         print('==', gcfg['name'])
+        sheets.register(g, sys.modules[__name__])
         g.scan()
         presets.pair(g)
         sheets.add_sheets(g, sys.modules[__name__])
         models.add_models(g, sys.modules[__name__])
         for entry in gcfg.get('swf', []):
             swf_items.add_swf(g, entry, sys.modules[__name__])
+        fla_items.add_fla(g, sys.modules[__name__])
         sheets.finish(g)
         for it in g.items:
             it.setdefault('k', words(it['n']))
