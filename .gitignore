@@ -1,0 +1,8 @@
+# Archive Motion Twin (sparse checkout, récupérée par tools/rebuild.py --fetch)
+sources/
+# Python
+__pycache__/
+*.pyc
+.venv/
+# Outils locaux (FFDec, JRE) : voir docs/METHODE.md
+.tools/

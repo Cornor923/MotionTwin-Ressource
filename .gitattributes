@@ -1,0 +1,9 @@
+* text=auto eol=lf
+*.png binary
+*.gif binary
+*.jpg binary
+*.ico binary
+*.mp3 binary
+*.wav binary
+# Fichiers générés (exports FFDec compris) gardés octet pour octet
+gen/** -text

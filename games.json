@@ -1,0 +1,114 @@
+{
+  "archive": "sources/WebGamesArchives",
+  "repo": "https://github.com/motion-twin/WebGamesArchives",
+  "archive_commit": "8b8e2f202e1fa8cdf1d96e4140dad0cba458054e",
+  "license": {
+    "name": "CC BY-NC-SA 4.0",
+    "url": "https://creativecommons.org/licenses/by-nc-sa/4.0/deed.fr",
+    "attribution": "© Motion Twin – Motion Twin Web Games Archives, licence CC BY-NC-SA 4.0"
+  },
+  "games": [
+    {
+      "id": "mush",
+      "name": "Mush",
+      "year": 2012,
+      "folder": "Mush",
+      "summary": "Jeu de survie spatial en équipe sur le vaisseau Daedalus.",
+      "notes": [
+        "Aucun son dans l'archive officielle de Mush.",
+        "Animations GraphicsGale (.gal) décodées image par image ; les PNG exportés par Motion Twin sont listés à côté.",
+        "Exclus : images jQuery UI et logos de sites de presse (dossier social), qui ne sont pas de Motion Twin."
+      ],
+      "scan": ["www", "clients/iso/gfx"],
+      "exclude": [
+        "www/img/jquery/*",
+        "www/img/social/gam*", "www/img/social/indiestatik.png", "www/img/social/jeux*",
+        "www/img/social/logo*", "www/img/social/massively.jpg", "www/img/social/n-gamz.png",
+        "www/img/social/rockpapershotgun3.*", "www/img/social/rom-station.png",
+        "www/img/social/selectbutton.png", "www/img/social/usGamer.jpg"
+      ],
+      "swf": [
+        {"file": "clients/iso/obj/iso_deResources.swf", "work": "mush/iso_resources", "also": ["clients/iso/obj/iso_testResources.swf"]},
+        {"file": "clients/iso/gfx/loading.swf", "work": "mush/loading"}
+      ],
+      "collections": {
+        "www/img/art/char/fade": "Illustrations · personnages (fondu)",
+        "www/img/art/char": "Illustrations · personnages",
+        "www/img/art/large": "Illustrations · grand format",
+        "www/img/art/site/rooms": "Illustrations · salles du vaisseau",
+        "www/img/art": "Illustrations",
+        "www/img/cards/projects": "Cartes · projets",
+        "www/img/cards/research": "Cartes · recherches",
+        "www/img/cards/skin": "Cartes · apparences",
+        "www/img/cards/vanity": "Cartes · cosmétiques",
+        "www/img/cards": "Cartes",
+        "www/img/design": "Site · habillage",
+        "www/img/fx": "Site · effets",
+        "www/img/icons/astro": "Icônes · astronavigation",
+        "www/img/icons/bases": "Icônes · bases rebelles",
+        "www/img/icons/grp": "Icônes · groupes",
+        "www/img/icons/items": "Icônes · objets",
+        "www/img/icons/portraits/mini": "Icônes · mini-portraits",
+        "www/img/icons/portraits": "Icônes · portraits",
+        "www/img/icons/skills": "Icônes · compétences",
+        "www/img/icons/ui/status": "Icônes · statuts",
+        "www/img/icons/ui": "Icônes · interface",
+        "www/img/icons": "Icônes",
+        "www/img/loc": "Site · logos localisés",
+        "www/img/news": "Site · nouvelles",
+        "www/img/social": "Promotion",
+        "www/img/teasing": "Teasing",
+        "www": "Site",
+        "clients/iso/gfx/anim/perso": "Jeu · personnages animés",
+        "clients/iso/gfx/anim": "Jeu · animations",
+        "clients/iso/gfx/planets": "Jeu · planètes",
+        "clients/iso/gfx": "Jeu · planches du client isométrique",
+        "clients/iso/obj/iso_deResources.swf": "Jeu · ressources du client (SWF)",
+        "clients/iso/gfx/loading.swf": "Jeu · écran de chargement (SWF)"
+      }
+    },
+    {
+      "id": "alphabounce",
+      "name": "Alphabounce",
+      "year": 2007,
+      "folder": "Alphabounce",
+      "summary": "Casse-briques d'exploration spatiale : minage, missions et planètes.",
+      "notes": [
+        "Aucun son dans l'archive officielle d'Alphabounce.",
+        "Graphismes vectoriels rendus depuis les SWF (2 px par pixel Flash) ; formes disponibles en SVG.",
+        "Les .fla (Flash 8) ne sont pas lisibles : leur contenu est couvert par les SWF compilés.",
+        "Champs texte dynamiques non rendus (remplis par le code du jeu).",
+        "Exclus : bannières de paiement contenant les logos PayPal / Visa / MasterCard."
+      ],
+      "scan": ["web/img", "client/bmp", "design/fla"],
+      "exclude": ["web/img/bank/cat_cb*", "**/Thumbs.db"],
+      "swf": [
+        {"file": "web/swf/game.swf", "work": "alphabounce/game"},
+        {"file": "client/swf/gfx.swf", "work": "alphabounce/gfx", "variant_of": "web/swf/game.swf"},
+        {"file": "web/swf/inv.swf", "work": "alphabounce/inv", "also": ["design/fla/inventaire/swf/client.swf"]},
+        {"file": "design/fla/inventaire/swf/gfx.swf", "work": "alphabounce/inv_gfx", "variant_of": "web/swf/inv.swf"},
+        {"file": "web/swf/planet.swf", "work": "alphabounce/planet"},
+        {"file": "design/fla/design.swf", "work": "alphabounce/design"}
+      ],
+      "collections": {
+        "web/img/bank": "Site · banque",
+        "web/img/db": "Site · divers",
+        "web/img/design/earth": "Site · habillage (Terre)",
+        "web/img/design/forum": "Site · forum",
+        "web/img/design/ie6": "Site · habillage (IE6)",
+        "web/img/design": "Site · habillage",
+        "web/img/forum": "Site · smileys du forum",
+        "web/img/icons": "Icônes",
+        "web/img/vigs": "Vignettes",
+        "client/bmp": "Jeu · bitmaps",
+        "design/fla": "Maquette du site",
+        "web/swf/game.swf": "Jeu (game.swf)",
+        "client/swf/gfx.swf": "Jeu · version de travail (client/swf/gfx.swf)",
+        "web/swf/inv.swf": "Inventaire (inv.swf)",
+        "design/fla/inventaire/swf/gfx.swf": "Inventaire · version de travail (gfx.swf)",
+        "web/swf/planet.swf": "Carte des planètes (planet.swf)",
+        "design/fla/design.swf": "Maquette du site (design.swf)"
+      }
+    }
+  ]
+}

@@ -1,0 +1,124 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Ressources Motion Twin</title>
+<link rel="stylesheet" href="viewer/style.css">
+</head>
+<body data-bg="checker">
+<header class="top">
+  <button class="icon-btn only-mobile" id="toggle-side" aria-label="Filtres">☰</button>
+  <div class="brand">
+    <h1>Ressources Motion Twin</h1>
+    <p id="source-line"></p>
+  </div>
+  <label class="search">
+    <span aria-hidden="true">⌕</span>
+    <input id="q" type="search" placeholder="Rechercher un nom, un chemin, un symbole Flash…" autocomplete="off">
+  </label>
+</header>
+
+<div class="layout">
+  <div class="scrim" id="scrim"></div>
+  <aside class="side" id="side">
+    <button class="icon-btn only-mobile side-close" id="close-side">Fermer ✕</button>
+    <section>
+      <h2>Jeux</h2>
+      <div id="f-games" class="chips"></div>
+      <div id="f-game-info" class="game-info"></div>
+    </section>
+    <section>
+      <h2>Types</h2>
+      <div id="f-types" class="checks"></div>
+    </section>
+    <section>
+      <h2>Collections</h2>
+      <div id="f-colls" class="colls"></div>
+    </section>
+    <section class="licence" id="licence"></section>
+  </aside>
+
+  <main>
+    <div class="toolbar">
+      <span id="count" class="count"></span>
+      <div class="tools">
+        <label>Tri
+          <select id="sort">
+            <option value="coll">Collection</option>
+            <option value="name">Nom A → Z</option>
+            <option value="name-desc">Nom Z → A</option>
+            <option value="area-desc">Plus grandes</option>
+            <option value="area-asc">Plus petites</option>
+            <option value="frames-desc">Plus d'images d'animation</option>
+            <option value="weight-desc">Fichiers les plus lourds</option>
+          </select>
+        </label>
+        <label>Taille <input id="thumb" type="range" min="64" max="320" step="8" value="136"></label>
+        <div class="seg" id="bg" role="group" aria-label="Fond">
+          <button data-bg="checker" title="Damier">▦</button>
+          <button data-bg="dark" title="Fond sombre">■</button>
+          <button data-bg="light" title="Fond clair">□</button>
+        </div>
+        <label class="toggle"><input type="checkbox" id="anim-only"> Animés</label>
+      </div>
+    </div>
+    <div id="grid" class="grid"></div>
+    <div id="sentinel" class="sentinel"></div>
+    <p id="empty" class="empty" hidden>Aucune ressource ne correspond.</p>
+  </main>
+</div>
+
+<dialog id="detail" class="detail">
+  <div class="stage-wrap">
+    <div class="stage-bar">
+      <div class="seg" id="zoom">
+        <button data-z="fit">Ajuster</button>
+        <button data-z="1">1×</button>
+        <button data-z="2">2×</button>
+        <button data-z="4">4×</button>
+        <button data-z="8">8×</button>
+      </div>
+      <label class="toggle"><input type="checkbox" id="pixelated" checked> Pixels nets</label>
+      <div class="seg" id="dbg">
+        <button data-bg="checker" title="Damier">▦</button>
+        <button data-bg="dark" title="Fond sombre">■</button>
+        <button data-bg="light" title="Fond clair">□</button>
+      </div>
+    </div>
+    <div class="stage" id="stage"></div>
+    <div class="anim-bar" id="anim-bar" hidden>
+      <button class="icon-btn" id="a-prev" title="Image précédente (,)">⏮</button>
+      <button class="icon-btn" id="a-play" title="Lecture / pause (espace)">⏸</button>
+      <button class="icon-btn" id="a-next" title="Image suivante (.)">⏭</button>
+      <input type="range" id="a-frame" min="0" value="0">
+      <span id="a-label" class="mono"></span>
+      <label>Vitesse <select id="a-speed"><option>0.25</option><option>0.5</option><option selected>1</option><option>2</option></select></label>
+    </div>
+  </div>
+  <aside class="info">
+    <div class="info-head">
+      <button class="icon-btn" id="d-prev" title="Ressource précédente (←)">‹</button>
+      <button class="icon-btn" id="d-next" title="Ressource suivante (→)">›</button>
+      <button class="icon-btn" id="d-close" title="Fermer (Échap)">✕</button>
+    </div>
+    <h2 id="d-name"></h2>
+    <p id="d-badges" class="badges"></p>
+    <dl id="d-meta"></dl>
+    <div id="d-actions" class="actions"></div>
+    <div id="d-dups"></div>
+  </aside>
+</dialog>
+
+<div id="toast" class="toast" hidden></div>
+
+<script src="catalog.js"></script>
+<script src="viewer/util.js"></script>
+<script src="viewer/player.js"></script>
+<script src="viewer/filters.js"></script>
+<script src="viewer/grid.js"></script>
+<script src="viewer/detail.js"></script>
+<script src="viewer/detail-info.js"></script>
+<script src="viewer/app.js"></script>
+</body>
+</html>
