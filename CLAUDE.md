@@ -50,6 +50,12 @@ Après une reconstruction, versionner `catalog.js` et `gen/` avec `games.json` (
 - `git grep` ou `ls-tree -l` sur un dossier de l'archive hors sparse checkout télécharge ses blobs (plusieurs minutes) :
   ajouter le dossier au sparse checkout d'abord.
 - Modèles `.bae` : COLLADA binaire décodé à la main dans `models.py` (aucun lecteur dans l'archive).
+- Planches d'animation en WebP sans perte (`compact.py`, cache `MT_WORK/webp/`) : après de nouveaux rendus, la
+  première reconstruction encode les planches neuves (méthode 6, lente sur les grands décors).
+- `variant_of` : si la version de travail redessine des formes (`swf_diff.py --shapes`), `rebuild.py` lui fait ses
+  propres exports FFDec (sinon les formes de la version principale seraient prises par erreur).
+- Plateformes (CaféJeux, KadoKado) : un seul jeu dans games.json, ses jeux dans `parts` (chemins), `fetch` pour ne
+  récupérer qu'une partie du dossier (KadoKado : `Games/Alphabounce` ; ajouter les autres jeux là quand on les intègre).
 - Découpes lues dans le code d'un jeu : `slices_from` de games.json -> registre `SLICES` de `sheets.py` (Mush :
   `mush.py`, tiles.xml et Data.hx/Data.ods ; Galaxy55 : `galaxy55.py`).
 - `.fla` : XFL lus par `xfl.py` (symboles composés) ; binaires par `tools/fla_decoder/` (MIT, ne pas modifier,

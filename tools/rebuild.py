@@ -47,7 +47,8 @@ def archive(cfg):
     commit = cfg.get('archive_commit')
     if not os.path.isdir(path):
         run('git', 'clone', '--filter=blob:none', '--depth', '1', '--sparse', cfg['repo'] + '.git', path)
-    run('git', '-C', path, 'sparse-checkout', 'set', *[g['folder'] for g in cfg['games']])
+    folders = [f for g in cfg['games'] for f in g.get('fetch', [g['folder']])]  # `fetch` : sous-dossiers seulement
+    run('git', '-C', path, 'sparse-checkout', 'set', *folders)
     head = subprocess.run(['git', '-C', path, 'rev-parse', 'HEAD'], capture_output=True, text=True).stdout.strip()
     if commit and head != commit:  # l'archive a bougé depuis la construction du catalogue : revenir au commit épinglé
         run('git', '-C', path, 'fetch', '--depth', '1', '--filter=blob:none', 'origin', commit)
@@ -84,9 +85,15 @@ def prepare_swf(game_dir, entry, entries):
         pwork = os.path.join(WORK, primary['work'])
         os.makedirs(work, exist_ok=True)
         shutil.copy(swf, os.path.join(work, 'src.swf'))
-        for sub in ('shp4', 'svg'):  # mêmes formes que la version principale
-            if not os.path.isdir(os.path.join(work, sub)):
-                shutil.copytree(os.path.join(pwork, sub), os.path.join(work, sub))
+        redrawn = subprocess.run(PY + [os.path.join(HERE, 'swf_diff.py'), '--shapes', os.path.join(pwork, 'src.swf'), swf],
+                                 check=True, capture_output=True, text=True).stdout.strip()
+        if redrawn:  # formes redessinées ou renumérotées : exports propres à cette version
+            if not os.path.isdir(os.path.join(work, 'shp4')):
+                ffdec_export(swf, work)
+        else:
+            for sub in ('shp4', 'svg'):  # mêmes formes que la version principale
+                if not os.path.isdir(os.path.join(work, sub)):
+                    shutil.copytree(os.path.join(pwork, sub), os.path.join(work, sub))
         ids = subprocess.run(PY + [os.path.join(HERE, 'swf_diff.py'), os.path.join(pwork, 'src.swf'), swf],
                              check=True, capture_output=True, text=True).stdout.strip()
         if ids:

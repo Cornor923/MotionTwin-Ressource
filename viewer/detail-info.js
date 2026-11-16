@@ -5,7 +5,7 @@ MT.detailInfo = (item, $) => {
   $('d-name').textContent = item.n;
   $('d-badges').replaceChildren(
     el('span', { class: `badge t-${item.t}`, text: MT.TYPES[item.t].label }),
-    el('span', { class: 'badge plain', text: `${game.name} (${game.year})` }));
+    el('span', { class: 'badge plain', text: `${MT.gameName(item.g, item.sg)} (${game.year})` }));
 
   const rows = [['Collection', item.c]];
   if (item.w) {
@@ -86,7 +86,9 @@ MT.detailInfo = (item, $) => {
     }
   }
   if (item.sh) {
-    actions.push(el('a', { href: item.sh, download: MT.fileName(item, '_planche.png'), text: 'Planche d\'animation' }));
+    const sext = item.sh.slice(item.sh.lastIndexOf('.'));
+    actions.push(el('a', { href: item.sh, download: MT.fileName(item, `_planche${sext}`),
+      text: `Planche d'animation (${sext.slice(1).toUpperCase()})` }));
     actions.push(el('button', { text: 'Image courante (PNG)', onclick: () => MT.saveFrame(item) }));
   }
   actions.push(el('a', { href: item.s, target: '_blank', rel: 'noopener', text: 'Ouvrir' }));

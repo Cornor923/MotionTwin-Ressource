@@ -14,7 +14,7 @@ HERE = os.path.dirname(os.path.abspath(__file__))
 ROOT = os.path.dirname(HERE)
 sys.path.insert(0, HERE)
 sys.path.insert(0, os.path.join(HERE, 'flash'))
-import fla_items, gal, models, presets, sheets, swf_items
+import compact, fla_items, gal, models, parts, presets, sheets, swf_items
 
 WORK = os.environ.get('MT_WORK', os.path.join(os.path.expanduser('~'), 'motiontwin-assets-work'))
 GEN = os.path.join(ROOT, 'gen')
@@ -144,7 +144,10 @@ class Game:
                     u=self.source_url(path), px=1, o=rel(full))
         if len(frames) > 1:
             item['cols'] = gal.save_sheet(frames, out + '_sheet.png')
-            item['sh'] = rel(out + '_sheet.png')
+            sheet = compact.sheet(out + '_sheet.png', out + '_sheet', WORK)
+            if sheet != out + '_sheet.png':
+                os.remove(out + '_sheet.png')
+            item['sh'] = rel(sheet)
             item['d'] = delays
         self.add(item, pixel_hash(frames[0]) if len(frames) == 1 else None)
 
@@ -176,13 +179,13 @@ def main():
         sheets.finish(g)
         for it in g.items:
             it.setdefault('k', words(it['n']))
+        parts.assign(gcfg, g.items)
         games.append(dict(id=gcfg['id'], name=gcfg['name'], year=gcfg['year'], folder=gcfg['folder'],
                           summary=gcfg['summary'], notes=gcfg.get('notes', []), count=len(g.items),
-                          swf=[dict(file=e['file'], also=e.get('also', [])) for e in gcfg.get('swf', [])]))
+                          swf=[dict(file=e['file'], also=e.get('also', [])) for e in gcfg.get('swf', [])],
+                          **parts.summary(gcfg, g.items)))
         items += g.items
-        kinds = {}
-        for it in g.items:
-            kinds[it['t']] = kinds.get(it['t'], 0) + 1
+        kinds = {t: sum(it['t'] == t for it in g.items) for t in dict.fromkeys(it['t'] for it in g.items)}
         print('  %d ressources %s' % (len(g.items), kinds))
     catalog = dict(generated=time.strftime('%Y-%m-%d'), repo=cfg['repo'], commit=git_commit(archive),
                    license=cfg['license'], games=games, items=items)

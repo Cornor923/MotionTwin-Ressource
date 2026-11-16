@@ -32,7 +32,7 @@ MT.Grid = class {
         const count = this.list.filter((x) => MT.collKey(x) === key).length;
         frag.append(MT.el('div', { class: 'group' },
           MT.el('h3', { text: item.c }),
-          MT.el('span', { text: `${MT.gameName(item.g)} · ${count} ressource${count > 1 ? 's' : ''}` })));
+          MT.el('span', { text: `${MT.gameName(item.g, item.sg)} · ${count} ressource${count > 1 ? 's' : ''}` })));
       }
       frag.append(this.card(item, i));
     }

@@ -155,8 +155,9 @@ Chaque **symbole exporté** (nom de liaison Flash) qui est un clip est rendu ave
   identifiants et met `symbols.json` à jour.
 
 **Versions de travail** (`variant_of`) : `swf_diff.py` compare les balises (scripts ignorés) et liste les symboles
-exportés dont le clip ou un caractère affiché diffère ; seuls ceux-là sont rendus (avec les formes de la version
-principale, identiques). Au catalogue, un rendu identique au pixel près à celui de la version principale devient un
+exportés dont le clip ou un caractère affiché diffère ; seuls ceux-là sont rendus, avec les formes de la version
+principale quand elles sont identiques. Si la version de travail redessine ou renumérote des formes
+(`swf_diff.py --shapes`, cas de `desert.swf` de Hordes), elle a ses propres exports FFDec. Au catalogue, un rendu identique au pixel près à celui de la version principale devient un
 doublon. Résultat pour Alphabounce : les 33 + 6 clips différents donnent des rendus identiques (seule la structure
 interne change), donc aucune ressource en plus, mais les fiches indiquent ces copies.
 
@@ -183,6 +184,10 @@ fichier (les deux sont montrés). Chaque animation garde ses délais, sa planche
 - **fichiers de l'archive** sous les dossiers `scan` (moins `exclude`) : images (png, jpg, gif, bmp, ico, webp),
   SVG, sons (mp3, wav, ogg) et `.gal` ; les images sont référencées sur place (`sources/…`), rien n'est copié ;
 - **SWF** : clips rendus, formes SVG, bitmaps et sons exportés, copiés dans `gen/<jeu>/swf/<chemin du SWF>/` ;
+- **planches d'animation** (clips et `.gal`) : en WebP sans perte quand il est plus léger que le PNG (`compact.py`).
+  Le WebP est relu et comparé au PNG pixel à pixel, couleurs sous les pixels transparents comprises (`exact`) ; au
+  moindre écart, ou s'il est plus lourd, le PNG reste. L'encodage (méthode 6) est lent : il est gardé dans
+  `MT_WORK/webp/<sha1 du PNG>` et une reconstruction ne réencode que les planches nouvelles ;
 - **planches** (§5.7) dans `gen/<jeu>/sheets/`, **modèles 3D** et réglages LabChirp (§5.8).
 
 Types : `img` (image), `gif` (GIF animé), `anim` (GraphicsGale), `clip` (clip Flash rendu), `svg` (forme vectorielle),
@@ -321,6 +326,10 @@ celui-ci (« Même nom dans »), sans être fusionné, les deux rendus étant di
 | `detail.js`, `detail-info.js` | fiche : zoom, lecture, clavier (← → ressource, espace, `,` `.` image), infos, téléchargements |
 | `app.js` | barre latérale, barre d'outils, liens |
 
+Une plateforme qui regroupe plusieurs jeux (`parts` de games.json : CaféJeux, KadoKado) déplie ses jeux sous sa ligne
+quand on la choisit ; chaque ressource porte son jeu (`sg`, plus long préfixe de chemin, `parts.py`), l'adresse le
+garde (`#jeu=cafejeux&sous=anticorps`) et la fiche l'affiche (« CaféJeux · Anticorp's »).
+
 Miniatures : agrandissement entier en pixels nets pour les petites images matricielles, lissé pour le reste. Thèmes
 clair et sombre selon le système ; mise en page mobile avec volet de filtres.
 
@@ -358,14 +367,16 @@ rendu » ; la solution de kadokadeo est de faire rendre ce clip image par image 
 | `games[].sheets[]` | planches à découper : `file`, `slices` (`name`, `rect`, `cols`, `rows`, `names`), `grid`, `cells`, `marks`, `background` (§5.7) |
 | `games[].models[]` | modèles 3D : `file`, et pour un `.md` `texture` + `cell` (§5.8) |
 | `games[].collections` | préfixe de chemin → nom de collection |
+| `games[].parts`, `root_part` | jeux d'une plateforme (`id`, `name`, `path`) ; nom des ressources hors de ces jeux |
+| `games[].fetch` | sous-dossiers à récupérer au lieu de tout `folder` (KadoKado : `KadoKado/Games/Alphabounce`) |
 
 ## 8. `catalog.js`
 
 `window.MT_CATALOG = { generated, repo, commit, license, games[], items[] }`. Champs d'une ressource : `i` identifiant
 (`<jeu>:<chemin>[#…]`), `g` jeu, `c` collection, `t` type, `n` nom, `s` image affichée, `p` chemin dans l'archive (`#id`,
 `#shapeN`, `#bitmapN`, `#soundN` dans un SWF), `u` lien GitHub, `w` `h` taille (clips : pixels du rendu ×2), `f` nombre
-d'images, `sh` planche, `cols` colonnes de la planche, `fps` cadence, `d` délais en ms (`.gal`), `fmt` format,
-`z` poids, `k` mots-clés, `dup` autres emplacements, `o` fichier d'origine (`.gal`), `vec` vectoriel, `px` pixel art,
+d'images, `sh` planche (WebP ou PNG), `cols` colonnes de la planche, `fps` cadence, `d` délais en ms (`.gal`), `fmt` format,
+`z` poids, `k` mots-clés, `sg` jeu d'une plateforme, `dup` autres emplacements, `o` fichier d'origine (`.gal`), `vec` vectoriel, `px` pixel art,
 `x` infos SWF (`swf`, `id`, `timeline`, `labels`, `owners`, `same`), de planche (`sheet`, `rect`, `cell`, `slice`,
 `blocks`, `sheet_dup`), de modèle (`objects`, `tris`, `mats`, `up`, `mesh`, `obj`, `texture`, `script`) ou de réglage
 (`header`, `snd`, `snd_name`, `snd_id`).
@@ -377,10 +388,15 @@ d'images, `sh` planche, `cols` colonnes de la planche, `fps` cadence, `d` délai
   IG Magazine, Canard PC, Massively, N-Gamz, Rock Paper Shotgun, RomStation, Selectbutton, USgamer). Gardés : l'image
   Facebook, la boîte et les captures du jeu.
 - Alphabounce : `web/img/bank/cat_cb*` (bannières de paiement avec les logos PayPal, Visa et MasterCard).
+  `web/swf/adtk.swf` n'a que du code (aucun dessin).
 - Kube : `gfx/events/*` (56 captures de constructions de joueurs pour des événements de la communauté, dont des
   personnages d'autres sociétés), dossier non parcouru.
 - Odyssey `fla/client/gfx/icons.gal` et Snake `clients/playground/gfx/src/elements.gal` : sources GraphicsGale des
   planches `icons.png` et `elements.png`, déjà découpées (elles les montreraient en entier).
+- CaféJeux : rien d'exclu. Quelques accessoires du café, dessinés par Motion Twin, évoquent des marques ou des
+  œuvres (`boite_chocapic`, `boite_nesquick`, `flipper_StarWars`, `toile_joconde`, `toile_vanGogh`) sans logo
+  lisible : gardés. `games/trigolo/gfx_ani/bg01.RIF` et `PREVIEW.PIX` (fichiers Corel Painter) ne sont pas lus ;
+  `bg01.TGA` en est l'export.
 - Partout : polices embarquées, `Thumbs.db`, tableurs de données.
 
 ## 10. Limites connues
@@ -418,7 +434,11 @@ d'images, `sh` planche, `cols` colonnes de la planche, `fps` cadence, `d` délai
 
 Volumes (première version, 2 jeux) : `catalog.js` 1,2 Mo, `gen/` 32 Mo, dossier de travail 60 Mo, archive environ
 185 Mo avec git. Avec dix jeux : `catalog.js` 6 Mo, `gen/` 180 Mo (dont 124 Mo pour Odyssey : planches d'animation
-des décors, chaque image étant un fond entier), `build_catalog.py` environ 2 à 5 minutes.
+des décors, chaque image étant un fond entier), `build_catalog.py` environ 2 à 5 minutes. Avec douze jeux et les
+planches d'animation en WebP sans perte (§5.6) : 19 992 ressources, `catalog.js` 11 Mo, `gen/` 264 Mo (Odyssey
+130 Mo, Hordes 71 Mo) ; planches d'animation des dix premiers jeux 65,7 Mo au lieu de 112,9 Mo en PNG (Odyssey
+47,7 Mo au lieu de 84 Mo), une seule planche reste en PNG ; `build_catalog.py` environ 13 minutes. Le premier
+encodage WebP de toutes les planches (méthode 6) prend plusieurs dizaines de minutes ; ensuite le cache sert.
 
 ## 13. Historique
 
@@ -474,3 +494,28 @@ des décors, chaque image étant un fond entier), `build_catalog.py` environ 2 �
 **2026-11-15** — planches de Mush découpées d'après `tiles.xml` et `Data.hx` (mush.py) : 14 planches, 2 323
 morceaux dont 1 279 nommés (décor, équipements, effets, personnages et apparences) ; les six planches qui gardent
 quelques pixels hors morceaux sont aussi montrées entières.
+
+**2026-11-16** — Hordes, Alphabounce de KadoKado, planches d'animation allégées :
+1. Hordes (dossier `Hordes/`) : images de la carte (`fla/map/img`), clients Flash de la carte, de l'exploration des
+   ruines (`explo.swf` ; les quatre versions par langue ont les mêmes dessins, `_gfx.swf` / `_code.swf` en version de
+   travail), de l'attaque (`attack.swf`, `desert.swf`, `zombie_cool.swf`), chargeurs, prototype DeathGrower, et leurs
+   huit `.fla`. Rien de tiers. `desert.swf` reprend les clips d'`attack.swf` avec des formes renumérotées : il a ses
+   propres exports et ses rendus, identiques, sont notés comme doublons.
+2. Alphabounce : tout le dossier du jeu était déjà couvert (`adtk.swf` = code seul). Sa première version, mini-jeu de
+   KadoKado (`KadoKado/Games/Alphabounce`), est ajoutée sous la plateforme KadoKado : 34 clips, 270 formes,
+   bitmaps.
+3. `variant_of` : `swf_diff.py --shapes` détecte une version de travail aux formes redessinées, qui reçoit alors ses
+   propres exports FFDec (§5.4).
+4. Planches d'animation en WebP sans perte quand il est plus léger (`compact.py`, §5.6) : 113 Mo → 66 Mo pour les dix
+   premiers jeux, pixels vérifiés identiques.
+
+**2026-11-16** — CaféJeux (dossier `CafeJeux/`) : images du café (`bitmaps` : barman, murs, meubles, bornes,
+consommations, personnages), images, SWF et `.fla` des treize jeux (Anticorp's, Bandas, Billard, Boum, Grapiz, Hordes,
+La Ferme, Marbils, Opalus, Pâturage, Power 4, Trigolo, Utopiz). Bandas et Marbils partagent le même `gfx.swf` ; les
+`gfx.swf` de Boum et Trigolo sont des versions de travail aux mêmes dessins ; ceux de La Ferme et Pâturage, aux formes
+différentes, sont rendus à part. 2 487 ressources ; 22 479 en tout, `gen/` 317 Mo (CaféJeux 76 Mo, dont 23,5 Mo pour
+le clip `mcGradient` du Hordes de CaféJeux : 64 images d'un dégradé plein écran).
+
+**2026-11-16** — plateformes : CaféJeux et KadoKado rangent leurs jeux en sous-lignes (`parts`, §5.10, §7) ;
+l'Alphabounce de KadoKado passe sous KadoKado (seul ce dossier est récupéré, `fetch`). Année de CaféJeux corrigée
+d'après le README de l'archive (2007).

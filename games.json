@@ -127,6 +127,7 @@
         "web/img/vigs": "Vignettes",
         "client/bmp": "Jeu · bitmaps",
         "design/fla": "Maquette du site",
+        "client/fla": "Jeu",
         "web/swf/game.swf": "Jeu (game.swf)",
         "client/swf/gfx.swf": "Jeu · version de travail (client/swf/gfx.swf)",
         "web/swf/inv.swf": "Inventaire (inv.swf)",
@@ -626,6 +627,165 @@
         "clients/quest": "Quêtes",
         "clients/score": "Score",
         "clients/singleCard/obj": "Carte seule (SWF)"
+      }
+    },
+    {
+      "id": "hordes",
+      "name": "Hordes",
+      "year": 2008,
+      "folder": "Hordes",
+      "summary": "Survie à plusieurs dans une ville assiégée par les zombies.",
+      "notes": [
+        "Pas de son dans l'archive.",
+        "Seuls les clients Flash (carte, exploration, attaque) sont dans l'archive, pas le site."
+      ],
+      "scan": ["fla/map/img"],
+      "swf": [
+        {"file": "fla/map/swf/_gfx.swf", "work": "hordes/map"},
+        {"file": "fla/map/swf/mapLoader.swf", "work": "hordes/map_loader"},
+        {"file": "fla/exploration/swf/explo.swf", "work": "hordes/explo",
+         "also": ["fla/exploration/swf/explo.fr.swf", "fla/exploration/swf/explo.en.swf",
+                  "fla/exploration/swf/explo.es.swf", "fla/exploration/swf/explo.de.swf"]},
+        {"file": "fla/exploration/swf/_gfx.swf", "work": "hordes/explo_gfx", "variant_of": "fla/exploration/swf/explo.swf",
+         "also": ["fla/exploration/swf/_code.swf"]},
+        {"file": "fla/exploration/swf/exploLoader.swf", "work": "hordes/explo_loader"},
+        {"file": "fla/attack/attack.swf", "work": "hordes/attack"},
+        {"file": "fla/attack/desert.swf", "work": "hordes/desert"},
+        {"file": "fla/attack/zombie_cool.swf", "work": "hordes/zombie_cool"},
+        {"file": "fla/DeathGrower/swf/deathGrower.swf", "work": "hordes/deathgrower",
+         "also": ["fla/DeathGrower/swf/gfx.swf"]}
+      ],
+      "collections": {
+        "fla/map/img": "Carte · images",
+        "fla/map/fla": "Carte",
+        "fla/map/swf/_gfx.swf": "Carte (SWF)",
+        "fla/map/swf/mapLoader.swf": "Carte · chargement (SWF)",
+        "fla/exploration/fla": "Exploration",
+        "fla/exploration/swf/explo.swf": "Exploration des ruines (SWF)",
+        "fla/exploration/swf/_gfx.swf": "Exploration · version de travail (_gfx.swf)",
+        "fla/exploration/swf/exploLoader.swf": "Exploration · chargement (SWF)",
+        "fla/attack": "Attaque",
+        "fla/attack/attack.swf": "Attaque de la ville (SWF)",
+        "fla/attack/desert.swf": "Attaque · désert (desert.swf)",
+        "fla/attack/zombie_cool.swf": "Attaque · zombie (zombie_cool.swf)",
+        "fla/DeathGrower": "Prototype DeathGrower",
+        "fla/DeathGrower/swf/deathGrower.swf": "Prototype DeathGrower (SWF)"
+      }
+    },
+    {
+      "id": "cafejeux",
+      "name": "CaféJeux",
+      "year": 2007,
+      "folder": "CafeJeux",
+      "summary": "Jeux de société en ligne autour d'un café virtuel.",
+      "notes": [
+        "Pas de son dans l'archive."
+      ],
+      "scan": ["bitmaps", "games"],
+      "root_part": "Le café",
+      "parts": [
+        {"id": "anticorps", "name": "Anticorp's", "path": "games/anticorps"},
+        {"id": "bandas", "name": "Bandas", "path": "games/bandas"},
+        {"id": "billard", "name": "Billard", "path": "games/billard"},
+        {"id": "boum", "name": "Boum", "path": "games/boum"},
+        {"id": "grapiz", "name": "Grapiz", "path": "games/grapiz"},
+        {"id": "hordes", "name": "Hordes", "path": "games/hordes"},
+        {"id": "laferme", "name": "La Ferme", "path": "games/laferme"},
+        {"id": "marbils", "name": "Marbils", "path": "games/marbils"},
+        {"id": "opalus", "name": "Opalus", "path": "games/opalus"},
+        {"id": "paturage", "name": "Pâturage", "path": "games/paturage"},
+        {"id": "power4", "name": "Power 4", "path": "games/power4"},
+        {"id": "trigolo", "name": "Trigolo", "path": "games/trigolo"},
+        {"id": "utopiz", "name": "Utopiz", "path": "games/utopiz"}
+      ],
+      "swf": [
+        {"file": "games/anticorps/swf/gfx.swf", "work": "cafejeux/anticorps"},
+        {"file": "games/anticorps/swf/bumdum.swf", "work": "cafejeux/anticorps_bumdum"},
+        {"file": "games/anticorps/bmp/box/box.swf", "work": "cafejeux/anticorps_box"},
+        {"file": "games/bandas/swf/gfx.swf", "work": "cafejeux/bandas", "also": ["games/marbils/swf/gfx.swf"]},
+        {"file": "games/billard/swf/gfx.swf", "work": "cafejeux/billard"},
+        {"file": "games/boum/swf/game.swf", "work": "cafejeux/boum"},
+        {"file": "games/boum/swf/gfx.swf", "work": "cafejeux/boum_gfx", "variant_of": "games/boum/swf/game.swf"},
+        {"file": "games/grapiz/swf/gfx.swf", "work": "cafejeux/grapiz"},
+        {"file": "games/hordes/swf/gfx.swf", "work": "cafejeux/hordes"},
+        {"file": "games/laferme/swf/game.swf", "work": "cafejeux/laferme"},
+        {"file": "games/laferme/swf/gfx.swf", "work": "cafejeux/laferme_gfx"},
+        {"file": "games/opalus/swf/gfx.swf", "work": "cafejeux/opalus"},
+        {"file": "games/paturage/swf/game.swf", "work": "cafejeux/paturage"},
+        {"file": "games/paturage/swf/gfx.swf", "work": "cafejeux/paturage_gfx"},
+        {"file": "games/power4/swf/gfx.swf", "work": "cafejeux/power4"},
+        {"file": "games/trigolo/swf/game.swf", "work": "cafejeux/trigolo"},
+        {"file": "games/trigolo/swf/gfx.swf", "work": "cafejeux/trigolo_gfx", "variant_of": "games/trigolo/swf/game.swf"},
+        {"file": "games/utopiz/swf/gfx.swf", "work": "cafejeux/utopiz"}
+      ],
+      "collections": {
+        "bitmaps/base": "Café · barman, murs et sols",
+        "bitmaps/deep_sprites": "Café · meubles (essais)",
+        "bitmaps/divers": "Café · consommations et objets",
+        "bitmaps/déco mur": "Café · décoration murale",
+        "bitmaps/events": "Café · tables des événements",
+        "bitmaps/jeux": "Café · bornes et tables de jeu",
+        "bitmaps/meubles": "Café · meubles",
+        "bitmaps/persos": "Café · personnages",
+        "bitmaps/persos/test": "Café · personnages (essais)",
+        "games/anticorps": "Anticorp's",
+        "games/bandas": "Bandas",
+        "games/billard": "Billard",
+        "games/boum": "Boum",
+        "games/grapiz": "Grapiz",
+        "games/hordes": "Hordes",
+        "games/laferme": "La Ferme",
+        "games/marbils": "Marbils",
+        "games/opalus": "Opalus",
+        "games/paturage": "Pâturage",
+        "games/power4": "Power 4",
+        "games/trigolo": "Trigolo",
+        "games/utopiz": "Utopiz",
+        "games/anticorps/swf/gfx.swf": "Anticorp's (gfx.swf)",
+        "games/anticorps/swf/bumdum.swf": "Anticorp's (bumdum.swf)",
+        "games/anticorps/bmp/box/box.swf": "Anticorp's (box.swf)",
+        "games/bandas/swf/gfx.swf": "Bandas et Marbils (gfx.swf)",
+        "games/billard/swf/gfx.swf": "Billard (gfx.swf)",
+        "games/boum/swf/game.swf": "Boum (game.swf)",
+        "games/boum/swf/gfx.swf": "Boum · version de travail (gfx.swf)",
+        "games/grapiz/swf/gfx.swf": "Grapiz (gfx.swf)",
+        "games/hordes/swf/gfx.swf": "Hordes (gfx.swf)",
+        "games/laferme/swf/game.swf": "La Ferme (game.swf)",
+        "games/laferme/swf/gfx.swf": "La Ferme · version de travail (gfx.swf)",
+        "games/opalus/swf/gfx.swf": "Opalus (gfx.swf)",
+        "games/paturage/swf/game.swf": "Pâturage (game.swf)",
+        "games/paturage/swf/gfx.swf": "Pâturage · version de travail (gfx.swf)",
+        "games/power4/swf/gfx.swf": "Power 4 (gfx.swf)",
+        "games/trigolo/swf/game.swf": "Trigolo (game.swf)",
+        "games/trigolo/swf/gfx.swf": "Trigolo · version de travail (gfx.swf)",
+        "games/utopiz/swf/gfx.swf": "Utopiz (gfx.swf)"
+      }
+    },
+    {
+      "id": "kadokado",
+      "name": "KadoKado",
+      "year": 2004,
+      "folder": "KadoKado",
+      "fetch": ["KadoKado/Games/Alphabounce"],
+      "summary": "Site de mini-jeux à score.",
+      "notes": [
+        "Seul Alphabounce est intégré pour l'instant.",
+        "Pas de son dans l'archive."
+      ],
+      "scan": ["Games/Alphabounce"],
+      "parts": [
+        {"id": "alphabounce", "name": "Alphabounce", "path": "Games/Alphabounce"}
+      ],
+      "swf": [
+        {"file": "Games/Alphabounce/swf/game.swf", "work": "kadokado/alphabounce"},
+        {"file": "Games/Alphabounce/swf/gfx.swf", "work": "kadokado/alphabounce_gfx"}
+      ],
+      "collections": {
+        "Games/Alphabounce": "Alphabounce",
+        "Games/Alphabounce/bmp": "Alphabounce · bitmaps",
+        "Games/Alphabounce/sc.gif": "Alphabounce · vignette",
+        "Games/Alphabounce/swf/game.swf": "Alphabounce (game.swf)",
+        "Games/Alphabounce/swf/gfx.swf": "Alphabounce · version de travail (gfx.swf)"
       }
     }
   ]

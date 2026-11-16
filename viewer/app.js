@@ -21,8 +21,23 @@
   }
   $('detail').addEventListener('close', () => MT.writeHash());
 
-  function row(label, count, pressed, onclick) {
-    return el('button', { 'aria-pressed': String(pressed), onclick }, label, el('span', { class: 'n', text: count }));
+  function row(label, count, pressed, onclick, cls) {
+    return el('button', { class: cls || null, 'aria-pressed': String(pressed), onclick },
+      label, el('span', { class: 'n', text: count }));
+  }
+
+  function gameRows(g, f) {  // une plateforme (CaféJeux…) déplie ses sous-jeux quand elle est choisie
+    const open = s.game === g.id;
+    const rows = [row(g.name, f.games[g.id] || 0, open && !s.sub,
+      () => update({ game: open && !s.sub ? '' : g.id, sub: '', coll: '' }),
+      g.parts ? `group${open ? ' open' : ''}` : null)];
+    if (!g.parts || !open) return rows;
+    const subs = (g.root ? [{ id: '-', name: g.root.name }] : []).concat(g.parts);
+    for (const p of subs) {
+      rows.push(row(p.name, f.subs[`${g.id}|${p.id}`] || 0, s.sub === p.id,
+        () => update({ game: g.id, sub: s.sub === p.id ? '' : p.id, coll: '' }), 'sub'));
+    }
+    return rows;
   }
 
   const usedTypes = new Set(MT.items.map((item) => item.t));  // liste fixe : la colonne ne saute pas au filtrage
@@ -30,9 +45,8 @@
   function renderSide(f) {
     const total = Object.values(f.games).reduce((a, b) => a + b, 0);
     $('f-games').replaceChildren(
-      row('Tous', total, !s.game, () => update({ game: '', coll: '' })),
-      ...MT.catalog.games.map((g) => row(g.name, f.games[g.id] || 0, s.game === g.id,
-        () => update({ game: s.game === g.id ? '' : g.id, coll: '' }))));
+      row('Tous', total, !s.game, () => update({ game: '', sub: '', coll: '' })),
+      ...MT.catalog.games.flatMap((g) => gameRows(g, f)));
     const game = MT.catalog.games.find((g) => g.id === s.game);
     $('f-game-info').replaceChildren(...(game ? [
       el('p', { text: `${game.summary} (${game.year})` }),

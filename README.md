@@ -5,9 +5,10 @@ Motion Twin les a publiées dans son archive [motion-twin/WebGamesArchives](http
 (licence CC BY-NC-SA 4.0). Uniquement du matériel d'origine : rien de refait après coup (pas de remake, pas de création
 de fans), et les éléments tiers présents dans l'archive (images jQuery UI, logos de presse, logos de paiement) sont exclus.
 
-Jeux : **Mush** (2012), **Alphabounce** (2007), **Galaxy55** (alpha, 2012) et sept jeux Muxxu : **Kube** (2010),
-**Kingdom** (2009), **CroqueMotel** (2011), **Intrusion** (2009), **La Brute** (2010), **Odyssey** (2011) et
-**Snake** (2010).
+Jeux : **Mush** (2012), **Alphabounce** (2007), **Galaxy55** (alpha, 2012), **Hordes** (2008), sept jeux Muxxu
+(**Kube** 2010, **Kingdom** 2009, **CroqueMotel** 2011, **Intrusion** 2009, **La Brute** 2010, **Odyssey** 2011,
+**Snake** 2010) et deux plateformes rangées par jeu : **CaféJeux** (2007, le café et ses treize jeux de société) et
+**KadoKado** (2004, pour l'instant son Alphabounce, première version du casse-briques).
 
 ![Clips Flash d'Alphabounce](docs/img/apercu.png)
 
@@ -25,6 +26,9 @@ Jeux : **Mush** (2012), **Alphabounce** (2007), **Galaxy55** (alpha, 2012) et se
 | La Brute | 162 | 0 | 0 | 40 | 906 | 0 |
 | Odyssey | 640 | 1 | 0 | 381 | 6 277 | 0 |
 | Snake | 1 030 | 0 | 5 | 4 | 6 | 0 |
+| Hordes | 335 | 0 | 0 | 54 | 677 | 0 |
+| CaféJeux | 596 | 0 | 0 | 243 | 1 648 | 0 |
+| KadoKado (Alphabounce) | 14 | 0 | 0 | 34 | 270 | 0 |
 
 Galaxy55 a aussi **3 modèles 3D** (cosmonaute, foreuse, porte ouverte) et **12 réglages de son LabChirp**. Ses planches
 (`texture.png`, `tiles.png`, `icons.png`) sont découpées en morceaux aux pixels d'origine, nommés d'après le tableur et le
@@ -36,10 +40,15 @@ Seuls Galaxy55 (12 bruitages WAV) et Intrusion (49 sons MP3) ont des sons dans l
 Les fichiers sources `.fla` sont lus aussi : symboles en SVG (composés entiers pour les `.fla` XFL d'Odyssey,
 formes propres de chaque symbole pour les `.fla` binaires), bitmaps ; voir docs/METHODE.md §5.9.
 Pour Kube, les captures de constructions de joueurs (événements de la communauté) ne sont pas montrées.
+Pour Hordes, l'archive ne contient que les clients Flash (carte, exploration des ruines, attaque de la ville) et le
+prototype DeathGrower, pas le site.
+
+Les planches d'animation sont en WebP sans perte quand il est plus léger que le PNG : mêmes pixels, environ 40 % de
+poids en moins (65 Mo au lieu de 113 Mo pour les dix premiers jeux).
 
 La page permet de :
 - chercher par nom, chemin dans l'archive, nom de symbole Flash ou étiquette d'animation (sans tenir compte des accents) ;
-- filtrer par jeu, type et collection (compteurs à jour selon les autres filtres) et trier (collection, nom, taille,
+- filtrer par jeu (et par jeu d'une plateforme : CaféJeux, KadoKado), type et collection (compteurs à jour selon les autres filtres) et trier (collection, nom, taille,
   nombre d'images, poids) ;
 - régler la taille des miniatures et le fond (damier, sombre, clair) ; les animations se jouent au survol ;
 - tourner autour des modèles 3D (glisser, molette, double-clic) et écouter le son associé à un réglage LabChirp ;

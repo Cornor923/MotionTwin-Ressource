@@ -1,6 +1,7 @@
 """Symboles exportés d'un SWF dont le dessin diffère d'un autre SWF (même bibliothèque, autre version).
 
 usage : python swf_diff.py <principal.swf> <autre.swf>   -> imprime les id séparés par des virgules
+        python swf_diff.py --shapes <principal.swf> <autre.swf>   -> formes de même numéro dessinées autrement
 Un symbole diffère si lui-même ou un caractère qu'il affiche (récursivement) a un tag différent (scripts ignorés).
 """
 import hashlib, os, struct, sys, zlib
@@ -9,6 +10,7 @@ sys.path.insert(0, os.path.join(os.path.dirname(os.path.abspath(__file__)), 'fla
 import swfdump as S
 
 CHARS = (2, 22, 32, 83, 39, 20, 21, 35, 36, 46, 84, 37, 11, 33, 48, 75, 10, 34, 7, 6)
+SHAPES = (2, 22, 32, 83, 46, 84)  # DefineShape 1 à 4, DefineMorphShape 1 et 2
 
 
 def characters(path):
@@ -29,7 +31,7 @@ def characters(path):
                         p = S.parse_place(c, bb)
                         if 'char' in p:
                             kids.add(p['char'])
-            chars[cid] = hashlib.sha1(body).hexdigest()
+            chars[cid] = ('S' if code in SHAPES else '') + hashlib.sha1(body).hexdigest()
             children[cid] = kids
         elif code == 56:
             bb = S.Bits(body)
@@ -52,5 +54,15 @@ def differing(primary, other):
     return sorted(cid for cid in exports if differs(cid))
 
 
+def shapes_differing(primary, other):
+    """formes de l'autre version absentes ou différentes dans la principale : ses exports FFDec ne peuvent pas servir"""
+    a, _, _ = characters(primary)
+    b, _, _ = characters(other)
+    return sorted(cid for cid, h in b.items() if h[0] == 'S' and a.get(cid) != h)
+
+
 if __name__ == '__main__':
-    print(','.join(str(c) for c in differing(sys.argv[1], sys.argv[2])))
+    if sys.argv[1] == '--shapes':
+        print(','.join(str(c) for c in shapes_differing(sys.argv[2], sys.argv[3])))
+    else:
+        print(','.join(str(c) for c in differing(sys.argv[1], sys.argv[2])))

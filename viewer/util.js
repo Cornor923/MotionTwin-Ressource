@@ -35,7 +35,11 @@ MT.bytes = (n) => {
   return (n / 1024 / 1024).toFixed(2) + ' Mo';
 };
 
-MT.gameName = (id) => (MT.catalog.games.find((g) => g.id === id) || {}).name || id;
+MT.gameName = (id, sub) => {  // « CaféJeux · Anticorp's » pour un sous-jeu
+  const game = MT.catalog.games.find((g) => g.id === id) || { name: id };
+  const part = sub && (game.parts || []).find((p) => p.id === sub);
+  return part ? `${game.name} · ${part.name}` : game.name;
+};
 
 // taille montrée à l'utilisateur : les clips sont rendus à 2 px par pixel Flash
 MT.renderScale = (item) => (item.t === 'clip' ? 2 : 1);
@@ -82,5 +86,5 @@ MT.loadImage = (src) => new Promise((resolve, reject) => {
 
 MT.attribution = (item) => {
   const lic = MT.catalog.license;
-  return `« ${item.n} » – ${MT.gameName(item.g)}, © Motion Twin (${item.u}) – ${lic.name} ${lic.url}`;
+  return `« ${item.n} » – ${MT.gameName(item.g, item.sg)}, © Motion Twin (${item.u}) – ${lic.name} ${lic.url}`;
 };

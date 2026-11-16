@@ -7,7 +7,7 @@ import hashlib, json, os, re, shutil
 from PIL import Image
 
 import swfrender as R
-import swf_symbols
+import compact, swf_symbols
 
 
 def add_swf(game, entry, ctx):
@@ -29,6 +29,9 @@ def add_swf(game, entry, ctx):
         print('  clips non rendus (render_symbols.py) :', path)
     os.makedirs(os.path.join(out, 'clips'), exist_ok=True)
     rendered = set()
+
+    def copies(sid):  # ce clip dans ce SWF et dans ses copies identiques (`also`)
+        return ['%s#%d' % (p, sid) for p in [path] + entry.get('also', [])]
     for s in meta['symbols']:
         if s['kind'] != 'clip':
             continue
@@ -37,11 +40,11 @@ def add_swf(game, entry, ctx):
         ref = '%s#%d' % (path, sid)
         h = render_hash(render, s)
         if sid in primary and primary[sid][1] == h:
-            primary[sid][0].setdefault('dup', []).append(ref)
+            primary[sid][0].setdefault('dup', []).extend(copies(sid))
             continue
         same = game.__dict__.setdefault('clip_seen', {}).get(h)
         if same is not None and same['x']['swf'] != path:  # même rendu dans un autre SWF du jeu (SWF embarqué…)
-            same.setdefault('dup', []).append(ref)
+            same.setdefault('dup', []).extend(copies(sid))
             same['k'] = sorted(set(same['k']) | set(ctx.words(s['name'])))
             continue
         thumb = first_visible(render, s)
@@ -55,8 +58,8 @@ def add_swf(game, entry, ctx):
                     u=game.source_url(path), x=dict(swf=path, id=sid, timeline=s['timeline'], labels=labels),
                     k=ctx.words(s['name'], *labels))
         if s['frames'] > 1:
-            sheet = os.path.join(out, 'clips', '%d_sheet.png' % sid)
-            shutil.copy(os.path.join(render, '%d_sheet.png' % sid), sheet)
+            sheet = compact.sheet(os.path.join(render, '%d_sheet.png' % sid), os.path.join(out, 'clips', '%d_sheet' % sid),
+                                  ctx.WORK)
             item.update(sh=ctx.rel(sheet), cols=s['cols'], fps=s['fps'])
         if entry.get('also'):
             item['dup'] = ['%s#%d' % (a, sid) for a in entry['also']]
@@ -68,7 +71,7 @@ def add_swf(game, entry, ctx):
     if 'variant_of' in entry:
         for sid in swf.exports:
             if sid in primary and sid not in rendered:
-                primary[sid][0].setdefault('dup', []).append('%s#%d' % (path, sid))
+                primary[sid][0].setdefault('dup', []).extend(copies(sid))
         return
     add_shapes(game, swf, path, work, out, coll, ctx)
     add_bitmaps(game, swf, path, work, out, coll, ctx)
