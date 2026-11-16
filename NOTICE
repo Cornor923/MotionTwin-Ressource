@@ -4,7 +4,7 @@ Ressources d'origine : (c) Motion Twin, CC BY-NC-SA 4.0
 https://creativecommons.org/licenses/by-nc-sa/4.0/
 Source : https://github.com/motion-twin/WebGamesArchives
 (commit 8b8e2f202e1fa8cdf1d96e4140dad0cba458054e, dossiers Mush/, Alphabounce/,
-KadoKado/Games/Alphabounce/, Galaxy55/, Hordes/, CafeJeux/, Muxxu/Kube/, Muxxu/Kingdom/, Muxxu/Hotel/, Muxxu/Intrusion/,
+KadoKado/Games/Alphabounce/, Galaxy55/, Hordes/, TeacherStory/, Rockfaller/, CafeJeux/, Muxxu/Kube/, Muxxu/Kingdom/, Muxxu/Hotel/, Muxxu/Intrusion/,
 Muxxu/LaBrute/, Muxxu/Odyssey/, Muxxu/Snake/)
 
 - Les fichiers de l'archive elle-même ne sont pas copiés dans ce dépôt : `python tools/rebuild.py --fetch` les récupère

@@ -30,7 +30,7 @@
     const open = s.game === g.id;
     const rows = [row(g.name, f.games[g.id] || 0, open && !s.sub,
       () => update({ game: open && !s.sub ? '' : g.id, sub: '', coll: '' }),
-      g.parts ? `group${open ? ' open' : ''}` : null)];
+      g.parts ? `platform${open ? ' open' : ''}` : null)];
     if (!g.parts || !open) return rows;
     const subs = (g.root ? [{ id: '-', name: g.root.name }] : []).concat(g.parts);
     for (const p of subs) {

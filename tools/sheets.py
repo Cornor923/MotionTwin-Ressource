@@ -4,9 +4,14 @@ Entrée `sheets` d'un jeu dans games.json :
   file        planche dans le dossier du jeu (elle n'apparaît plus comme une image : ses morceaux la remplacent)
   slices      découpes reprises du code du jeu : {"name", "rect": [x, y, l, h], "cols", "rows"} (images en grille,
               ligne par ligne ; "n" = "cols"), "names" : nom de chaque image (liste, ou {"ods", "sheet", "column"})
-  slices_from découpes lues par le module d'un jeu : ["mush_tiles", "BmpGfx2"] (tiles.xml), ["mush_chars"]
+  slices_from découpes lues par le module d'un jeu : ["mush_tiles", "BmpGfx2"] (tiles.xml), ["mush_chars"],
+              ["texturepacker", "chemin/atlas.xml"] (atlas.py)
   grid        taille de case quand le jeu adresse la planche par cases ; `cells` = nommage des cases (voir CELLS)
-  marks       repères de travail peints dans la planche (voir MARKS) : un repère seul est écarté
+  marks       repères de travail peints dans la planche (voir MARKS) : un repère seul est écarté ; ou rectangles
+              [[x, y, l, h], …] hors de toute découpe, qui ne contiennent que des repères : tout y est écarté
+  gap         écart (moitié, en px) sous lequel des pixels restent ensemble (1 par défaut ; 3 garde les mots d'une
+              annotation manuscrite) ; `groups` : rectangles [x, y, l, h] dont les pixels font chacun un seul morceau
+  bleed       px autour des découpes d'un atlas ignorés : bords répétés par TexturePacker (extrusion), pas des images
   background  couleur de fond de la planche (« #ffffff ») que le jeu rend transparente : ignorée pour trouver les
               morceaux et pour reconnaître un morceau déjà présent ailleurs, mais gardée dans les pixels montrés
 Le reste des pixels donne des morceaux par groupes de pixels proches ; un groupe de cases alignées sur la grille est
@@ -17,12 +22,12 @@ import os
 import numpy as np
 from PIL import Image
 
-import galaxy55, mush
+import atlas, galaxy55, mush
 from ods import rows as ods_rows
-from pixels import components, groups
+from pixels import components, drawing_key, groups, grow, rects_mask
 
 CELLS = {'galaxy55_blocks': galaxy55.block_cells}
-SLICES = {'mush_tiles': mush.tile_slices, 'mush_chars': mush.char_slices}
+SLICES = {'mush_tiles': mush.tile_slices, 'mush_chars': mush.char_slices, 'texturepacker': atlas.texturepacker}
 MARKS = {'galaxy55_marks': galaxy55.texture_marks}
 OTHER = ' · autres éléments de la planche'
 
@@ -60,7 +65,11 @@ class Sheet:
         self.coll = ctx.collection(game.cfg, self.path)
         self.stem = os.path.splitext(os.path.basename(self.path))[0]
         self.pieces = []
-        self.ignore = self.lone_marks(MARKS[entry['marks']](self.a)) if 'marks' in entry else np.zeros_like(self.taken)
+        spec = entry.get('marks')
+        if isinstance(spec, list):  # bandes qui ne contiennent que des numéros de travail (Teacher Story)
+            self.ignore = rects_mask(self.taken.shape, spec) & (self.a[..., 3] > 0)
+        else:
+            self.ignore = self.lone_marks(MARKS[spec](self.a)) if spec else np.zeros_like(self.taken)
         self.record = dict(p=self.path, i=self.path)  # la planche elle-même : reçoit ses copies (dup), pas une fiche
         game.by_hash[ctx.pixel_hash(self.img)] = self.record
         game.by_size.setdefault(self.img.size, []).append((self.record, self.full))
@@ -107,11 +116,16 @@ class Sheet:
                 label = names[k] if k < len(names) else s['name'] if cols * rows == 1 else '%s (%d)' % (s['name'], k + 1)
                 rect = (x + k % cols * w, y + k // cols * h, w, h)
                 self.piece(rect, None, label, self.coll, dict(slice=s['name']), [s['name']])
+        if self.entry.get('bleed'):  # atlas : bords de chaque image répétés autour d'elle par l'empaqueteur
+            self.ignore |= grow(self.taken, self.entry['bleed']) & ~self.taken
         grid = self.entry.get('grid')
         if 'cells' in self.entry:
             for (cx, cy), uses in sorted(CELLS[self.entry['cells']](self.game.base).items(), key=lambda t: t[0][::-1]):
                 self.named_cell(cx, cy, grid, uses)
-        for x0, y0, x1, y1, mask in groups(self.ink(self.a) & ~self.taken & ~self.ignore):
+        for x, y, w, h in self.entry.get('groups', []):  # regroupement à la main (phrase aux mots espacés)
+            sub = (self.ink(self.a) & ~self.taken & ~self.ignore)[y:y + h, x:x + w]
+            self.piece((x, y, w, h), sub, '%s %d,%d' % (self.stem, x, y), self.coll + OTHER, {})
+        for x0, y0, x1, y1, mask in groups(self.ink(self.a) & ~self.taken & ~self.ignore, gap=self.entry.get('gap', 1)):
             if mask.sum() < 24 and self.taken[max(0, y0 - 1):y1 + 2, max(0, x0 - 1):x1 + 2].any():
                 continue  # bord d'un dessin qui déborde d'une case déjà découpée
             if grid and x0 % grid == 0 and y0 % grid == 0 and (x1 + 1) % grid == 0 and (y1 + 1) % grid == 0:
@@ -159,7 +173,6 @@ class Sheet:
                             index.setdefault(drawing_key(a, a[..., 3] > 0), item)
         return index.get(drawing_key(crop, ink))
 
-
     def piece(self, rect, mask, name, coll, extra, words=()):
         x, y, w, h = (int(v) for v in rect)
         crop = self.a[y:y + h, x:x + w].copy()
@@ -185,10 +198,3 @@ class Sheet:
         self.game.add(item, self.ctx.pixel_hash(im))
         if len(self.game.items) > before:
             self.pieces.append(item)
-
-
-def drawing_key(a, ink):
-    ys, xs = ink.nonzero()
-    box = (slice(ys.min(), ys.max() + 1), slice(xs.min(), xs.max() + 1))
-    sub, mask = a[box], ink[box]
-    return (sub.shape[:2], mask.tobytes(), sub[mask][:, :3].tobytes())

@@ -39,12 +39,12 @@ def grow(mask, r):
     return out
 
 
-def groups(mask, small=64, reach=6):
-    """morceaux : pixels à 2 px ou moins les uns des autres ; un fragment de moins de `small` pixels rejoint le morceau
+def groups(mask, small=64, reach=6, gap=1):
+    """morceaux : pixels à 2 × `gap` px ou moins les uns des autres ; un fragment de moins de `small` pixels rejoint le morceau
     le plus proche à `reach` px ou moins (dessin en points séparés), deux morceaux plus grands ne fusionnent jamais.
     Retourne (x0, y0, x1, y1, masque)."""
     parts = []
-    for gx0, gy0, gx1, gy1, gm in components(grow(mask, 1)):
+    for gx0, gy0, gx1, gy1, gm in components(grow(mask, gap)):
         own = mask[gy0:gy1 + 1, gx0:gx1 + 1] & gm
         ys, xs = own.nonzero()
         if len(ys):
@@ -81,3 +81,19 @@ def groups(mask, small=64, reach=6):
             own[a[1] - y0:a[3] - y0 + 1, a[0] - x0:a[2] - x0 + 1] |= a[5]
         out.append((x0, y0, x1, y1, own))
     return out
+
+
+def drawing_key(a, ink):
+    """dessin d'une image, fonds et marges ôtés : forme des pixels dessinés et leurs couleurs"""
+    ys, xs = ink.nonzero()
+    box = (slice(ys.min(), ys.max() + 1), slice(xs.min(), xs.max() + 1))
+    sub, mask = a[box], ink[box]
+    return (sub.shape[:2], mask.tobytes(), sub[mask][:, :3].tobytes())
+
+
+def rects_mask(shape, rects):
+    """masque des rectangles [x, y, l, h]"""
+    m = np.zeros(shape, bool)
+    for x, y, w, h in rects:
+        m[y:y + h, x:x + w] = True
+    return m

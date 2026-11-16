@@ -5,7 +5,7 @@ Motion Twin les a publiées dans son archive [motion-twin/WebGamesArchives](http
 (licence CC BY-NC-SA 4.0). Uniquement du matériel d'origine : rien de refait après coup (pas de remake, pas de création
 de fans), et les éléments tiers présents dans l'archive (images jQuery UI, logos de presse, logos de paiement) sont exclus.
 
-Jeux : **Mush** (2012), **Alphabounce** (2007), **Galaxy55** (alpha, 2012), **Hordes** (2008), sept jeux Muxxu
+Jeux : **Mush** (2012), **Alphabounce** (2007), **Galaxy55** (alpha, 2012), **Hordes** (2008), **Teacher Story** (2013), **Rockfaller** (2015), sept jeux Muxxu
 (**Kube** 2010, **Kingdom** 2009, **CroqueMotel** 2011, **Intrusion** 2009, **La Brute** 2010, **Odyssey** 2011,
 **Snake** 2010) et deux plateformes rangées par jeu : **CaféJeux** (2007, le café et ses treize jeux de société) et
 **KadoKado** (2004, pour l'instant son Alphabounce, première version du casse-briques).
@@ -27,6 +27,8 @@ Jeux : **Mush** (2012), **Alphabounce** (2007), **Galaxy55** (alpha, 2012), **Ho
 | Odyssey | 640 | 1 | 0 | 381 | 6 277 | 0 |
 | Snake | 1 030 | 0 | 5 | 4 | 6 | 0 |
 | Hordes | 335 | 0 | 0 | 54 | 677 | 0 |
+| Teacher Story | 1 730 | 7 | 0 | 176 | 1 524 | 151 |
+| Rockfaller | 998 | 0 | 0 | 1 | 36 | 81 |
 | CaféJeux | 596 | 0 | 0 | 243 | 1 648 | 0 |
 | KadoKado (Alphabounce) | 14 | 0 | 0 | 34 | 270 | 0 |
 
@@ -36,7 +38,8 @@ code du jeu (250 tuiles de blocs) ; les repères de travail peints par Motion Tw
 des ressources. Seuls les fichiers publiés par Motion Twin sont montrés, pas les blocs ni les textures ajoutés depuis
 par les portages du jeu.
 
-Seuls Galaxy55 (12 bruitages WAV) et Intrusion (49 sons MP3) ont des sons dans l'archive officielle.
+Seuls Galaxy55 (12 bruitages WAV), Intrusion (49 sons MP3), Teacher Story (151 bruitages et musiques, plus 3
+réglages LabChirp) et Rockfaller (79 bruitages, 2 musiques) ont des sons dans l'archive officielle.
 Les fichiers sources `.fla` sont lus aussi : symboles en SVG (composés entiers pour les `.fla` XFL d'Odyssey,
 formes propres de chaque symbole pour les `.fla` binaires), bitmaps ; voir docs/METHODE.md §5.9.
 Pour Kube, les captures de constructions de joueurs (événements de la communauté) ne sont pas montrées.

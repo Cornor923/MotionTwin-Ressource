@@ -62,8 +62,8 @@ a { color: var(--accent); }
 .games button:hover { background: var(--panel-2); }
 .games button[aria-pressed="true"] { background: var(--accent); color: var(--accent-ink); }
 .games .n { margin-left: auto; font-size: 12px; opacity: .75; }
-.games button.group::after { content: '▸'; order: 3; font-size: 11px; opacity: .6; }
-.games button.group.open::after { content: '▾'; }
+.games button.platform::after { content: '▸'; order: 3; font-size: 11px; opacity: .6; }
+.games button.platform.open::after { content: '▾'; }
 .games button.sub { padding-left: 22px; font-size: 13px; }
 .n { font-variant-numeric: tabular-nums; }
 .game-info { font-size: 12px; color: var(--muted); }

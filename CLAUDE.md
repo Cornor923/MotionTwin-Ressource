@@ -56,6 +56,10 @@ Après une reconstruction, versionner `catalog.js` et `gen/` avec `games.json` (
   propres exports FFDec (sinon les formes de la version principale seraient prises par erreur).
 - Plateformes (CaféJeux, KadoKado) : un seul jeu dans games.json, ses jeux dans `parts` (chemins), `fetch` pour ne
   récupérer qu'une partie du dossier (KadoKado : `Games/Alphabounce` ; ajouter les autres jeux là quand on les intègre).
+- Atlas TexturePacker (Rockfaller) : `slices_from: ["texturepacker", "x.xml"]` + `bleed: 2` (bords répétés par
+  l'empaqueteur, ignorés).
+- Planche sans découpe dans le code : `gap` (écart de regroupement) et `groups` (rectangles = un morceau) règlent
+  les morceaux ; `marks` peut lister des rectangles qui ne contiennent que des repères (Teacher Story).
 - Découpes lues dans le code d'un jeu : `slices_from` de games.json -> registre `SLICES` de `sheets.py` (Mush :
   `mush.py`, tiles.xml et Data.hx/Data.ods ; Galaxy55 : `galaxy55.py`).
 - `.fla` : XFL lus par `xfl.py` (symboles composés) ; binaires par `tools/fla_decoder/` (MIT, ne pas modifier,

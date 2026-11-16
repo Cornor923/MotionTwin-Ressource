@@ -245,6 +245,23 @@ retournées (`flipX`, `WALK_DOWN`…) reprennent les mêmes pixels et ne sont pa
 par groupes de pixels. `ShipMap.png` (carte de données), `bg.png`, `starship_map.png` et `vaisseaux.png` restent
 entiers.
 
+**Atlas de Rockfaller** (`slices_from: ["texturepacker", "….xml"]`, `atlas.py`) : chaque planche du client
+OpenFL est livrée avec son fichier TexturePacker (`<SubTexture name x y width height …>`), qui donne le nom et le
+rectangle de chaque image ; le morceau est ce rectangle, sans les marges que TexturePacker avait rognées. Autour de
+chaque image, TexturePacker répète ses bords sur 1 à 2 px (extrusion, contre les coutures au rendu) : ces pixels,
+tous à 2 px ou moins d'un rectangle, sont ignorés (`bleed: 2`) et ne font ni morceau ni planche entière. Cinq atlas
+(`fx`, `fx2`, `taupinotron`, `benchNineFont`, `birminghamFont`) n'ont que leur XML dans `assetsWeb/` : leur image
+manque à l'archive (sauf `taupinotron.png`, présent dans `www/img/ss/`), et l'animation Flump `taupiFlump/` n'a que son
+`library.json`.
+
+**Planches de Teacher Story** : `characters.png` et `tiles.png` sont découpées d'après `client/src/Manager.hx`
+(`mt.deepnight.SpriteLib` : `slice(nom, x, y, l, h, n)` = n images côte à côte, `sliceUnit` en cases de
+`setUnit`) ; les deux rangées de numéros de travail (00 à 34) peintes entre les rangées de cheveux et d'yeux sont
+déclarées comme bandes de repères (`marks` en rectangles) et écartées. `interface.png` et `pictos.png`, absentes du
+code, sont découpées par groupes de pixels ; pour `pictos.png`, `gap: 3` garde entières les annotations manuscrites
+du professeur (« peut mieux faire », « non non et non !! ») et `groups` regroupe « du grand art », aux mots plus
+espacés. Aucun pixel n'est modifié : seul le cadrage des morceaux change.
+
 **Planches à fond** (`background`, Snake et Odyssey) : le code du jeu rend transparent le blanc pur
 (`makeTransp(…, 0xFFFFFFFF)`). Ce blanc est ignoré pour trouver les morceaux et pour sauter les cases vides, mais il
 reste dans les pixels montrés. Un morceau dont le dessin (fond ôté) est identique à une ressource déjà présente,
@@ -364,7 +381,7 @@ rendu » ; la solution de kadokadeo est de faire rendre ce clip image par image 
 | `games[].scan` | dossiers parcourus (relatifs au dossier du jeu) |
 | `games[].exclude` | motifs `fnmatch` exclus (éléments tiers) |
 | `games[].swf[]` | `file`, `work`, et au besoin `also` (copies identiques) ou `variant_of` (autre version) |
-| `games[].sheets[]` | planches à découper : `file`, `slices` (`name`, `rect`, `cols`, `rows`, `names`), `grid`, `cells`, `marks`, `background` (§5.7) |
+| `games[].sheets[]` | planches à découper : `file`, `slices` (`name`, `rect`, `cols`, `rows`, `names`), `slices_from`, `grid`, `cells`, `marks`, `gap`, `groups`, `bleed`, `background` (§5.7) |
 | `games[].models[]` | modèles 3D : `file`, et pour un `.md` `texture` + `cell` (§5.8) |
 | `games[].collections` | préfixe de chemin → nom de collection |
 | `games[].parts`, `root_part` | jeux d'une plateforme (`id`, `name`, `path`) ; nom des ressources hors de ces jeux |
@@ -397,6 +414,13 @@ d'images, `sh` planche (WebP ou PNG), `cols` colonnes de la planche, `fps` caden
   œuvres (`boite_chocapic`, `boite_nesquick`, `flipper_StarWars`, `toile_joconde`, `toile_vanGogh`) sans logo
   lisible : gardés. `games/trigolo/gfx_ani/bg01.RIF` et `PREVIEW.PIX` (fichiers Corel Painter) ne sont pas lus ;
   `bg01.TGA` en est l'export.
+- Teacher Story : `www/img/twitter.png` et `www/img/rss.png` (logos de Twitter et du flux RSS).
+  `client/obj/classroom.clientResources.swf` et `corrector/obj/ClassCorrectionResources.swf` ne contiennent que des
+  polices : non rendus. `client/fla/sprites/eddie.png` est vide dans l'archive (0 octet). Les objets du site
+  évoquent parfois des jouets connus (console, poneys, trolls…) : dessins de Motion Twin, gardés.
+- Rockfaller : rien d'exclu. Beaucoup d'objets à collectionner (`www/img/goals`) sont des clins d'œil à d'autres
+  licences (Pokéball, Triforce, Pac-Man, Tetris, casque de stormtrooper…) : dessins de Motion Twin, gardés. Les
+  icônes `assets/ic` sont le cube de Twinoid.
 - Partout : polices embarquées, `Thumbs.db`, tableurs de données.
 
 ## 10. Limites connues
@@ -519,3 +543,14 @@ le clip `mcGradient` du Hordes de CaféJeux : 64 images d'un dégradé plein éc
 **2026-11-16** — plateformes : CaféJeux et KadoKado rangent leurs jeux en sous-lignes (`parts`, §5.10, §7) ;
 l'Alphabounce de KadoKado passe sous KadoKado (seul ce dossier est récupéré, `fetch`). Année de CaféJeux corrigée
 d'après le README de l'archive (2007).
+
+**2026-11-16** — Teacher Story (dossier `TeacherStory/`) : graphismes et sprites du client, icônes d'actions, site
+(objets, compétences, annotations, ancêtres…), 151 sons et musiques, 3 réglages LabChirp (associés à leur son), sept
+SWF et sept `.fla`. Planches découpées d'après `Manager.hx` (§5.7), numéros de travail écartés ; nouveaux réglages
+de planche `marks` en rectangles, `gap` et `groups`. 3 590 ressources ; 26 069 en tout, `gen/` 331 Mo, `catalog.js`
+14 Mo.
+
+**2026-11-16** — Teacher Story : `corrector/gfx` parcouru (`paper.png`, la feuille de copie, manquait). Rockfaller
+(dossier `Rockfaller/`, Rockfaller Journey) : atlas TexturePacker découpés d'après leur XML (§5.7, `atlas.py`,
+`bleed`), mondes, tutoriel, icônes des applications, site (objets à collectionner, captures, textes par langue),
+79 bruitages et 2 musiques, `loading.swf`. 1 116 ressources ; 27 186 en tout, `gen/` 341 Mo, `catalog.js` 15 Mo.
