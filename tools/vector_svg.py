@@ -2,7 +2,8 @@
 
 Forme : {'fills': [style], 'strokes': [{'width': px, 'fill': style}], 'edges': [(f0, f1, trait, x0, y0, cx, cy, x1,
 y1)]} en pixels, indices 1..n (0 = aucun), cx None pour un segment droit. Style : {'kind': 'solid', 'rgba'},
-{'kind': 'linear'|'radial', 'stops': [(0..1, rgba)], 'm': matrice} (carré de dégradé de ±819,2 px) ou
+{'kind': 'linear'|'radial', 'stops': [(0..1, rgba)], 'm': matrice, 'focal': -1..1 facultatif (radial)} (carré de
+dégradé de ±819,2 px) ou
 {'kind': 'bitmap', 'href', 'w', 'h', 'm'}. Chaque remplissage est reconstitué en enchaînant ses bords (ceux de
 gauche à l'envers), comme un lecteur SWF ; chaque trait en enchaînant les bords de son style.
 """
@@ -56,8 +57,9 @@ class Svg:
                         % (o, c[0], c[1], c[2], c[3] / 255) for o, c in style['stops'])
         m = ' '.join('%g' % v for v in style['m'])
         if k == 'radial':
-            self.defs.append('<radialGradient id="%s" gradientUnits="userSpaceOnUse" cx="0" cy="0" r="%g" '
-                             'gradientTransform="matrix(%s)">%s</radialGradient>' % (gid, GRAD, m, stops))
+            fx = ' fx="%g"' % (style['focal'] * GRAD) if style.get('focal') else ''
+            self.defs.append('<radialGradient id="%s" gradientUnits="userSpaceOnUse" cx="0" cy="0" r="%g"%s '
+                             'gradientTransform="matrix(%s)">%s</radialGradient>' % (gid, GRAD, fx, m, stops))
         else:
             self.defs.append('<linearGradient id="%s" gradientUnits="userSpaceOnUse" x1="%g" y1="0" x2="%g" y2="0" '
                              'gradientTransform="matrix(%s)">%s</linearGradient>' % (gid, -GRAD, GRAD, m, stops))
@@ -66,8 +68,8 @@ class Svg:
     def shape(self, shape, m):
         out = []
         for i, style in enumerate(shape['fills'], 1):
-            segs = [e[3:] for e in shape['edges'] if e[1] == i]
-            segs += [rev(e[3:]) for e in shape['edges'] if e[0] == i and e[1] != i]
+            segs = [e[3:] for e in shape['edges'] if e[1] == i and e[0] != i]  # même remplissage des deux côtés :
+            segs += [rev(e[3:]) for e in shape['edges'] if e[0] == i and e[1] != i]  # pas un bord de la zone
             if segs:
                 paint, op = self.paint(style)
                 out.append('<path d="%s" fill="%s"%s fill-rule="evenodd"/>' % (

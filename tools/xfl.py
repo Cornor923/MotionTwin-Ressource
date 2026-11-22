@@ -77,7 +77,7 @@ def style(el, doc):
             if kind == 'solid':
                 return dict(kind='solid', rgba=rgba(f))
             stops = [(float(g.get('ratio', 0)), rgba(g)) for g in f.findall(NS + 'GradientEntry')]
-            return dict(kind=kind, stops=stops, m=matrix(f))
+            return dict(kind=kind, stops=stops, m=matrix(f), focal=float(f.get('focalPointRatio', 0)))
     f = el.find(NS + 'BitmapFill')
     if f is not None and f.get('bitmapPath') in doc['bitmaps']:
         uri, w, h = doc['bitmaps'][f.get('bitmapPath')]

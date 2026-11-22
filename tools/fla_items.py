@@ -1,7 +1,8 @@
 """Ressources des .fla d'un jeu : tous les .fla de son dossier (moins `exclude`), symboles en SVG, bitmaps, sons.
 
-XFL (ZIP, CS5+) : xfl.py, symboles composés entiers. Binaire (OLE, Flash 5 à CS4) : fla_bin.py (fla-decoder),
-formes propres de chaque symbole, sans assembler les symboles qu'il place. Un symbole au rendu identique à un autre
+XFL (ZIP, CS5+) : xfl.py. Binaire (OLE, Flash 5 à CS4) : fla_bin.py (fla-decoder, corrigé par fla_patch.py,
+fla_archive.py, fla_filters.py). Dans les deux cas les symboles sont composés entiers (instances, bitmaps posés,
+masques, filtres, modes de fusion), première image de chaque calque. Un symbole au rendu identique à un autre
 (même .fla recopié ailleurs…) devient un doublon ; un symbole du même nom qu'un clip d'un SWF du jeu est relié à ce
 clip (« Même nom dans »). Bitmaps et sons identiques à une ressource existante deviennent des doublons.
 """

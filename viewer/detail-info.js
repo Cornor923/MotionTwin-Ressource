@@ -54,9 +54,7 @@ MT.detailInfo = (item, $) => {
   if (x.fla) {
     rows.push(['Fichier .fla', `${x.fla} (${x.kind})`]);
     if (x.symbol) rows.push(['Symbole', x.symbol]);
-    if (x.kind === 'binaire' && item.t === 'svg') {
-      rows.push(['Rendu', 'formes du symbole seules : les symboles qu’il place ne sont pas assemblés']);
-    }
+    if (item.t === 'svg') rows.push(['Rendu', 'symbole assemblé, première image de chaque calque']);
     if (x.same_swf) rows.push(['Même nom dans', x.same_swf.join(', ')]);
   }
   if (x.whole) {

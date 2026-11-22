@@ -2,19 +2,21 @@
 
 fla-decoder (tools/fla_decoder, MIT) décode les flux de symboles (« Symbol N » ou « S N horodatage ») en arbre
 CPicPage -> CPicLayer -> CPicFrame -> CPicShape. Ce module en tire la première image de chaque calque et convertit
-les formes : bords en ultra-twips (2560 par pixel), indices de style dans l'ordre trait, remplissage, remplissage
+les formes : bords en unités de 1/5120 px (fla-decoder supposait 2560 : formes deux fois trop grandes, vérifié
+contre les SWF compilés depuis les mêmes .fla), indices de style dans l'ordre trait, remplissage, remplissage
 (vérifié sur toutes les formes : c'est le seul ordre compatible avec la taille des tables), traits en twips.
-Les instances de symboles (CPicSprite) ne sont pas reliées à leur symbole par fla-decoder : un symbole qui ne fait
-qu'assembler d'autres symboles ne dessine rien. Noms : le flux « Contents » cite chaque flux suivi de son nom.
+Instances de symboles (CPicSprite, CPicSymbol, CPicButton) et bitmaps posés (CPicBitmap) : lus par fla_patch.py et
+fla_archive.py, reliés ici à leur symbole ou à leur image par le numéro de leur flux (« S n », « M n »). Noms : le
+flux « Contents » cite chaque flux suivi de son nom.
 """
-import os, wave
+import base64, io, os, struct, wave
 import olefile
 from fla_decoder import decoder
 from fla_decoder.audio import parse_sound_records, RATE_TABLE
 
-import fla_bitmaps
+import fla_bitmaps, fla_patch  # noqa: F401 (corrige la lecture des images et des instances de fla-decoder)
 
-UNIT = 2560.0
+UNIT = 5120.0
 
 
 def rgba(u):
@@ -33,7 +35,7 @@ def style(f):
         return dict(kind='solid', rgba=rgba(f['color_u32']))
     if f.get('kind') == 'gradient':
         radial = (f['subtype_flags'] & 0x0F) in (2, 3)
-        return dict(kind='radial' if radial else 'linear', m=mat(f['matrix']),
+        return dict(kind='radial' if radial else 'linear', m=mat(f['matrix']), focal=f.get('focal', 0) / 256,
                     stops=[(s['position'] / 255, rgba(s['color_u32'])) for s in f['stops']])
     return None
 
@@ -52,7 +54,8 @@ def shape(sd):
 
 
 def children(node, cls):
-    return [c for c in node.get('children', []) if isinstance(c, dict) and c.get('class') == cls]
+    """enfants d'une classe ; ceux créés par référence de classe MFC sont emballés par fla-decoder (clé child)"""
+    return [c.get('child', c) for c in node.get('children', []) if isinstance(c, dict) and c.get('class') == cls]
 
 
 def frame_elements(fr):
@@ -60,18 +63,38 @@ def frame_elements(fr):
     if fr.get('shape', {}).get('byte_edges'):
         out.append(('shape', shape(fr['shape']), mat(fr.get('matrix'))))
     for c in fr.get('children', []):
-        if isinstance(c, dict) and c.get('class') == 'CPicShape' and c.get('shape', {}).get('byte_edges'):
+        c = c.get('child', c) if isinstance(c, dict) else c
+        if not isinstance(c, dict):
+            continue
+        if c.get('class') == 'CPicShape' and c.get('shape', {}).get('byte_edges'):
             out.append(('shape', shape(c['shape']), mat(c.get('matrix'))))
+        elif c.get('class') in ('CPicSprite', 'CPicSymbol', 'CPicButton') and c.get('use'):
+            out.append(('use',) + c['use'])
+        elif c.get('class') == 'CPicBitmap' and 'bitmap_media_id' in c:
+            out.append(('bitmap', c['bitmap_media_id'], mat(c['bitmap_matrix'])))
     return out
 
 
 def symbol(result):
+    """calques du bas vers le haut (ordre du fichier), première image de chacun ; un calque parent sérialisé dans
+    son premier enfant (masque, guide) suit cet enfant. Guides et dossiers ne sont pas dessinés, un masque découpe
+    les calques dont il est le parent (fla_compose)"""
     page = result.get('body') or {}
+    found = []
+    for layer in children(page, 'CPicLayer'):
+        found.append(layer)
+        parent = layer.get('parent_obj')
+        while parent and parent.get('class') == 'CPicLayer':
+            found.append(parent)
+            parent = parent.get('parent_obj')
+    index = {l['_mfc']: i for i, l in enumerate(found) if l.get('_mfc') is not None}
     layers = []
-    for layer in reversed(children(page, 'CPicLayer')):
+    for layer in found:
         frames = children(layer, 'CPicFrame')
-        if frames:
-            layers.append(dict(elements=frame_elements(frames[0]), guide=layer.get('layer_field_type') == 1))
+        kind, parent = layer.get('layer_kind', 'normal'), index.get(layer.get('parent_idx'))
+        masked = parent is not None and found[parent].get('layer_kind') == 'masque'
+        layers.append(dict(elements=frame_elements(frames[0]) if frames else [], mask=kind == 'masque',
+                           guide=kind in ('guide', 'dossier'), masked_by=parent if masked else None))
     if not any(l['elements'] for l in layers):
         rec = [('shape', shape(r['shape']), mat(r.get('matrix'))) for r in result.get('recovered_shapes', [])
                if r.get('shape', {}).get('byte_edges')]
@@ -113,7 +136,15 @@ def load(path, sound_dir):
         elif kind in ('M', 'Media'):
             im = fla_bitmaps.decode(ole.openstream(s).read())
             if im is not None:
-                doc['raw_bitmaps'][names.get(s) or s] = im
+                name = names.get(s) or s
+                doc['raw_bitmaps'][name] = im
+                buf = io.BytesIO()
+                im.save(buf, 'PNG')
+                doc['bitmaps'][name] = ('data:image/png;base64,' + base64.b64encode(buf.getvalue()).decode(),
+                                        im.width, im.height)
+    number = lambda kinds: {int(s.split()[1]): (names.get(s) or s) for s in streams  # noqa: E731
+                            if s.split()[0] in kinds and len(s.split()) > 1 and s.split()[1].isdigit()}
+    link(doc, number(('S', 'Symbol')), number(('M', 'Media')))
     by_number = {s.split()[1]: s for s in streams if s.split()[0] in ('M', 'Media') and len(s.split()) > 1}
     for rec in parse_sound_records(contents) if contents else []:
         label = (rec.get('media_label') or '').split()
@@ -122,6 +153,22 @@ def load(path, sound_dir):
             doc['sounds'].append(sound(ole.openstream(s).read(), rec, sound_dir))
     ole.close()
     return doc
+
+
+def link(doc, symbols, media):
+    """numéros de flux des instances (« S n ») et des bitmaps posés (« M n ») -> noms dans doc ; les éléments
+    vers un flux absent sont écartés"""
+    tables = dict(use=symbols, bitmap=media)
+    for layers in doc['symbols'].values():
+        for layer in layers:
+            els = []
+            for el in layer['elements']:
+                if el[0] in tables and isinstance(el[1], int):
+                    if el[1] not in tables[el[0]]:
+                        continue
+                    el = (el[0], tables[el[0]][el[1]]) + el[2:]
+                els.append(el)
+            layer['elements'] = els
 
 
 def sound(data, rec, out_dir):

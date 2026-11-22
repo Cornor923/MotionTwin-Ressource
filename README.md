@@ -48,8 +48,9 @@ Seuls Galaxy55 (12 bruitages WAV), Intrusion (49 sons MP3), Teacher Story (151 b
 réglages LabChirp), Rockfaller (79 bruitages, 2 musiques), Monster Hotel (209 bruitages, ambiances et musiques)
 et Uppercup Football (53 bruitages, chants du public et musiques) ont des sons dans l'archive officielle. Chaque son indique sa durée, et le tri par taille range les sons du plus long
 au plus court (ou l'inverse).
-Les fichiers sources `.fla` sont lus aussi : symboles en SVG (composés entiers pour les `.fla` XFL d'Odyssey,
-formes propres de chaque symbole pour les `.fla` binaires), bitmaps ; voir docs/METHODE.md §5.9.
+Les fichiers sources `.fla` sont lus aussi : symboles en SVG composés entiers (XFL d'Odyssey comme `.fla` binaires
+de Flash MX à CS4 : instances, bitmaps posés, masques, filtres, modes de fusion), bitmaps, sons ; voir
+docs/METHODE.md §5.9.
 Pour Kube, les captures de constructions de joueurs (événements de la communauté) ne sont pas montrées.
 Pour Hordes, l'archive ne contient que les clients Flash (carte, exploration des ruines, attaque de la ville) et le
 prototype DeathGrower, pas le site.
@@ -112,6 +113,8 @@ tools/sheets.py            découpe des planches (pixels d'origine), galaxy55.py
 tools/models.py            modèles 3D (.bae, .md) : maillage, OBJ, aperçu (render3d.py)
 tools/fla_items.py         symboles, bitmaps et sons des .fla (xfl.py, fla_bin.py, fla_compose.py, vector_svg.py)
 tools/fla_decoder/         lecteur des .fla binaires repris de eddiemoore/fla-decoder (MIT), avec tools/olefile/ (BSD)
+tools/fla_patch.py         corrections de fla-decoder (formes, instances), fla_archive.py (numéros MFC, calques,
+                           bitmaps posés), fla_filters.py (filtres des clips)
 tools/render_symbols.py    rendu des clips exportés d'un SWF
 tools/swf_diff.py          clips qui diffèrent entre deux versions d'un SWF
 tools/swf_inventory.py     inventaire rapide des balises d'un SWF (sons, bitmaps, symboles exportés…)

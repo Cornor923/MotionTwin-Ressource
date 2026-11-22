@@ -2,13 +2,19 @@
 
 Document : {'symbols': {nom: [calque]}, 'bitmaps': {nom: (data URI, l, h)}}. Calque : {'elements': [...],
 'mask': bool, 'masked_by': indice du calque masque ou None, 'guide': bool}. Élément : ('shape', forme, m),
-('use', nom du symbole, m, couleur), ('bitmap', nom, m), ('group', [éléments], m) ; m = (a, b, c, d, tx, ty) en
-pixels, couleur = (multiplicateurs r, g, b, a, décalages r, g, b, a) ou None. Les calques guides ne sont pas
-dessinés ; un calque masque devient un <mask> (alpha) appliqué aux calques qu'il masque.
+('use', nom du symbole, m, couleur[, filtres, mode de fusion]), ('bitmap', nom, m), ('group', [éléments], m) ;
+m = (a, b, c, d, tx, ty) en pixels, couleur = (multiplicateurs r, g, b, a, décalages r, g, b, a) ou None, filtres :
+voir fla_filters.py. Les calques guides ne sont pas dessinés ; un calque masque devient un <mask> (alpha) appliqué
+aux calques qu'il masque.
 """
+import fla_filters
 import vector_svg as V
 
 DEPTH = 24
+# modes de fusion Flash (numéros SWF) rendus par CSS ; soustraction, inversion, alpha et effacement n'y ont pas
+# d'équivalent et restent en mode normal
+BLEND = {3: 'multiply', 4: 'screen', 5: 'lighten', 6: 'darken', 7: 'difference', 8: 'plus-lighter', 13: 'overlay',
+         14: 'hard-light'}
 
 
 def render(doc, name):
@@ -56,6 +62,13 @@ def elements(svg, doc, els, m, depth, stack, grow=True):
                 continue
             inner = layers(svg, doc, sym, mm, depth + 1, stack | {el[1]})
             attrs = colour(svg, el[3])
+            fx = fla_filters.svg(svg.defs, svg.uid, el[4]) if len(el) > 4 else ''
+            blend = BLEND.get(el[5]) if len(el) > 5 else None
+            attrs += ' style="mix-blend-mode:%s"' % blend if blend else ''
+            if inner and fx:  # filtres dans le repère du parent, transformation de couleur après eux (Flash)
+                out += ['<g%s><g%s><g transform="matrix(%s)">' % (attrs, fx, ' '.join('%g' % v for v in local))]
+                out += inner + ['</g></g></g>']
+                continue
         else:
             bmp = doc['bitmaps'].get(el[1])
             if bmp is None:

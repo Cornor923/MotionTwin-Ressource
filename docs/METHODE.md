@@ -97,7 +97,7 @@ Ce qu'on y trouve :
   `_cinematics.swf` (AS2). `client/img_faces` (100 portraits), `client/img_cine` et deux autres images sont des
   photographies (visages, objets) venues de banques d'images : montrées à la demande de l'utilisateur.
 - La Brute : `www/img/**`, `gfx/*.png`, les arènes (`fla/client/fla/*.png`), trois SWF AS2 (combat, inventaire,
-  tournoi). Le corps des brutes n'existe que dans des `.fla` (`perso.fla`, `mini_perso.fla`), non lus.
+  tournoi). Le corps des brutes n'existe que dans des `.fla` (`perso.fla`, `mini_perso.fla`), assemblés (§5.9).
 - Odyssey : `www/img/**`, `design/heroes_HD`, `fla/map/bmp` (dont 16 `.tga`, vues d'un bateau sous 16 angles),
   `fla/client/gfx/icons.png` (planche) et sa source `icons.gal`, dix SWF AS3, plus `all.swf` (mêmes symboles que
   `heroes.swf` + `monsters.swf`), `game.swf` (jeu compilé qui embarque les autres SWF et des données) et deux
@@ -319,19 +319,45 @@ et leurs sons extraits. Deux formats :
   « ! x y », « | x y », « [ cx cy x y », nombres décimaux ou « #hex.hex » sur 24 bits signés, fraction en 256ᵉ),
   instances `DOMSymbolInstance` (par nom, matrice, transformation de couleur), groupes, bitmaps (`bin/*.dat`),
   calques de masque et de guide. Les symboles sont **composés entiers**, première image de chaque calque.
-- **Binaire** (Flash 5 à CS4, conteneur OLE : tous les autres) — `fla_bin.py` avec **fla-decoder** (MIT,
+- **Binaire** (Flash MX à CS4, conteneur OLE : tous les autres) — `fla_bin.py` avec **fla-decoder** (MIT,
   `tools/fla_decoder/`, et olefile, `tools/olefile/`, ajoutés avec l'accord de l'utilisateur). fla-decoder décode
-  la sérialisation MFC (`CPicPage`, `CPicLayer`, `CPicFrame`, `CPicShape`). Ce module corrige l'ordre des indices de
-  style des bords (trait, remplissage, remplissage : le seul compatible avec la taille des tables sur toutes les
-  formes) et retrouve les noms dans le flux `Contents` (chaque flux y est cité, suivi du nom de l'élément de
-  bibliothèque, puis de son identifiant = numéro du flux). Limite : fla-decoder ne relie pas les instances
-  (`CPicSprite`) à leur symbole et lit mal la structure de certains fichiers CS3/CS4 ; seules les **formes propres**
-  de chaque symbole sont dessinées (les symboles qu'il place ne sont pas assemblés, ce que la fiche indique).
+  la sérialisation MFC (`CPicPage`, `CPicLayer`, `CPicFrame`, `CPicShape`) ; ses fichiers ne sont pas modifiés,
+  `fla_patch.py`, `fla_archive.py` et `fla_filters.py` remplacent à l'import les fonctions qui lisent mal les
+  fichiers de l'archive. Structure relevée sur l'archive, vérifiée contre les SWF compilés depuis les mêmes `.fla`
+  (inventaire de La Brute, Alphabounce) :
+  - numéros des objets MFC : chaque classe nouvelle **et** chaque objet créé prennent un numéro ; fla-decoder ne
+    comptait que les classes, un renvoi vers une classe déclarée tard sortait de sa table et la suite de la page
+    (autres calques) était perdue ;
+  - calques : tous lus (fla-decoder sautait au dernier marqueur de fin : premier calque seul), type (0 normal,
+    1 guide, 4 masque) et calque parent (`ReadObject` : un masque est sérialisé dans le premier calque qu'il masque,
+    les suivants y renvoient par son numéro) ; guides et dossiers non dessinés, masques appliqués ; calques du bas
+    vers le haut dans l'ordre du fichier ; schéma 13 (CS4) : un octet de plus ;
+  - images : 10 octets finaux aux schémas 26 (CS3) et 29 (CS4) ;
+  - formes : unité 1/5120 px (fla-decoder supposait 1/2560 : formes deux fois trop grandes), indices de style
+    dans l'ordre trait, remplissage, remplissage, octet nul après chaque bord droit (données de schéma 5 dans une
+    forme de schéma 3 et plus ; pas en Flash MX), dégradés à en-tête de 8 octets (point focal), courbes cubiques
+    d'édition (copie des bords, format non décodé) sautées en cherchant la structure suivante ;
+  - instances (`CPicSprite` clip, `CPicSymbol` graphique inconnu de fla-decoder, `CPicButton` ; schémas 19 et 22
+    CS4) : matrice, transformation de couleur, numéro du flux « S n » du symbole posé, nom d'instance, filtres,
+    mode de fusion (premier octet du bloc qui suit les filtres, numéros SWF ; CS4 : bloc de 126 octets au lieu
+    de 24, sa matrice 4 × 5 n'est pas interprétée) ; bitmaps posés (`CPicBitmap`, numéro du flux « M n ») ;
+  - filtres (`fla_filters.py`) : ombre portée, flou, lueur, réglage de couleur (luminosité, contraste, saturation,
+    teinte convertis par les formules de Flash : matrices identiques à celles des SWF) ; un filtre désactivé
+    n'est pas rendu (Flash ne l'exporte pas).
+  Les noms viennent du flux `Contents` (chaque flux y est cité, suivi du nom de l'élément de bibliothèque).
+  Les symboles sont **composés entiers**, comme les XFL. Sur les 7 073 symboles binaires de l'archive, 487 restent
+  lus en partie (structures non reconnues : la fin d'un symbole peut manquer).
 
 Rendu (`vector_svg.py`, `fla_compose.py`, le même pour les deux formats) : chaque remplissage est reconstitué en
 enchaînant ses bords (ceux de l'autre côté à l'envers), chaque trait en enchaînant les bords de son style ;
-dégradés linéaires et radiaux, remplissages bitmap, transformations de couleur (`feColorMatrix`), masques (`mask`
-alpha). Les bitmaps sont incorporés en data URI (un SVG affiché par `<img>` ne charge pas de fichier externe).
+dégradés linéaires et radiaux (point focal), remplissages bitmap, transformations de couleur (`feColorMatrix`),
+masques (`mask` alpha), filtres (primitives SVG : flou gaussien de même variance que le flou en boîte de Flash,
+lueur et ombre = alpha flouté × intensité, teinté, sous l'objet ou en dedans), modes de fusion (`mix-blend-mode` :
+produit, écran, éclaircir, assombrir, différence, addition, incrustation, lumière crue ; soustraction, inversion,
+alpha et effacement restent normaux). Un bord qui a le même remplissage des deux côtés n'entre pas dans le contour
+de ce remplissage (sinon la règle pair-impair y perce des trous). Les bitmaps sont incorporés en data URI (un SVG
+affiché par `<img>` ne charge pas de fichier externe). FFDec ignore certains modes de fusion : un symbole rendu
+depuis le SWF peut alors différer du même symbole rendu depuis le `.fla` (planches de l'inventaire de La Brute).
 
 Bitmaps (`fla_bitmaps.py`) : même format dans les flux `M n` des binaires et les `bin/*.dat` des XFL — `03 05`
 sans perte 32 bits (blocs zlib, A R G B prémultiplié), `03 03` 8 bits à palette A R G B, ou JPEG ; vérifié au pixel
@@ -455,7 +481,8 @@ d'images, `sh` planche (WebP ou PNG), `cols` colonnes de la planche, `fps` caden
 - Galaxy55 : paramètres LabChirp non décodés ; `.bae` sans couleurs de matériaux (gris) ; en `file://` le navigateur
   refuse la texture dans WebGL, la porte s'affiche alors sans texture (l'aperçu PNG la montre) ; données Haxe chiffrées
   de explore.swf non lues ; `ui.fla` / `ui.swf` vides.
-- `.fla` binaires : formes propres de chaque symbole seulement (pas d'assemblage des symboles placés, §5.9).
+- `.fla` binaires : première image de chaque calque ; 487 symboles sur 7 073 lus en partie ; la matrice 4 × 5 des
+  instances CS4 n'est pas interprétée ; soustraction, inversion, alpha et effacement rendus en mode normal (§5.9).
 - Les champs texte dynamiques (remplis par le code du jeu) restent vides dans les rendus ; les textes statiques sont là.
 - Rendus à 2 px par pixel Flash : agrandir au-delà dans la fiche pixellise ; les formes, elles, sont en SVG.
 - Formes animées, voir §6 ; clips AS3 : timeline seulement, sans leur code.
@@ -605,3 +632,11 @@ dans `gal.py`.
 « Img » ; drapeaux d'un jeu d'icônes tiers exclus) et Dinocard (dossier `Dinocard/` : illustrations des 389 cartes,
 cadres, boosters, interface, icônes, douze SWF, onze `.fla`). 2 273 et 3 744 ressources ; 37 235 en tout, `gen/`
 465 Mo (Dinocard 68 Mo, SkyWar 29 Mo), `catalog.js` 20 Mo.
+
+**2026-11-22** — `.fla` binaires assemblés (§5.9) : la lecture de fla-decoder est corrigée (numéros des objets MFC,
+tous les calques, masques et guides, unité des formes, bords droits, dégradés, images et instances CS3 et CS4,
+bitmaps posés, filtres, modes de fusion) et vérifiée contre les SWF compilés depuis les mêmes `.fla`. Les brutes de
+La Brute (`perso.fla`, `mini_perso.fla`), les icônes et le tableau d'armes de l'inventaire, les croquis de Dinocard,
+les symboles d'Alphabounce, de CaféJeux, de SkyWar… sont composés entiers. Symboles SVG : La Brute 906 → 1 371,
+Alphabounce 1 679 → 2 016, CaféJeux 1 648 → 1 970, SkyWar 800 → 984, CroqueMotel 318 → 445, Kingdom 156 → 232. XFL
+d'Odyssey : point focal des dégradés radiaux. 38 998 ressources en tout, `gen/` 533 Mo, `catalog.js` 21 Mo.
