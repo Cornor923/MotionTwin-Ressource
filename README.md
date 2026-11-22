@@ -5,7 +5,7 @@ Motion Twin les a publiées dans son archive [motion-twin/WebGamesArchives](http
 (licence CC BY-NC-SA 4.0). Uniquement du matériel d'origine : rien de refait après coup (pas de remake, pas de création
 de fans), et les éléments tiers présents dans l'archive (images jQuery UI, logos de presse, logos de paiement) sont exclus.
 
-Jeux : **Mush** (2012), **Alphabounce** (2007), **Galaxy55** (alpha, 2012), **Hordes** (2008), **Teacher Story** (2013), **Rockfaller** (2015), **Monster Hotel** (2015), sept jeux Muxxu
+Jeux : **Mush** (2012), **Alphabounce** (2007), **Galaxy55** (alpha, 2012), **Hordes** (2008), **Teacher Story** (2013), **Rockfaller** (2015), **Monster Hotel** (2015), **Uppercup Football** (2014), sept jeux Muxxu
 (**Kube** 2010, **Kingdom** 2009, **CroqueMotel** 2011, **Intrusion** 2009, **La Brute** 2010, **Odyssey** 2011,
 **Snake** 2010) et deux plateformes rangées par jeu : **CaféJeux** (2007, le café et ses treize jeux de société) et
 **KadoKado** (2004, pour l'instant son Alphabounce, première version du casse-briques).
@@ -40,8 +40,8 @@ des ressources. Seuls les fichiers publiés par Motion Twin sont montrés, pas l
 par les portages du jeu.
 
 Seuls Galaxy55 (12 bruitages WAV), Intrusion (49 sons MP3), Teacher Story (151 bruitages et musiques, plus 3
-réglages LabChirp), Rockfaller (79 bruitages, 2 musiques) et Monster Hotel (209 bruitages, ambiances et musiques)
-ont des sons dans l'archive officielle. Chaque son indique sa durée, et le tri par taille range les sons du plus long
+réglages LabChirp), Rockfaller (79 bruitages, 2 musiques), Monster Hotel (209 bruitages, ambiances et musiques)
+et Uppercup Football (53 bruitages, chants du public et musiques) ont des sons dans l'archive officielle. Chaque son indique sa durée, et le tri par taille range les sons du plus long
 au plus court (ou l'inverse).
 Les fichiers sources `.fla` sont lus aussi : symboles en SVG (composés entiers pour les `.fla` XFL d'Odyssey,
 formes propres de chaque symbole pour les `.fla` binaires), bitmaps ; voir docs/METHODE.md §5.9.

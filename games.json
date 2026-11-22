@@ -909,6 +909,48 @@
       }
     },
     {
+      "id": "uppercup",
+      "name": "Uppercup Football",
+      "year": 2014,
+      "folder": "Uppercup",
+      "summary": "Football d'arcade survolté, sur le web et mobile.",
+      "notes": [
+        "Atlas découpés d'après leurs fichiers TexturePacker."
+      ],
+      "scan": ["assets"],
+      "sheets": [
+        {"file": "assets/gear.png", "slices_from": ["texturepacker", "assets/gear.xml"], "bleed": 2},
+        {"file": "assets/intro.png", "slices_from": ["texturepacker", "assets/intro.xml"], "bleed": 2},
+        {"file": "assets/shirt.png", "slices_from": ["texturepacker", "assets/shirt.xml"], "bleed": 2},
+        {"file": "assets/skinBlack.png", "slices_from": ["texturepacker", "assets/skinBlack.xml"], "bleed": 2},
+        {"file": "assets/skinWhite.png", "slices_from": ["texturepacker", "assets/skinWhite.xml"], "bleed": 2},
+        {
+          "file": "assets/misc.png",
+          "grid": 16,
+          "slices": [
+            {"name": "ballTexture", "rect": [0, 0, 24, 36], "cols": 2},
+            {"name": "smoke", "rect": [0, 64, 16, 16]}
+          ]
+        }
+      ],
+      "swf": [
+        {"file": "assets/gfx.swf", "work": "uppercup/gfx"}
+      ],
+      "collections": {
+        "assets": "Jeu",
+        "assets/gear.png": "Jeu · terrain et décor (atlas)",
+        "assets/intro.png": "Jeu · introduction et interface (atlas)",
+        "assets/shirt.png": "Jeu · maillots (atlas)",
+        "assets/skinBlack.png": "Jeu · joueurs, peau foncée (atlas)",
+        "assets/skinWhite.png": "Jeu · joueurs, peau claire (atlas)",
+        "assets/misc.png": "Jeu · ballon et fumée (planche)",
+        "assets/gfx.swf": "Jeu · interface et effets (SWF)",
+        "assets/screenshots": "Captures",
+        "assets/otherGames": "Autres jeux Motion Twin",
+        "assets/sfx": "Sons"
+      }
+    },
+    {
       "id": "cafejeux",
       "name": "CaféJeux",
       "year": 2007,

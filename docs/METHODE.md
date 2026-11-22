@@ -432,6 +432,8 @@ d'images, `sh` planche (WebP ou PNG), `cols` colonnes de la planche, `fps` caden
   icônes `assets/ic` sont le cube de Twinoid.
 - Monster Hotel : rien d'exclu (`common/obfu.key`, clé d'obfuscation, et les bases `.cdb` ne sont pas des
   ressources). Le fond libre de l'atlas `rooms0.png` est noir opaque : déclaré en `background`.
+- Uppercup Football : rien d'exclu ; `obj/uppercupResources.swf` et `obj/wtfootResources.swf` ne contiennent que des
+  polices (non rendus).
 - Partout : polices embarquées, `Thumbs.db`, tableurs de données.
 
 ## 10. Limites connues
@@ -571,3 +573,7 @@ décoration, monstres, chambres, interface), fonds, icônes des applications (do
 et de distinctions tirées de la banque CastleDB `data/goals.img` (`cdb_images.py`, noms d'après `goals.cdb`),
 209 sons (bruitages, ambiances, bonheur des clients, musiques). 1 578 ressources. Durée des sons mesurée pour tout le
 catalogue (`audio.py`) et prise en compte par le tri par taille.
+
+**2026-11-22** — Uppercup Football (dossier `Uppercup/`) : cinq atlas TexturePacker découpés (terrain, interface,
+maillots, joueurs), `misc.png` découpée d'après `src/m/Game.hx` (ballon, fumée, grille de 16 px), `gfx.swf` (41 clips),
+captures, 53 sons. 1 268 ressources ; 30 032 en tout, `gen/` 364 Mo, `catalog.js` 17 Mo.
