@@ -67,7 +67,7 @@ MT.Grid = class {
     const sub = [MT.dims(item)];
     if (item.f > 1) sub.push(`${item.f} img`);
     if (item.t === 'mdl') sub.push(`${item.x.tris.toLocaleString('fr-FR')} triangles`);
-    else if (item.t === 'snd' || !item.w) sub.push(MT.bytes(item.z));
+    else if (item.t === 'snd' || !item.w) sub.push(...(item.dur ? [MT.duration(item.dur)] : []), MT.bytes(item.z));
     const card = MT.el('button', { class: 'card', title: item.p, onclick: () => this.onOpen(index) },
       thumb,
       MT.el('span', { class: `badge t-${item.t}`, text: MT.TYPES[item.t].label.split(' ')[0] }),

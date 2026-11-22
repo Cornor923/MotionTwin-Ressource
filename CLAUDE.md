@@ -58,6 +58,8 @@ Après une reconstruction, versionner `catalog.js` et `gen/` avec `games.json` (
   récupérer qu'une partie du dossier (KadoKado : `Games/Alphabounce` ; ajouter les autres jeux là quand on les intègre).
 - Atlas TexturePacker (Rockfaller) : `slices_from: ["texturepacker", "x.xml"]` + `bleed: 2` (bords répétés par
   l'empaqueteur, ignorés).
+- Banques d'images CastleDB (`.img`, Monster Hotel) : `cdb_images` de games.json, `cdb_images.py` (noms tirés du
+  `.cdb`). Un atlas au fond opaque (rooms0 de Monster Hotel) prend `background`.
 - Planche sans découpe dans le code : `gap` (écart de regroupement) et `groups` (rectangles = un morceau) règlent
   les morceaux ; `marks` peut lister des rectangles qui ne contiennent que des repères (Teacher Story).
 - Découpes lues dans le code d'un jeu : `slices_from` de games.json -> registre `SLICES` de `sheets.py` (Mush :

@@ -11,6 +11,8 @@ MT.prepare = () => {
     item._sg = item.sg ? partOrder[`${item.g}|${item.sg}`] : -1;
     item._q = MT.fold([item.n, item.p, item.c, (item.k || []).join(' '), (item.dup || []).join(' ')].join(' '));
     item._area = (item.w || 0) * (item.h || 0) / MT.renderScale(item) ** 2;
+    item._snd = item.t === 'snd' ? 1 : 0;  // tri par taille : les sons après les images, rangés par durée
+    item._dur = item.dur || 0;
     item._anim = (item.f || 1) > 1;
   });
 };
@@ -54,8 +56,8 @@ MT.SORTS = {
   coll: (a, b) => a._g - b._g || a._sg - b._sg || a.c.localeCompare(b.c, 'fr') || byPath(a, b),
   name: (a, b) => byName(a, b) || byPath(a, b),
   'name-desc': (a, b) => byName(b, a) || byPath(a, b),
-  'area-desc': (a, b) => b._area - a._area || byName(a, b),
-  'area-asc': (a, b) => a._area - b._area || byName(a, b),
+  'area-desc': (a, b) => a._snd - b._snd || b._area - a._area || b._dur - a._dur || byName(a, b),
+  'area-asc': (a, b) => a._snd - b._snd || a._area - b._area || a._dur - b._dur || byName(a, b),
   'frames-desc': (a, b) => (b.f || 1) - (a.f || 1) || byName(a, b),
   'weight-desc': (a, b) => (b.z || 0) - (a.z || 0) || byName(a, b),
 };

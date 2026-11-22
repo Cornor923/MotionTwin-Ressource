@@ -44,6 +44,12 @@ MT.gameName = (id, sub) => {  // « CaféJeux · Anticorp's » pour un sous-jeu
 // taille montrée à l'utilisateur : les clips sont rendus à 2 px par pixel Flash
 MT.renderScale = (item) => (item.t === 'clip' ? 2 : 1);
 
+MT.duration = (seconds) => {  // « 3 min 28 s », « 12,5 s »
+  if (seconds < 60) return `${(Math.round(seconds * 10) / 10).toLocaleString('fr-FR')} s`;
+  const s = Math.round(seconds);
+  return `${Math.floor(s / 60)} min ${String(s % 60).padStart(2, '0')} s`;
+};
+
 MT.dims = (item) => {
   if (!item.w) return '';
   const k = MT.renderScale(item);

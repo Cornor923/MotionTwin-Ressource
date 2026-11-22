@@ -188,7 +188,15 @@ fichier (les deux sont montrés). Chaque animation garde ses délais, sa planche
   Le WebP est relu et comparé au PNG pixel à pixel, couleurs sous les pixels transparents comprises (`exact`) ; au
   moindre écart, ou s'il est plus lourd, le PNG reste. L'encodage (méthode 6) est lent : il est gardé dans
   `MT_WORK/webp/<sha1 du PNG>` et une reconstruction ne réencode que les planches nouvelles ;
-- **planches** (§5.7) dans `gen/<jeu>/sheets/`, **modèles 3D** et réglages LabChirp (§5.8).
+- **planches** (§5.7) dans `gen/<jeu>/sheets/`, **modèles 3D** et réglages LabChirp (§5.8) ;
+- **durée des sons** (`audio.py`, sans dépendance) : WAV = taille du bloc `data` / octets par seconde ; MP3 = somme
+  des trames MPEG (ID3 et trame d'en-tête Xing/Info ignorées) ; OGG = position de la dernière page / fréquence Vorbis
+  (Opus : 48 kHz). Les 502 sons du catalogue sont mesurés ; la page affiche la durée et trie par elle (« Plus grandes /
+  plus longs » : images par surface, puis sons par durée) ;
+- **banques d'images CastleDB** (`cdb_images`, `cdb_images.py`) : un `.img` est un JSON {md5 : image en base64} ;
+  chaque image est écrite telle quelle dans `gen/<jeu>/cdb/` (octets décodés, base64 de Haxe complété de ses « = »)
+  et nommée d'après la ligne du `.cdb` dont une colonne « image » renvoie à son md5 (Monster Hotel :
+  `data/goals.img`, objets et distinctions, 146 noms sur 155 images).
 
 Types : `img` (image), `gif` (GIF animé), `anim` (GraphicsGale), `clip` (clip Flash rendu), `svg` (forme vectorielle),
 `snd` (son), `lch` (réglage de son LabChirp), `mdl` (modèle 3D).
@@ -383,6 +391,7 @@ rendu » ; la solution de kadokadeo est de faire rendre ce clip image par image 
 | `games[].swf[]` | `file`, `work`, et au besoin `also` (copies identiques) ou `variant_of` (autre version) |
 | `games[].sheets[]` | planches à découper : `file`, `slices` (`name`, `rect`, `cols`, `rows`, `names`), `slices_from`, `grid`, `cells`, `marks`, `gap`, `groups`, `bleed`, `background` (§5.7) |
 | `games[].models[]` | modèles 3D : `file`, et pour un `.md` `texture` + `cell` (§5.8) |
+| `games[].cdb_images[]` | banques d'images CastleDB : `img` (`.img`) et `cdb` (noms) (§5.6) |
 | `games[].collections` | préfixe de chemin → nom de collection |
 | `games[].parts`, `root_part` | jeux d'une plateforme (`id`, `name`, `path`) ; nom des ressources hors de ces jeux |
 | `games[].fetch` | sous-dossiers à récupérer au lieu de tout `folder` (KadoKado : `KadoKado/Games/Alphabounce`) |
@@ -393,9 +402,9 @@ rendu » ; la solution de kadokadeo est de faire rendre ce clip image par image 
 (`<jeu>:<chemin>[#…]`), `g` jeu, `c` collection, `t` type, `n` nom, `s` image affichée, `p` chemin dans l'archive (`#id`,
 `#shapeN`, `#bitmapN`, `#soundN` dans un SWF), `u` lien GitHub, `w` `h` taille (clips : pixels du rendu ×2), `f` nombre
 d'images, `sh` planche (WebP ou PNG), `cols` colonnes de la planche, `fps` cadence, `d` délais en ms (`.gal`), `fmt` format,
-`z` poids, `k` mots-clés, `sg` jeu d'une plateforme, `dup` autres emplacements, `o` fichier d'origine (`.gal`), `vec` vectoriel, `px` pixel art,
+`z` poids, `dur` durée d'un son (s), `k` mots-clés, `sg` jeu d'une plateforme, `dup` autres emplacements, `o` fichier d'origine (`.gal`), `vec` vectoriel, `px` pixel art,
 `x` infos SWF (`swf`, `id`, `timeline`, `labels`, `owners`, `same`), de planche (`sheet`, `rect`, `cell`, `slice`,
-`blocks`, `sheet_dup`), de modèle (`objects`, `tris`, `mats`, `up`, `mesh`, `obj`, `texture`, `script`) ou de réglage
+`blocks`, `sheet_dup`), de banque CastleDB (`cdb`, `md5`, `uses`), de modèle (`objects`, `tris`, `mats`, `up`, `mesh`, `obj`, `texture`, `script`) ou de réglage
 (`header`, `snd`, `snd_name`, `snd_id`).
 
 ## 9. Exclusions (ce qui n'est pas de Motion Twin)
@@ -421,6 +430,8 @@ d'images, `sh` planche (WebP ou PNG), `cols` colonnes de la planche, `fps` caden
 - Rockfaller : rien d'exclu. Beaucoup d'objets à collectionner (`www/img/goals`) sont des clins d'œil à d'autres
   licences (Pokéball, Triforce, Pac-Man, Tetris, casque de stormtrooper…) : dessins de Motion Twin, gardés. Les
   icônes `assets/ic` sont le cube de Twinoid.
+- Monster Hotel : rien d'exclu (`common/obfu.key`, clé d'obfuscation, et les bases `.cdb` ne sont pas des
+  ressources). Le fond libre de l'atlas `rooms0.png` est noir opaque : déclaré en `background`.
 - Partout : polices embarquées, `Thumbs.db`, tableurs de données.
 
 ## 10. Limites connues
@@ -554,3 +565,9 @@ de planche `marks` en rectangles, `gap` et `groups`. 3 590 ressources ; 26 069 e
 (dossier `Rockfaller/`, Rockfaller Journey) : atlas TexturePacker découpés d'après leur XML (§5.7, `atlas.py`,
 `bleed`), mondes, tutoriel, icônes des applications, site (objets à collectionner, captures, textes par langue),
 79 bruitages et 2 musiques, `loading.swf`. 1 116 ressources ; 27 186 en tout, `gen/` 341 Mo, `catalog.js` 15 Mo.
+
+**2026-11-22** — Monster Hotel (dossier `MonsterHotel/`) : dix atlas TexturePacker découpés (décor de la rue,
+décoration, monstres, chambres, interface), fonds, icônes des applications (dont celles de Noël), 155 icônes d'objets
+et de distinctions tirées de la banque CastleDB `data/goals.img` (`cdb_images.py`, noms d'après `goals.cdb`),
+209 sons (bruitages, ambiances, bonheur des clients, musiques). 1 578 ressources. Durée des sons mesurée pour tout le
+catalogue (`audio.py`) et prise en compte par le tri par taille.

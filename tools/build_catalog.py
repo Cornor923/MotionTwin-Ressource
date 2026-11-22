@@ -6,7 +6,7 @@ rendus par render_symbols.py, formes SVG / bitmaps / sons exportés par FFDec (r
 des planches découpées (sheets.py), modèles 3D (models.py), réglages de son LabChirp (.lch, avec le son du même nom),
 symboles, bitmaps et sons des .fla (fla_items.py).
 """
-import fnmatch, hashlib, json, os, re, shutil, subprocess, sys, time
+import collections, fnmatch, hashlib, json, os, re, shutil, subprocess, sys, time
 import numpy as np
 from PIL import Image
 
@@ -14,7 +14,7 @@ HERE = os.path.dirname(os.path.abspath(__file__))
 ROOT = os.path.dirname(HERE)
 sys.path.insert(0, HERE)
 sys.path.insert(0, os.path.join(HERE, 'flash'))
-import compact, fla_items, gal, models, parts, presets, sheets, swf_items
+import audio, cdb_images, compact, fla_items, gal, models, parts, presets, sheets, swf_items
 
 WORK = os.environ.get('MT_WORK', os.path.join(os.path.expanduser('~'), 'motiontwin-assets-work'))
 GEN = os.path.join(ROOT, 'gen')
@@ -153,10 +153,8 @@ class Game:
 
 
 def git_commit(path):
-    try:
-        return subprocess.check_output(['git', '-C', path, 'rev-parse', 'HEAD'], text=True).strip()
-    except Exception:
-        return None
+    out = subprocess.run(['git', '-C', path, 'rev-parse', 'HEAD'], capture_output=True, text=True)
+    return out.stdout.strip() or None
 
 
 def main():
@@ -172,21 +170,22 @@ def main():
         g.scan()
         presets.pair(g)
         sheets.add_sheets(g, sys.modules[__name__])
-        models.add_models(g, sys.modules[__name__])
+        for extra in (models.add_models, cdb_images.add):  # modèles 3D, banques d'images CastleDB
+            extra(g, sys.modules[__name__])
         for entry in gcfg.get('swf', []):
             swf_items.add_swf(g, entry, sys.modules[__name__])
         fla_items.add_fla(g, sys.modules[__name__])
         sheets.finish(g)
         for it in g.items:
             it.setdefault('k', words(it['n']))
+            audio.measure(it, ROOT)  # durée des sons (`dur`, en secondes)
         parts.assign(gcfg, g.items)
         games.append(dict(id=gcfg['id'], name=gcfg['name'], year=gcfg['year'], folder=gcfg['folder'],
                           summary=gcfg['summary'], notes=gcfg.get('notes', []), count=len(g.items),
                           swf=[dict(file=e['file'], also=e.get('also', [])) for e in gcfg.get('swf', [])],
                           **parts.summary(gcfg, g.items)))
         items += g.items
-        kinds = {t: sum(it['t'] == t for it in g.items) for t in dict.fromkeys(it['t'] for it in g.items)}
-        print('  %d ressources %s' % (len(g.items), kinds))
+        print('  %d ressources %s' % (len(g.items), dict(collections.Counter(it['t'] for it in g.items))))
     catalog = dict(generated=time.strftime('%Y-%m-%d'), repo=cfg['repo'], commit=git_commit(archive),
                    license=cfg['license'], games=games, items=items)
     with open(os.path.join(ROOT, 'catalog.js'), 'w', encoding='utf-8', newline='\n') as f:

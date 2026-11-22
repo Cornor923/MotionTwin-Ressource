@@ -20,6 +20,7 @@ MT.detailInfo = (item, $) => {
     if (item.fps) anim += ` · ${Math.round(item.fps * 100) / 100} img/s`;
     rows.push(['Images', anim]);
   }
+  if (item.dur) rows.push(['Durée', MT.duration(item.dur)]);
   if (item.fmt) rows.push(['Format', item.fmt]);
   if (item.z && (!item.x || item.t === 'mdl' || item.t === 'lch')) rows.push(['Poids', MT.bytes(item.z)]);
   const x = item.x || {};
@@ -40,6 +41,10 @@ MT.detailInfo = (item, $) => {
     if (x.slice) rows.push(['Découpe du jeu', x.slice]);
     if (x.blocks) rows.push(['Utilisée par', el('span', {}, x.blocks.map((b, i) => [i ? el('br') : '', b]))]);
     if (x.sheet_dup) rows.push(['Planche aussi dans', x.sheet_dup.join(', ')]);
+  }
+  if (x.md5) {
+    rows.push(['Banque d\'images', `${item.p.split('#')[0]} (CastleDB)`]);
+    if (x.uses && x.uses.length) rows.push(['Utilisée par', x.uses.join(', ')]);
   }
   if (x.fla) {
     rows.push(['Fichier .fla', `${x.fla} (${x.kind})`]);
