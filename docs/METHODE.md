@@ -444,6 +444,9 @@ d'images, `sh` planche (WebP ou PNG), `cols` colonnes de la planche, `fps` caden
 - Dinoparc : `www/img/firefox.gif` (bannière de Firefox, Mozilla) et `www/img/habbo.gif` (bannière de Habbo, Sulake).
   Le « Zapping Internet » (`www/img/zap`) annonce des jeux Motion Twin : gardé.
 - La Bourinette : rien d'exclu. Les trois `.xcf` de `www/img/help` (fichiers GIMP) sont lus par `xcf.py` (§5.6).
+- SkyWar : `web/www/gfx/flags/` (141 drapeaux de pays et 104 emblèmes d'organisations : ONU, OTAN, Croix-Rouge,
+  anneaux olympiques…), jeux d'icônes génériques d'un tiers, pas des dessins de Motion Twin.
+- Dinocard : rien d'exclu ; `client/swf/code.swf` et `client/fla/portrait/portrait.swf` n'ont que du code (non rendus).
 - Partout : polices embarquées, `Thumbs.db`, tableurs de données.
 
 ## 10. Limites connues
@@ -597,3 +600,8 @@ ressources ; 31 214 en tout, `gen/` 364 Mo, `catalog.js` 17 Mo.
 trois `.xcf` de La Bourinette donnent 4 images de plus (trois compositions et la capture non assombrie de
 `maravision-explain`) ; le calque noir uni qui l'assombrit n'est pas une ressource. Lecture des `.gal` déplacée
 dans `gal.py`.
+
+**2026-11-22** — SkyWar (dossier `SkyWar/` : site, avatars, bitmaps et SWF du client, cinq `.fla`, le `.xcf` du bouton
+« Img » ; drapeaux d'un jeu d'icônes tiers exclus) et Dinocard (dossier `Dinocard/` : illustrations des 389 cartes,
+cadres, boosters, interface, icônes, douze SWF, onze `.fla`). 2 273 et 3 744 ressources ; 37 235 en tout, `gen/`
+465 Mo (Dinocard 68 Mo, SkyWar 29 Mo), `catalog.js` 20 Mo.

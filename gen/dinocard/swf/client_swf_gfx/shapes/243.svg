@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<svg xmlns:ffdec="https://www.free-decompiler.com/flash" xmlns:xlink="http://www.w3.org/1999/xlink" ffdec:objectType="shape" height="128.0px" width="558.6px" xmlns="http://www.w3.org/2000/svg">
+  <g transform="matrix(1.0, 0.0, 0.0, 1.0, 0.05, 64.0)">
+    <path d="M3.95 -63.0 L85.95 -63.0 Q87.6 -63.0 88.8 -61.8 89.95 -60.65 89.95 -59.0 L89.95 59.0 Q89.95 60.65 88.8 61.85 87.6 63.0 85.95 63.0 L3.95 63.0 Q2.3 63.0 1.15 61.85 -0.05 60.65 -0.05 59.0 L-0.05 -59.0 Q-0.05 -60.65 1.15 -61.8 2.3 -63.0 3.95 -63.0" fill="#ff0000" fill-rule="evenodd" stroke="none"/>
+    <path d="M99.05 -60.4 Q98.45 -59.8 98.45 -59.0 L98.45 59.0 Q98.45 59.8 99.05 60.4 L99.05 60.45 Q99.65 61.0 100.45 61.0 L553.55 61.0 Q554.35 61.0 554.95 60.45 L555.0 60.4 Q555.55 59.8 555.55 59.0 L555.55 -59.0 Q555.55 -59.8 555.0 -60.4 L554.95 -60.4 Q554.35 -61.0 553.55 -61.0 L100.45 -61.0 Q99.65 -61.0 99.05 -60.4 M97.65 -61.8 Q98.8 -63.0 100.45 -63.0 L553.55 -63.0 Q555.2 -63.0 556.4 -61.8 557.55 -60.65 557.55 -59.0 L557.55 59.0 Q557.55 60.65 556.4 61.85 555.2 63.0 553.55 63.0 L100.45 63.0 Q98.8 63.0 97.65 61.85 96.45 60.65 96.45 59.0 L96.45 -59.0 Q96.45 -60.65 97.65 -61.8" fill="#0d4f6a" fill-rule="evenodd" stroke="none"/>
+    <pattern height="2" id="PatternID_243_1" overflow="visible" patternTransform="matrix(1.0, 0.0, 0.0, 1.0, 257.0, -18.0)" patternUnits="userSpaceOnUse" viewBox="0 0 2 2" width="2">
+      <image height="2" style="image-rendering:optimizeSpeed; image-rendering:pixelated" width="2" xlink:href="data:image/PNG;base64,iVBORw0KGgoAAAANSUhEUgAAAAIAAAACCAYAAABytg0kAAAAFElEQVR4XmMQLZn7nwEGxItn/wcAI8YESjBJn5UAAAAASUVORK5CYII="/>
+    </pattern>
+    <path d="M99.05 -60.4 Q99.65 -61.0 100.45 -61.0 L553.55 -61.0 Q554.35 -61.0 554.95 -60.4 L555.0 -60.4 Q555.55 -59.8 555.55 -59.0 L555.55 59.0 Q555.55 59.8 555.0 60.4 L554.95 60.45 Q554.35 61.0 553.55 61.0 L100.45 61.0 Q99.65 61.0 99.05 60.45 L99.05 60.4 Q98.45 59.8 98.45 59.0 L98.45 -59.0 Q98.45 -59.8 99.05 -60.4" ffdec:fill-bitmapId="242" fill-rule="evenodd" style="fill:url(#PatternID_243_1)"/>
+    <path d="M97.65 -61.8 Q98.8 -63.0 100.45 -63.0 L553.55 -63.0 Q555.2 -63.0 556.4 -61.8 557.55 -60.65 557.55 -59.0 L557.55 59.0 Q557.55 60.65 556.4 61.85 555.2 63.0 553.55 63.0 L100.45 63.0 Q98.8 63.0 97.65 61.85 96.45 60.65 96.45 59.0 L96.45 -59.0 Q96.45 -60.65 97.65 -61.8 Z" fill="none" stroke="#ffffff" stroke-linecap="round" stroke-linejoin="round" stroke-width="2.0"/>
+    <pattern height="2" id="PatternID_243_2" overflow="visible" patternTransform="matrix(1.0, 0.0, 0.0, 1.0, 0.0, -1.0)" patternUnits="userSpaceOnUse" viewBox="0 0 2 2" width="2">
+      <image height="2" style="image-rendering:optimizeSpeed; image-rendering:pixelated" width="2" xlink:href="data:image/PNG;base64,iVBORw0KGgoAAAANSUhEUgAAAAIAAAACCAYAAABytg0kAAAAFElEQVR4XmMQLZn7nwEGxItn/wcAI8YESjBJn5UAAAAASUVORK5CYII="/>
+    </pattern>
+    <path d="M2.0 -1.0 L2.0 1.0 0.0 1.0 0.0 -1.0 2.0 -1.0" ffdec:fill-bitmapId="242" fill-rule="evenodd" style="fill:url(#PatternID_243_2)"/>
+  </g>
+</svg>
