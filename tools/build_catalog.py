@@ -14,7 +14,7 @@ HERE = os.path.dirname(os.path.abspath(__file__))
 ROOT = os.path.dirname(HERE)
 sys.path.insert(0, HERE)
 sys.path.insert(0, os.path.join(HERE, 'flash'))
-import audio, cdb_images, compact, fla_items, gal, models, parts, presets, sheets, swf_items
+import audio, cdb_images, fla_items, gal, models, parts, presets, sheets, swf_items, xcf
 
 WORK = os.environ.get('MT_WORK', os.path.join(os.path.expanduser('~'), 'motiontwin-assets-work'))
 GEN = os.path.join(ROOT, 'gen')
@@ -101,7 +101,9 @@ class Game:
                         self.add(dict(i=path, t='snd', n=os.path.splitext(fn)[0], s=rel(full), p=path,
                                       z=os.path.getsize(full), u=self.source_url(path)))
                     elif ext == '.gal':
-                        self.gal(full, path)
+                        gal.add(self, full, path, sys.modules[__name__])
+                    elif ext == '.xcf':
+                        xcf.add(self, full, path, sys.modules[__name__])
                     elif ext == '.lch':
                         self.add(presets.item(self, full, path, sys.modules[__name__]))
 
@@ -133,23 +135,6 @@ class Game:
             if int(np.abs(premultiplied(Image.open(full)) - mine).max()) <= 1:
                 return item
         return None
-
-    def gal(self, full, path):
-        frames, delays = gal.frames(full)
-        out = os.path.join(GEN, self.cfg['id'], 'gal', os.path.splitext(path)[0])
-        os.makedirs(os.path.dirname(out), exist_ok=True)
-        frames[0].save(out + '.png', optimize=True)
-        item = dict(i=path, t='anim', n=os.path.splitext(os.path.basename(path))[0], s=rel(out + '.png'), p=path,
-                    w=frames[0].width, h=frames[0].height, f=len(frames), z=os.path.getsize(full), fmt='GAL',
-                    u=self.source_url(path), px=1, o=rel(full))
-        if len(frames) > 1:
-            item['cols'] = gal.save_sheet(frames, out + '_sheet.png')
-            sheet = compact.sheet(out + '_sheet.png', out + '_sheet', WORK)
-            if sheet != out + '_sheet.png':
-                os.remove(out + '_sheet.png')
-            item['sh'] = rel(sheet)
-            item['d'] = delays
-        self.add(item, pixel_hash(frames[0]) if len(frames) == 1 else None)
 
 
 def git_commit(path):

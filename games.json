@@ -951,6 +951,58 @@
       }
     },
     {
+      "id": "dinoparc",
+      "name": "Dinoparc",
+      "year": 2005,
+      "folder": "Dinoparc",
+      "summary": "Élevage, exploration et combats de dinosaures.",
+      "notes": [
+        "Pas de son dans l'archive."
+      ],
+      "scan": ["www/img"],
+      "exclude": ["www/img/firefox.gif", "www/img/habbo.gif"],
+      "collections": {
+        "www/img/design": "Site · habillage",
+        "www/img/forum": "Site · smileys du forum",
+        "www/img/icons": "Site · icônes",
+        "www/img/icons/charms": "Site · charmes",
+        "www/img/intro": "Site · introduction",
+        "www/img/items": "Site · objets",
+        "www/img/mt": "Site · autres jeux Motion Twin",
+        "www/img/news": "Site · actualités",
+        "www/img/pnj": "Site · personnages",
+        "www/img/rewards": "Site · récompenses",
+        "www/img/zap": "Site · Zapping Internet (jeux Motion Twin)",
+        "www/img/zones": "Site · lieux",
+        "www/img": "Site"
+      }
+    },
+    {
+      "id": "labourinette",
+      "name": "La Bourinette",
+      "year": 2011,
+      "folder": "LaBourinette",
+      "summary": "Gestion d'une équipe de bourinette, sport fictif entre baseball et bagarre.",
+      "notes": [
+        "Pas de son dans l'archive."
+      ],
+      "scan": ["www/img"],
+      "collections": {
+        "www/img/bank": "Site · banque",
+        "www/img/comps": "Site · compétences",
+        "www/img/forum": "Site · forum",
+        "www/img/forum/smiley": "Site · smileys du forum",
+        "www/img/help": "Site · aide",
+        "www/img/icons": "Site · icônes",
+        "www/img/inscription": "Site · inscription",
+        "www/img/items": "Site · équipement",
+        "www/img/recompenses": "Site · récompenses",
+        "www/img/soins": "Site · soins",
+        "www/img/temp": "Site · interface (fichiers de travail)",
+        "www/img": "Site"
+      }
+    },
+    {
       "id": "cafejeux",
       "name": "CaféJeux",
       "year": 2007,

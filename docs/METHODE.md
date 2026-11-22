@@ -189,6 +189,12 @@ fichier (les deux sont montrés). Chaque animation garde ses délais, sa planche
   moindre écart, ou s'il est plus lourd, le PNG reste. L'encodage (méthode 6) est lent : il est gardé dans
   `MT_WORK/webp/<sha1 du PNG>` et une reconstruction ne réencode que les planches nouvelles ;
 - **planches** (§5.7) dans `gen/<jeu>/sheets/`, **modèles 3D** et réglages LabChirp (§5.8) ;
+- **fichiers GIMP `.xcf`** (`xcf.py`, sans dépendance, d'après la description du format de GIMP) : versions 0 à 2
+  (GIMP 2.8 et avant), RGB / gris / indexé, 8 bits, tuiles de 64 px compressées en RLE ou non. Chaque fichier donne
+  l'image composée (calques visibles du bas vers le haut, mode normal, opacité et masque appliqués) et une fiche par
+  calque dessiné ; un calque vide ou d'une seule couleur unie n'est pas une ressource. Validé sur `maravision.xcf` de
+  La Bourinette : identique au pixel près à son export `maravision.png`, sauf le titre de l'onglet du navigateur dans
+  la capture (« DEV La Bourinette » dans le PNG), deux versions donc toutes deux montrées ;
 - **durée des sons** (`audio.py`, sans dépendance) : WAV = taille du bloc `data` / octets par seconde ; MP3 = somme
   des trames MPEG (ID3 et trame d'en-tête Xing/Info ignorées) ; OGG = position de la dernière page / fréquence Vorbis
   (Opus : 48 kHz). Les 502 sons du catalogue sont mesurés ; la page affiche la durée et trie par elle (« Plus grandes /
@@ -404,7 +410,8 @@ rendu » ; la solution de kadokadeo est de faire rendre ce clip image par image 
 d'images, `sh` planche (WebP ou PNG), `cols` colonnes de la planche, `fps` cadence, `d` délais en ms (`.gal`), `fmt` format,
 `z` poids, `dur` durée d'un son (s), `k` mots-clés, `sg` jeu d'une plateforme, `dup` autres emplacements, `o` fichier d'origine (`.gal`), `vec` vectoriel, `px` pixel art,
 `x` infos SWF (`swf`, `id`, `timeline`, `labels`, `owners`, `same`), de planche (`sheet`, `rect`, `cell`, `slice`,
-`blocks`, `sheet_dup`), de banque CastleDB (`cdb`, `md5`, `uses`), de modèle (`objects`, `tris`, `mats`, `up`, `mesh`, `obj`, `texture`, `script`) ou de réglage
+`blocks`, `sheet_dup`), de banque CastleDB (`cdb`, `md5`, `uses`), de fichier GIMP (`layers`, `skipped` ; calque : `layer`, `offset`,
+`visible`, `opacity`), de modèle (`objects`, `tris`, `mats`, `up`, `mesh`, `obj`, `texture`, `script`) ou de réglage
 (`header`, `snd`, `snd_name`, `snd_id`).
 
 ## 9. Exclusions (ce qui n'est pas de Motion Twin)
@@ -434,6 +441,9 @@ d'images, `sh` planche (WebP ou PNG), `cols` colonnes de la planche, `fps` caden
   ressources). Le fond libre de l'atlas `rooms0.png` est noir opaque : déclaré en `background`.
 - Uppercup Football : rien d'exclu ; `obj/uppercupResources.swf` et `obj/wtfootResources.swf` ne contiennent que des
   polices (non rendus).
+- Dinoparc : `www/img/firefox.gif` (bannière de Firefox, Mozilla) et `www/img/habbo.gif` (bannière de Habbo, Sulake).
+  Le « Zapping Internet » (`www/img/zap`) annonce des jeux Motion Twin : gardé.
+- La Bourinette : rien d'exclu. Les trois `.xcf` de `www/img/help` (fichiers GIMP) sont lus par `xcf.py` (§5.6).
 - Partout : polices embarquées, `Thumbs.db`, tableurs de données.
 
 ## 10. Limites connues
@@ -577,3 +587,13 @@ catalogue (`audio.py`) et prise en compte par le tri par taille.
 **2026-11-22** — Uppercup Football (dossier `Uppercup/`) : cinq atlas TexturePacker découpés (terrain, interface,
 maillots, joueurs), `misc.png` découpée d'après `src/m/Game.hx` (ballon, fumée, grille de 16 px), `gfx.swf` (41 clips),
 captures, 53 sons. 1 268 ressources ; 30 032 en tout, `gen/` 364 Mo, `catalog.js` 17 Mo.
+
+**2026-11-22** — Dinoparc (dossier `Dinoparc/`, images du site : habillage, objets, récompenses, lieux, personnages,
+smileys ; bannières Firefox et Habbo exclues) et La Bourinette (dossier `LaBourinette/`, images du site :
+compétences, équipement, récompenses, soins, aide, interface de travail). Pas de SWF ni de son. 379 et 803
+ressources ; 31 214 en tout, `gen/` 364 Mo, `catalog.js` 17 Mo.
+
+**2026-11-22** — fichiers GIMP : lecteur `.xcf` écrit à la main (`xcf.py`, §5.6), sans installer GIMP ni paquet. Les
+trois `.xcf` de La Bourinette donnent 4 images de plus (trois compositions et la capture non assombrie de
+`maravision-explain`) ; le calque noir uni qui l'assombrit n'est pas une ressource. Lecture des `.gal` déplacée
+dans `gal.py`.

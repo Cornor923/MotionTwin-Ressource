@@ -60,6 +60,7 @@ Après une reconstruction, versionner `catalog.js` et `gen/` avec `games.json` (
   l'empaqueteur, ignorés).
 - Banques d'images CastleDB (`.img`, Monster Hotel) : `cdb_images` de games.json, `cdb_images.py` (noms tirés du
   `.cdb`). Un atlas au fond opaque (rooms0 de Monster Hotel) prend `background`.
+- `.xcf` (GIMP 2.8 et avant) : `xcf.py`, image composée + un calque par fiche ; XCF 2.10+ (version > 2) refusé.
 - Planche sans découpe dans le code : `gap` (écart de regroupement) et `groups` (rectangles = un morceau) règlent
   les morceaux ; `marks` peut lister des rectangles qui ne contiennent que des repères (Teacher Story).
 - Découpes lues dans le code d'un jeu : `slices_from` de games.json -> registre `SLICES` de `sheets.py` (Mush :

@@ -4,9 +4,11 @@ En-tête : u32 largeur @15, hauteur @19, bits par pixel @23, nombre d'images @27
 Image : [u32 n][nom][u32 couleur transparente][u32 délai ms]...
 Calque : [u8 visible][u32 couleur transparente][u8 opacité][u32][u32 n][nom][u32 taille][zlib BGR, lignes alignées sur 4 octets].
 """
-import struct, zlib
+import os, struct, zlib
 import numpy as np
 from PIL import Image
+
+import compact
 
 NONE = 0xFFFFFFFF
 
@@ -97,3 +99,22 @@ def save_sheet(frames, path):
         sheet.paste(f, ((i % cols) * w, (i // cols) * h))
     sheet.save(path, optimize=True)
     return cols
+
+
+def add(game, full, path, ctx):
+    """fiche d'un .gal : première image, planche d'animation et délais s'il en a plusieurs"""
+    images, delays = frames(full)
+    out = os.path.join(ctx.GEN, game.cfg['id'], 'gal', os.path.splitext(path)[0])
+    os.makedirs(os.path.dirname(out), exist_ok=True)
+    images[0].save(out + '.png', optimize=True)
+    item = dict(i=path, t='anim', n=os.path.splitext(os.path.basename(path))[0], s=ctx.rel(out + '.png'), p=path,
+                w=images[0].width, h=images[0].height, f=len(images), z=os.path.getsize(full), fmt='GAL',
+                u=game.source_url(path), px=1, o=ctx.rel(full))
+    if len(images) > 1:
+        item['cols'] = save_sheet(images, out + '_sheet.png')
+        sheet = compact.sheet(out + '_sheet.png', out + '_sheet', ctx.WORK)
+        if sheet != out + '_sheet.png':
+            os.remove(out + '_sheet.png')
+        item['sh'] = ctx.rel(sheet)
+        item['d'] = delays
+    game.add(item, ctx.pixel_hash(images[0]) if len(images) == 1 else None)

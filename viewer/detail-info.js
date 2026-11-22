@@ -42,6 +42,11 @@ MT.detailInfo = (item, $) => {
     if (x.blocks) rows.push(['Utilisée par', el('span', {}, x.blocks.map((b, i) => [i ? el('br') : '', b]))]);
     if (x.sheet_dup) rows.push(['Planche aussi dans', x.sheet_dup.join(', ')]);
   }
+  if (x.layers) rows.push(['Calques GIMP', x.layers.join(', ')]);
+  if (x.layer) {
+    rows.push(['Calque GIMP', `${x.layer} · position ${x.offset.join(', ')} · opacité ${Math.round(x.opacity / 2.55)} %`
+      + (x.visible ? '' : ' · masqué')]);
+  }
   if (x.md5) {
     rows.push(['Banque d\'images', `${item.p.split('#')[0]} (CastleDB)`]);
     if (x.uses && x.uses.length) rows.push(['Utilisée par', x.uses.join(', ')]);
