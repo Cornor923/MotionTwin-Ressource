@@ -67,6 +67,7 @@ Après une reconstruction, versionner `catalog.js` et `gen/` avec `games.json` (
   `mush.py`, tiles.xml et Data.hx/Data.ods ; Galaxy55 : `galaxy55.py`).
 - `.fla` : XFL lus par `xfl.py` ; binaires par `tools/fla_decoder/` (MIT, ne pas modifier) corrigé à l'import par
   `fla_patch.py` (formes, instances), `fla_archive.py` (numéros MFC, calques, bitmaps posés) et `fla_filters.py`
-  (filtres) ; dans les deux cas symboles composés (`fla_compose.py`). Une correction se vérifie contre un SWF compilé
-  depuis le même `.fla` (FFDec `-swf2xml` pour les filtres et modes de fusion). Ne jamais lancer `build_catalog.py`
-  derrière `| grep | head` : il vide `gen/` d'abord.
+  (filtres) ; dans les deux cas symboles composés (`fla_compose.py`), animés image par image (`fla_timeline.py`,
+  planche SVG `_planche.svg`). Une correction se vérifie contre un SWF compilé depuis le même `.fla` (FFDec
+  `-swf2xml` : filtres, modes de fusion, matrices de chaque image des `DefineSprite`). Ne jamais lancer
+  `build_catalog.py` derrière `| grep | head` : il vide `gen/` d'abord.

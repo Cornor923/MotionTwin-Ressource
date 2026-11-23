@@ -54,7 +54,10 @@ MT.detailInfo = (item, $) => {
   if (x.fla) {
     rows.push(['Fichier .fla', `${x.fla} (${x.kind})`]);
     if (x.symbol) rows.push(['Symbole', x.symbol]);
-    if (item.t === 'svg') rows.push(['Rendu', 'symbole assemblé, première image de chaque calque']);
+    if (item.t === 'svg') {
+      rows.push(['Rendu', item.sh ? 'symbole assemblé, toutes ses images (interpolations classiques calculées)'
+        : 'symbole assemblé, première image de chaque calque']);
+    }
     if (x.same_swf) rows.push(['Même nom dans', x.same_swf.join(', ')]);
   }
   if (x.whole) {
@@ -86,7 +89,8 @@ MT.detailInfo = (item, $) => {
     actions.push(el('a', { href: item.s, download: MT.fileName(item, '_apercu.png'), text: 'Aperçu (PNG)' }));
   } else {
     actions.push(el('a', { class: 'primary', href: item.s, download: MT.fileName(item, ext),
-      text: item.t === 'svg' ? 'Télécharger le SVG' : item.f > 1 && item.sh ? 'Télécharger (PNG, 1re image)' : 'Télécharger' }));
+      text: item.t === 'svg' ? (item.sh ? 'Télécharger le SVG (1re image)' : 'Télécharger le SVG')
+        : item.f > 1 && item.sh ? 'Télécharger (PNG, 1re image)' : 'Télécharger' }));
     if (item.o) {
       const oext = item.o.slice(item.o.lastIndexOf('.'));
       actions.push(el('a', { href: item.o, download: MT.fileName(item, oext),

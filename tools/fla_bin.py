@@ -69,14 +69,42 @@ def frame_elements(fr):
         if c.get('class') == 'CPicShape' and c.get('shape', {}).get('byte_edges'):
             out.append(('shape', shape(c['shape']), mat(c.get('matrix'))))
         elif c.get('class') in ('CPicSprite', 'CPicSymbol', 'CPicButton') and c.get('use'):
-            out.append(('use',) + c['use'])
+            out.append(('use',) + c['use'] + (c.get('inst'),))
         elif c.get('class') == 'CPicBitmap' and 'bitmap_media_id' in c:
             out.append(('bitmap', c['bitmap_media_id'], mat(c['bitmap_matrix'])))
     return out
 
 
+def keyframes(layer):
+    """images clés d'un calque (fla_timeline) : u16 durée (frame_18c), u16 dont l'octet bas est le type
+    d'interpolation (1 classique, 2 forme ; frame_188), s16 accélération (frame_190), CString étiquette
+    (frame_250), sens de rotation et nombre de tours (fla_patch.read_frame). Une durée absurde (image mal lue)
+    compte pour 1."""
+    out, start = [], 0
+    for fr in children(layer, 'CPicFrame'):
+        dur, key = fr.get('frame_18c') or 1, fr.get('frame_188') or 0
+        if dur > 5000 or not 3 <= (fr.get('frame_schema') or 0) <= 40:
+            dur, key = 1, 0
+        out.append(dict(start=start, dur=dur, elements=frame_elements(fr), tween=TWEEN.get(key & 0xFF),
+                        ease=max(-100, min(100, fr.get('frame_190') or 0)), rotate=fr.get('rotate_dir', 0),
+                        turns=max(0, min(50, fr.get('rotate_times') or 0)),
+                        flags=key >> 8, label=fr.get('frame_250') or ''))
+        start += dur
+    return out
+
+
+TWEEN = {1: 'motion', 2: 'shape'}
+
+
+def fps(contents):
+    """cadence du document : u16 en 8.8 avant « 00 00 03 b4 » dans ses propriétés (12 par défaut)"""
+    i = contents.find(bytes.fromhex('00000003b4000000'))
+    value = contents[i - 1] + contents[i - 2] / 256 if i >= 2 else 0
+    return value if 1 <= value <= 120 else 12
+
+
 def symbol(result):
-    """calques du bas vers le haut (ordre du fichier), première image de chacun ; un calque parent sérialisé dans
+    """calques du bas vers le haut (ordre du fichier), avec leurs images clés ; un calque parent sérialisé dans
     son premier enfant (masque, guide) suit cet enfant. Guides et dossiers ne sont pas dessinés, un masque découpe
     les calques dont il est le parent (fla_compose)"""
     page = result.get('body') or {}
@@ -90,10 +118,10 @@ def symbol(result):
     index = {l['_mfc']: i for i, l in enumerate(found) if l.get('_mfc') is not None}
     layers = []
     for layer in found:
-        frames = children(layer, 'CPicFrame')
+        frames = keyframes(layer)
         kind, parent = layer.get('layer_kind', 'normal'), index.get(layer.get('parent_idx'))
         masked = parent is not None and found[parent].get('layer_kind') == 'masque'
-        layers.append(dict(elements=frame_elements(frames[0]) if frames else [], mask=kind == 'masque',
+        layers.append(dict(elements=frames[0]['elements'] if frames else [], frames=frames, mask=kind == 'masque',
                            guide=kind in ('guide', 'dossier'), masked_by=parent if masked else None))
     if not any(l['elements'] for l in layers):
         rec = [('shape', shape(r['shape']), mat(r.get('matrix'))) for r in result.get('recovered_shapes', [])
@@ -119,7 +147,7 @@ def load(path, sound_dir):
     streams = ['/'.join(s) for s in ole.listdir(streams=True)]
     contents = ole.openstream('Contents').read() if 'Contents' in streams else b''
     names = stream_names(contents, streams)
-    doc = dict(symbols={}, bitmaps={}, scenes=[], raw_bitmaps={}, sounds=[], errors=0)
+    doc = dict(symbols={}, bitmaps={}, scenes=[], raw_bitmaps={}, sounds=[], errors=0, fps=fps(contents))
     for s in streams:
         kind = s.split()[0]
         if kind in ('S', 'Symbol', 'P', 'Page'):
@@ -159,16 +187,15 @@ def link(doc, symbols, media):
     """numéros de flux des instances (« S n ») et des bitmaps posés (« M n ») -> noms dans doc ; les éléments
     vers un flux absent sont écartés"""
     tables = dict(use=symbols, bitmap=media)
+
+    def named(els):
+        return [(el[0], tables[el[0]][el[1]]) + el[2:] if el[0] in tables and isinstance(el[1], int) else el
+                for el in els if not (el[0] in tables and isinstance(el[1], int) and el[1] not in tables[el[0]])]
     for layers in doc['symbols'].values():
         for layer in layers:
-            els = []
-            for el in layer['elements']:
-                if el[0] in tables and isinstance(el[1], int):
-                    if el[1] not in tables[el[0]]:
-                        continue
-                    el = (el[0], tables[el[0]][el[1]]) + el[2:]
-                els.append(el)
-            layer['elements'] = els
+            for key in layer.get('frames') or []:
+                key['elements'] = named(key['elements'])
+            layer['elements'] = layer['frames'][0]['elements'] if layer.get('frames') else named(layer['elements'])
 
 
 def sound(data, rec, out_dir):

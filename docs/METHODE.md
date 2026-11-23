@@ -318,7 +318,7 @@ et leurs sons extraits. Deux formats :
   central ZIP non standard : l'archive est lue par ses en-têtes locaux. Formes `DOMShape` (bords en twips :
   « ! x y », « | x y », « [ cx cy x y », nombres décimaux ou « #hex.hex » sur 24 bits signés, fraction en 256ᵉ),
   instances `DOMSymbolInstance` (par nom, matrice, transformation de couleur), groupes, bitmaps (`bin/*.dat`),
-  calques de masque et de guide. Les symboles sont **composés entiers**, première image de chaque calque.
+  calques de masque et de guide, images clés (`DOMFrame`). Les symboles sont **composés entiers**.
 - **Binaire** (Flash MX à CS4, conteneur OLE : tous les autres) — `fla_bin.py` avec **fla-decoder** (MIT,
   `tools/fla_decoder/`, et olefile, `tools/olefile/`, ajoutés avec l'accord de l'utilisateur). fla-decoder décode
   la sérialisation MFC (`CPicPage`, `CPicLayer`, `CPicFrame`, `CPicShape`) ; ses fichiers ne sont pas modifiés,
@@ -358,6 +358,26 @@ alpha et effacement restent normaux). Un bord qui a le même remplissage des deu
 de ce remplissage (sinon la règle pair-impair y perce des trous). Les bitmaps sont incorporés en data URI (un SVG
 affiché par `<img>` ne charge pas de fichier externe). FFDec ignore certains modes de fusion : un symbole rendu
 depuis le SWF peut alors différer du même symbole rendu depuis le `.fla` (planches de l'inventaire de La Brute).
+
+Animations (`fla_timeline.py`) : chaque calque garde ses images clés — durée, type d'interpolation, accélération,
+sens et nombre de tours, étiquette ; binaires : u16 `frame_18c`, octet bas de `frame_188` (1 classique, 2 forme),
+s16 `frame_190`, puis après le script de l'image (CString qui suit son sous-objet de ligne de temps) u32 sens
+(0 automatique, 1 horaire) et s32 tours ; XFL : `index`, `duration`, `tweenType`, `acceleration`,
+`motionTweenRotate`, `motionTweenRotateTimes`, `motionTweenScale`. L'état d'un symbole à une image est calculé comme
+à la publication : interpolation classique élément par élément (échelles, angles des axes et point de
+transformation interpolés, accélération t' = t − a·t·(1 − t) avec a = valeur enregistrée / 100, transformation de
+couleur linéaire) ; un clip placé déroule sa propre ligne de temps depuis son apparition (même symbole au même rang
+dans des images clés contiguës = même instance), un graphique suit celle du parent depuis sa première image (u16
+avant son type dans l'instance ; boucle, une fois ou image fixe), un bouton reste sur sa première image. Vérifié
+image par image contre les SWF compilés depuis les mêmes `.fla` (matrices et alphas des `PlaceObject`) : 26
+symboles interpolés sur 27 dans Alphabounce, 7 sur 8 dans La Brute, 17 sur 19 dans `fx.fla` d'Odyssey (XFL),
+identiques au millième ; les autres diffèrent par un calque non lu, un champ texte ou une image vide. Un symbole de plusieurs images reçoit une planche SVG (`NNNN_planche.svg` :
+une case par image, cadre commun, symboles placés et formes définis une fois dans `<defs>`) que le lecteur
+d'animations de la page joue comme les planches des clips, plus finement que son cadre ; sa fiche garde le SVG de
+la première image dans le même cadre, la cadence du document (`Contents` : u16 en 8.8 avant « 00 00 03 b4 » ; XFL :
+`frameRate`) et les étiquettes d'images. Limites : interpolations de forme non calculées (forme de l'image clé),
+courbes d'accélération personnalisées et guides de mouvement ignorés, scripts non exécutés (toutes les images
+jouées en boucle, comme pour les clips des SWF), 400 images au plus par planche.
 
 Bitmaps (`fla_bitmaps.py`) : même format dans les flux `M n` des binaires et les `bin/*.dat` des XFL — `03 05`
 sans perte 32 bits (blocs zlib, A R G B prémultiplié), `03 03` 8 bits à palette A R G B, ou JPEG ; vérifié au pixel
@@ -481,8 +501,9 @@ d'images, `sh` planche (WebP ou PNG), `cols` colonnes de la planche, `fps` caden
 - Galaxy55 : paramètres LabChirp non décodés ; `.bae` sans couleurs de matériaux (gris) ; en `file://` le navigateur
   refuse la texture dans WebGL, la porte s'affiche alors sans texture (l'aperçu PNG la montre) ; données Haxe chiffrées
   de explore.swf non lues ; `ui.fla` / `ui.swf` vides.
-- `.fla` binaires : première image de chaque calque ; 487 symboles sur 7 073 lus en partie ; la matrice 4 × 5 des
-  instances CS4 n'est pas interprétée ; soustraction, inversion, alpha et effacement rendus en mode normal (§5.9).
+- `.fla` : 487 symboles binaires sur 7 073 lus en partie ; la matrice 4 × 5 des instances CS4 n'est pas interprétée ;
+  soustraction, inversion, alpha et effacement rendus en mode normal ; interpolations de forme et guides de
+  mouvement non calculés ; champs texte des `.fla` non rendus (§5.9).
 - Les champs texte dynamiques (remplis par le code du jeu) restent vides dans les rendus ; les textes statiques sont là.
 - Rendus à 2 px par pixel Flash : agrandir au-delà dans la fiche pixellise ; les formes, elles, sont en SVG.
 - Formes animées, voir §6 ; clips AS3 : timeline seulement, sans leur code.
@@ -640,3 +661,11 @@ La Brute (`perso.fla`, `mini_perso.fla`), les icônes et le tableau d'armes de l
 les symboles d'Alphabounce, de CaféJeux, de SkyWar… sont composés entiers. Symboles SVG : La Brute 906 → 1 371,
 Alphabounce 1 679 → 2 016, CaféJeux 1 648 → 1 970, SkyWar 800 → 984, CroqueMotel 318 → 445, Kingdom 156 → 232. XFL
 d'Odyssey : point focal des dégradés radiaux. 38 998 ressources en tout, `gen/` 533 Mo, `catalog.js` 21 Mo.
+
+**2026-11-23** — animations des `.fla` (§5.9, `fla_timeline.py`) : images clés, interpolations classiques
+(accélération, sens et nombre de tours, point de transformation), lignes de temps des clips et graphiques placés,
+cadence du document, pour les binaires comme pour les XFL ; vérifié image par image contre les SWF compilés. 2 965
+symboles ont plusieurs images (72 798 en tout) et reçoivent une planche SVG jouée par la page (fiche et survol de la
+grille), dont 839 pour Odyssey, 402 pour La Brute (les brutes `F` et `H` : une image par arme), 368 pour
+Alphabounce. Le SVG statique d'un graphique placé montre désormais sa première image. 39 348 ressources, `gen/`
+659 Mo (planches 122 Mo), `catalog.js` 21 Mo.

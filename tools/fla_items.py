@@ -8,7 +8,7 @@ clip (« Même nom dans »). Bitmaps et sons identiques à une ressource existan
 """
 import hashlib, os, re
 
-import fla_bin, fla_compose, xfl
+import fla_bin, fla_compose, fla_timeline, xfl
 
 
 def add_fla(game, ctx):
@@ -66,13 +66,14 @@ def add_symbols(game, ctx, doc, path, out, coll, kind, base):
     os.makedirs(os.path.join(out, 'symboles'), exist_ok=True)
     for k, name in enumerate(sorted(doc['symbols'])):
         try:
-            svg = fla_compose.render(doc, name)
+            anim = fla_compose.animate(doc, name)
+            svg = fla_compose.render(doc, name, anim and anim['box'])
         except RecursionError:
-            svg = None
+            anim, svg = None, None
         if not svg:
             continue
         ref = '%s#%s' % (path, name)
-        h = hashlib.sha1(svg.encode('utf-8')).hexdigest()
+        h = hashlib.sha1((anim['sheet'] if anim else svg).encode('utf-8')).hexdigest()
         if h in seen:
             seen[h].setdefault('dup', []).append(ref)
             continue
@@ -85,6 +86,13 @@ def add_symbols(game, ctx, doc, path, out, coll, kind, base):
             x['same_swf'] = swf_names[short]
         item = dict(i=ref, t='svg', n=short, s=ctx.rel(dst), p=ref, w=round(w, 2), h=round(hh, 2),
                     z=os.path.getsize(dst), c=coll, vec=1, x=x, k=ctx.words(name, os.path.basename(path)), **base)
+        if anim:  # planche SVG lue par le lecteur d'animations de la page, comme celles des clips
+            sheet = os.path.join(out, 'symboles', '%04d_planche.svg' % k)
+            open(sheet, 'w', encoding='utf-8', newline='\n').write(anim['sheet'])
+            item.update(f=anim['frames'], sh=ctx.rel(sheet), cols=anim['cols'], fps=doc.get('fps', 12))
+            labels = fla_timeline.labels(doc['symbols'][name])
+            if labels:
+                x['labels'] = labels
         game.add(item)
         seen[h] = item
 

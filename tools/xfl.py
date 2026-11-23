@@ -123,11 +123,37 @@ def elements(parent, doc):
         if tag == 'DOMShape':
             out.append(('shape', shape(el, doc), (1, 0, 0, 1, 0, 0)))
         elif tag == 'DOMSymbolInstance':
-            out.append(('use', el.get('libraryItemName'), matrix(el), colour(el)))
+            out.append(('use', el.get('libraryItemName'), matrix(el), colour(el), None, None, instance(el)))
         elif tag == 'DOMBitmapInstance':
             out.append(('bitmap', el.get('libraryItemName'), matrix(el)))
         elif tag == 'DOMGroup':
             out.append(('group', elements(el.find(NS + 'members') or [], doc), matrix(el)))
+    return out
+
+
+LOOPS = {'loop': 1, 'play once': 2, 'single frame': 3}
+ROTATE = {'clockwise': 1, 'counter-clockwise': 2}
+
+
+def instance(el):
+    """type de symbole, première image et boucle (graphiques), point de transformation dans le repère du symbole"""
+    p = el.find(NS + 'transformationPoint/' + NS + 'Point')
+    return dict(kind={'graphic': 'graphique', 'button': 'bouton'}.get(el.get('symbolType'), 'clip'),
+                first=int(el.get('firstFrame', 0)), loop=LOOPS.get(el.get('loop', 'loop'), 1),
+                tp_local=(float(p.get('x', 0)), float(p.get('y', 0))) if p is not None else None)
+
+
+def keyframes(layer, doc):
+    """images clés (fla_timeline) : index, duration, tweenType, acceleration (même valeur que dans les .fla
+    binaires), motionTweenRotate, motionTweenRotateTimes, motionTweenScale"""
+    out = []
+    for f in layer.findall(NS + 'frames/' + NS + 'DOMFrame'):
+        out.append(dict(start=int(f.get('index', 0)), dur=max(1, int(f.get('duration', 1))),
+                        elements=elements(f.find(NS + 'elements') or [], doc),
+                        tween='motion' if f.get('tweenType') == 'motion' else 'shape' if f.get('tweenType') == 'shape'
+                        else None, ease=int(f.get('acceleration', 0)), rotate=ROTATE.get(f.get('motionTweenRotate'), 0),
+                        turns=int(f.get('motionTweenRotateTimes', 0)), scale=f.get('motionTweenScale') != 'false',
+                        label=f.get('name', '')))
     return out
 
 
@@ -136,14 +162,11 @@ def timeline(tl, doc):
     roles = [l.get('layerType', 'normal') for l in xml_layers]
     out = []
     for i in reversed(range(len(xml_layers))):
-        l, frame = xml_layers[i], None
-        for f in l.findall(NS + 'frames/' + NS + 'DOMFrame'):
-            if int(f.get('index', 0)) <= 0 < int(f.get('index', 0)) + int(f.get('duration', 1)):
-                frame = f
-        els = elements(frame.find(NS + 'elements') or [], doc) if frame is not None else []
-        parent = l.get('parentLayerIndex')
+        frames = keyframes(xml_layers[i], doc)
+        parent = xml_layers[i].get('parentLayerIndex')
         masked = parent is not None and roles[int(parent)] == 'mask'
-        out.append(dict(elements=els, mask=roles[i] == 'mask', guide=roles[i] in ('guide', 'folder'),
+        out.append(dict(elements=frames[0]['elements'] if frames and frames[0]['start'] == 0 else [], frames=frames,
+                        mask=roles[i] == 'mask', guide=roles[i] in ('guide', 'folder'),
                         masked_by=len(xml_layers) - 1 - int(parent) if masked else None))
     return out
 
@@ -152,6 +175,7 @@ def load(path):
     z = read_zip(path)
     doc = dict(symbols={}, bitmaps={}, scenes=[], raw_bitmaps={})
     root = ET.fromstring(z['DOMDocument.xml'])
+    doc['fps'] = float(root.get('frameRate', 24))
     for b in root.iter(NS + 'DOMBitmapItem'):
         data = z.get('bin/' + b.get('bitmapDataHRef', ''))
         im = fla_bitmaps.decode(data) if data else None

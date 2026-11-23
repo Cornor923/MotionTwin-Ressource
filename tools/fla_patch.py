@@ -99,6 +99,12 @@ def read(kind):
         out['use'] = (ref, (a / 65536, b / 65536, c / 65536, d / 65536, tx / 20, ty / 20),
                       (rm / 256, gm / 256, bm / 256, am / 256, ro, go, bo, ao), filters or None, blend)
         out['instance_name'] = name
+        # u16 première image (graphique), u16 type (1 graphique, 2 clip), u8 mode de boucle ; point de transformation
+        # = position CPicObj (twips, repère du parent ; INT_MIN : le point d'alignement)
+        first, typ, loop = struct.unpack_from('<HHB', buf, e + 25)
+        tp = out.get('point')
+        out['inst'] = dict(kind='bouton' if kind == 'CPicButton' else 'graphique' if typ == 1 else 'clip',
+                           first=first, loop=loop, tp=(tp[0] / 20, tp[1] / 20) if tp and tp[0] != -2 ** 31 else None)
         return out
     return reader
 
@@ -194,11 +200,22 @@ def read_shape(r, ar):  # la première forme lue par une image est sa forme prop
         _shape_stack.pop()
 
 
+TIMELINE = bytes.fromhex('0500000001000000')  # sous-objet de ligne de temps de l'image (type 5, format 1)
+
+
 def read_frame(r, ar):
+    """image ; après son sous-objet de ligne de temps (20 octets) : CString script de l'image, u32 sens de rotation
+    de l'interpolation (0 automatique, 1 horaire, 2 antihoraire), s32 nombre de tours"""
     _frame_pending.append(True)
+    start = r.pos
     out = _read_frame(r, ar)
     if (out.get('frame_schema') or 0) >= 26 and r.pos + 10 <= len(r.buf):  # CS3 (26) et CS4 (29)
         r.pos += 10
+    i = r.buf.rfind(TIMELINE, start, r.pos)
+    script, q = cstring(r.buf, i + 20) if i >= 0 else (None, 0)
+    if script is not None and q + 8 <= r.pos:
+        out['script'] = script
+        out['rotate_dir'], out['rotate_times'] = struct.unpack_from('<Ii', r.buf, q)
     return out
 
 

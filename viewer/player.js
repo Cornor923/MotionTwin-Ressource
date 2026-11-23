@@ -1,4 +1,5 @@
-// Lecture des animations stockées en planche (clips Flash rendus, animations GraphicsGale) dans un canvas.
+// Lecture des animations stockées en planche (clips Flash rendus, animations GraphicsGale, planches SVG des
+// symboles de .fla) dans un canvas. Une planche vectorielle est dessinée plus finement que son cadre (zoom net).
 MT.SheetPlayer = class {
   constructor(item, canvas, onFrame) {
     this.item = item;
@@ -10,8 +11,9 @@ MT.SheetPlayer = class {
     this.playing = false;
     this.sheet = null;
     this.raf = 0;
-    canvas.width = item.w;
-    canvas.height = item.h;
+    this.q = item.vec ? Math.min(3, 2048 / Math.max(item.w, item.h)) : 1;
+    canvas.width = Math.max(1, Math.round(item.w * this.q));
+    canvas.height = Math.max(1, Math.round(item.h * this.q));
   }
 
   async load() {
@@ -25,8 +27,8 @@ MT.SheetPlayer = class {
     const { w, h, cols } = this.item;
     const sx = (this.frame % cols) * w;
     const sy = Math.floor(this.frame / cols) * h;
-    this.ctx.clearRect(0, 0, w, h);
-    this.ctx.drawImage(this.sheet, sx, sy, w, h, 0, 0, w, h);
+    this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
+    this.ctx.drawImage(this.sheet, sx, sy, w, h, 0, 0, this.canvas.width, this.canvas.height);
     this.onFrame(this.frame);
   }
 
