@@ -5,7 +5,7 @@ Motion Twin les a publiées dans son archive [motion-twin/WebGamesArchives](http
 (licence CC BY-NC-SA 4.0). Uniquement du matériel d'origine : rien de refait après coup (pas de remake, pas de création
 de fans), et les éléments tiers présents dans l'archive (images jQuery UI, logos de presse, logos de paiement) sont exclus.
 
-Jeux : **Mush** (2012), **Alphabounce** (2007), **Galaxy55** (alpha, 2012), **Hordes** (2008), **Teacher Story** (2013), **Rockfaller** (2015), **Monster Hotel** (2015), **Uppercup Football** (2014), **Dinoparc** (2005), **La Bourinette** (2011), **SkyWar** (2009), **Dinocard** (2006), sept jeux Muxxu
+Jeux : **Mush** (2012), **Alphabounce** (2007), **Galaxy55** (alpha, 2012), **Hordes** (2008), **Teacher Story** (2013), **Rockfaller** (2015), **Monster Hotel** (2015), **Uppercup Football** (2014), **Dinoparc** (2005), **La Bourinette** (2011), **SkyWar** (2009), **Dinocard** (2006), **DinoRPG** (2008), sept jeux Muxxu
 (**Kube** 2010, **Kingdom** 2009, **CroqueMotel** 2011, **Intrusion** 2009, **La Brute** 2010, **Odyssey** 2011,
 **Snake** 2010) et deux plateformes rangées par jeu : **CaféJeux** (2007, le café et ses treize jeux de société) et
 **KadoKado** (2004, pour l'instant son Alphabounce, première version du casse-briques).
@@ -17,26 +17,29 @@ Jeux : **Mush** (2012), **Alphabounce** (2007), **Galaxy55** (alpha, 2012), **Ho
 | Jeu | Images | GIF animés | Animations GraphicsGale | Clips Flash rendus | Formes vectorielles (SVG) | Sons |
 |---|---:|---:|---:|---:|---:|---:|
 | Mush | 3 652 | 22 | 50 | 1 | 3 | 0 |
-| Alphabounce | 229 | 1 | 0 | 187 | 1 679 | 0 |
+| Alphabounce | 229 | 1 | 0 | 187 | 2 040 | 0 |
 | Galaxy55 | 462 | 0 | 0 | 0 | 0 | 12 |
-| Kube | 291 | 2 | 0 | 12 | 35 | 0 |
-| Kingdom | 632 | 6 | 0 | 33 | 156 | 0 |
-| CroqueMotel | 467 | 0 | 0 | 84 | 318 | 0 |
-| Intrusion | 459 | 1 | 0 | 50 | 248 | 49 |
-| La Brute | 162 | 0 | 0 | 40 | 906 | 0 |
-| Odyssey | 640 | 1 | 0 | 381 | 6 277 | 0 |
+| Kube | 291 | 2 | 0 | 12 | 47 | 0 |
+| Kingdom | 632 | 6 | 0 | 33 | 232 | 0 |
+| CroqueMotel | 467 | 0 | 0 | 84 | 447 | 0 |
+| Intrusion | 459 | 1 | 0 | 50 | 305 | 49 |
+| La Brute | 162 | 0 | 0 | 40 | 1 490 | 0 |
+| Odyssey | 640 | 1 | 0 | 381 | 6 394 | 0 |
 | Snake | 1 030 | 0 | 5 | 4 | 6 | 0 |
-| Hordes | 335 | 0 | 0 | 54 | 677 | 0 |
-| Teacher Story | 1 730 | 7 | 0 | 176 | 1 524 | 151 |
+| Hordes | 335 | 0 | 0 | 54 | 728 | 0 |
+| Teacher Story | 1 730 | 7 | 0 | 176 | 1 559 | 151 |
 | Rockfaller | 998 | 0 | 0 | 1 | 36 | 81 |
 | Monster Hotel | 1 369 | 0 | 0 | 0 | 0 | 209 |
 | Uppercup Football | 869 | 0 | 0 | 41 | 305 | 53 |
 | Dinoparc | 376 | 3 | 0 | 0 | 0 | 0 |
 | La Bourinette | 803 | 4 | 0 | 0 | 0 | 0 |
-| SkyWar | 1 321 | 1 | 0 | 151 | 800 | 0 |
-| Dinocard | 1 153 | 4 | 0 | 51 | 2 536 | 0 |
-| CaféJeux | 596 | 0 | 0 | 243 | 1 648 | 0 |
-| KadoKado (Alphabounce) | 14 | 0 | 0 | 34 | 270 | 0 |
+| SkyWar | 1 321 | 1 | 0 | 151 | 988 | 0 |
+| Dinocard | 1 153 | 4 | 0 | 51 | 2 653 | 0 |
+| DinoRPG | 753 | 0 | 0 | 130 | 5 718 | 0 |
+| CaféJeux | 596 | 0 | 0 | 243 | 1 995 | 0 |
+| KadoKado (Alphabounce) | 14 | 0 | 0 | 34 | 309 | 0 |
+
+Parmi les formes vectorielles, 4 477 symboles de `.fla` ont plusieurs images et sont animés (planche SVG).
 
 Galaxy55 a aussi **3 modèles 3D** (cosmonaute, foreuse, porte ouverte) et **12 réglages de son LabChirp**. Ses planches
 (`texture.png`, `tiles.png`, `icons.png`) sont découpées en morceaux aux pixels d'origine, nommés d'après le tableur et le

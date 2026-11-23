@@ -1101,6 +1101,38 @@
       }
     },
     {
+      "id": "dinorpg",
+      "name": "DinoRPG",
+      "year": 2008,
+      "folder": "DinoRPG",
+      "summary": "Jeu de rôle en ligne : élever et faire combattre ses dinoz à travers Dinoland.",
+      "notes": [
+        "Les dinoz eux-mêmes ne sont pas dans l'archive (le jeu charge leur SWF à part) : ici les portraits animés des PNJ, les combats, la carte et les donjons.",
+        "Quelques PNJ et monstres parodient des personnages connus (Monstre en spaghettis volant…) : dessins de Motion Twin, gardés.",
+        "Pas de son dans l'archive."
+      ],
+      "scan": [
+        "gfx"
+      ],
+      "swf": [
+        {"file": "gfx/fight/swf/gfx.swf", "work": "dinorpg/fight"},
+        {"file": "gfx/dungeon/gfx.swf", "work": "dinorpg/dungeon", "also": ["gfx/dungeon/djview.swf"]},
+        {"file": "gfx/pnj/grand.swf", "work": "dinorpg/grand"}
+      ],
+      "collections": {
+        "gfx/pnj": "PNJ",
+        "gfx/pnj/grand.swf": "PNJ · le Grand (SWF)",
+        "gfx/fight": "Combats",
+        "gfx/fight/gfx": "Combats · décors",
+        "gfx/fight/swf/gfx.swf": "Combats (SWF)",
+        "gfx/map": "Carte",
+        "gfx/map/gfx": "Carte · lieux",
+        "gfx/dungeon": "Donjons",
+        "gfx/dungeon/gfx": "Donjons · tuiles",
+        "gfx/dungeon/gfx.swf": "Donjons (SWF)"
+      }
+    },
+    {
       "id": "cafejeux",
       "name": "CaféJeux",
       "year": 2007,

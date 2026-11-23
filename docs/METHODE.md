@@ -106,6 +106,11 @@ Ce qu'on y trouve :
 - Snake : planches du client `clients/arene/gfx` (fruits, bonus, effets, interface, illustrations des cartes,
   chiffres, tuiles) et `clients/*/gfx`, `www/img/**` (dont chaque fruit et chaque carte en GIF), `docs/`, onze SWF
   de ressources et de clients, des `.gal` (sources des PNG).
+- DinoRPG (118 Mo) : `gfx/pnj` (102 `.fla` des portraits animés des PNJ, 97 XFL et 5 binaires, et `grand.swf`),
+  `gfx/fight` (combats : `gfx.fla`, `miniMonstres.fla` aux 931 monstres animés, le Monstre en spaghettis volant,
+  décors PNG, `swf/gfx.swf`), `gfx/map` (icônes des lieux, `gfx.fla`), `gfx/dungeon` (tuiles PNG des donjons,
+  `gfx.fla`, `gfx.swf` = `djview.swf` aux scripts près), des sources Haxe et des textes XML en quatre langues. Les
+  dinoz eux-mêmes ne sont pas dans l'archive : le jeu charge leur SWF (`sdino`) à part.
 
 ### 5.2 Inventaire des SWF
 
@@ -493,6 +498,8 @@ d'images, `sh` planche (WebP ou PNG), `cols` colonnes de la planche, `fps` caden
 - SkyWar : `web/www/gfx/flags/` (141 drapeaux de pays et 104 emblèmes d'organisations : ONU, OTAN, Croix-Rouge,
   anneaux olympiques…), jeux d'icônes génériques d'un tiers, pas des dessins de Motion Twin.
 - Dinocard : rien d'exclu ; `client/swf/code.swf` et `client/fla/portrait/portrait.swf` n'ont que du code (non rendus).
+- DinoRPG : rien d'exclu. Quelques PNJ et monstres parodient des personnages connus (Monstre en spaghettis volant…) :
+  dessins de Motion Twin, gardés.
 - Partout : polices embarquées, `Thumbs.db`, tableurs de données.
 
 ## 10. Limites connues
@@ -669,3 +676,9 @@ symboles ont plusieurs images (72 798 en tout) et reçoivent une planche SVG jou
 grille), dont 839 pour Odyssey, 402 pour La Brute (les brutes `F` et `H` : une image par arme), 368 pour
 Alphabounce. Le SVG statique d'un graphique placé montre désormais sa première image. 39 348 ressources, `gen/`
 659 Mo (planches 122 Mo), `catalog.js` 21 Mo.
+
+**2026-11-23** — DinoRPG (dossier `DinoRPG/`) : portraits animés des 102 PNJ (`.fla`, dont 97 XFL), combats
+(`miniMonstres.fla` : 931 monstres animés, `gfx.fla`, `swf/gfx.swf`), carte et donjons (tuiles PNG, `gfx.fla`,
+`gfx.swf` ; `djview.swf` en est une copie aux scripts près, `also`). Les dinoz eux-mêmes ne sont pas dans l'archive.
+Rien d'exclu. 6 601 ressources dont 5 718 symboles (1 512 animés) ; 45 949 en tout, `gen/` 989 Mo (DinoRPG 331 Mo,
+dont 142 Mo pour `miniMonstres.fla`), `catalog.js` 25 Mo.
