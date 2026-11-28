@@ -101,7 +101,9 @@ def sound_index(game):
     index = game.__dict__.get('sound_hashes')
     if index is None:
         index = game.sound_hashes = {}
+        root = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))  # chemins des fiches : depuis le dépôt
         for it in game.items:
-            if it['t'] == 'snd' and os.path.exists(it['s']):
-                index.setdefault(hashlib.sha1(open(it['s'], 'rb').read()).hexdigest(), it)
+            full = os.path.join(root, it['s'])
+            if it['t'] == 'snd' and os.path.exists(full):
+                index.setdefault(hashlib.sha1(open(full, 'rb').read()).hexdigest(), it)
     return index

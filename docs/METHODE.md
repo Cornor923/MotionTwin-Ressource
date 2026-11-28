@@ -111,6 +111,12 @@ Ce qu'on y trouve :
   décors PNG, `swf/gfx.swf`), `gfx/map` (icônes des lieux, `gfx.fla`), `gfx/dungeon` (tuiles PNG des donjons,
   `gfx.fla`, `gfx.swf` = `djview.swf` aux scripts près), des sources Haxe et des textes XML en quatre langues. Les
   dinoz eux-mêmes ne sont pas dans l'archive : le jeu charge leur SWF (`sdino`) à part.
+- Hammerfest (20 Mo, rendu public par Motion Twin avec son code source sous CC BY-NC-SA 4.0, `LICENSE.txt` du
+  dossier) : `images/` (fonds des niveaux, décors, interface, héros), `images/tiles` (59 bandes de plateformes et
+  leurs 59 bouts), `worldmap/` (vues des 100 premiers niveaux), `sfx/` (3 musiques MP3), douze SWF AS2 dont
+  `game.swf` (réunion de `_anims`, `_gfx`, `_sounds`, `_ending` et `_editor`, symboles renumérotés), `_code.swf` et
+  `_loadercode.swf` (code seul, non rendus), cinq `.fla` binaires (`gfx.fla`, `sounds.fla`…), le code AS2
+  (`class/`) et les niveaux en XML.
 
 ### 5.2 Inventaire des SWF
 
@@ -498,6 +504,7 @@ d'images, `sh` planche (WebP ou PNG), `cols` colonnes de la planche, `fps` caden
 - SkyWar : `web/www/gfx/flags/` (141 drapeaux de pays et 104 emblèmes d'organisations : ONU, OTAN, Croix-Rouge,
   anneaux olympiques…), jeux d'icônes génériques d'un tiers, pas des dessins de Motion Twin.
 - Dinocard : rien d'exclu ; `client/swf/code.swf` et `client/fla/portrait/portrait.swf` n'ont que du code (non rendus).
+- Hammerfest : rien d'exclu (`fondSonic.png` est une texture de briques dessinée par Motion Twin).
 - DinoRPG : rien d'exclu. Quelques PNJ et monstres parodient des personnages connus (Monstre en spaghettis volant…) :
   dessins de Motion Twin, gardés.
 - Partout : polices embarquées, `Thumbs.db`, tableurs de données.
@@ -682,3 +689,11 @@ Alphabounce. Le SVG statique d'un graphique placé montre désormais sa premièr
 `gfx.swf` ; `djview.swf` en est une copie aux scripts près, `also`). Les dinoz eux-mêmes ne sont pas dans l'archive.
 Rien d'exclu. 6 601 ressources dont 5 718 symboles (1 512 animés) ; 45 949 en tout, `gen/` 989 Mo (DinoRPG 331 Mo,
 dont 142 Mo pour `miniMonstres.fla`), `catalog.js` 25 Mo.
+
+**2026-11-28** — Hammerfest (dossier `Hammerfest/`, rendu public par Motion Twin avec son code source sous CC BY-NC-SA
+4.0) : fonds des niveaux, décors, interface, plateformes, vues des 100 premiers niveaux, 3 musiques, dix SWF rendus
+(`game.swf`, qui réunit les autres, n'apporte que ses clips différents), cinq `.fla`. Rien d'exclu. Un son identique
+octet pour octet à un son déjà présent devient un doublon, aussi pour les sons des SWF (`game.swf` reprend les 21
+bruitages de `_sounds.swf`) ; un son en flux vide (`-1.wav`, en-tête sans données) est ignoré. 4 917 ressources
+(426 images, 212 clips, 4 244 formes et symboles dont 57 animés, 35 sons) ; 50 866 en tout, `gen/` 1 006 Mo
+(Hammerfest 63 Mo), `catalog.js` 28 Mo.

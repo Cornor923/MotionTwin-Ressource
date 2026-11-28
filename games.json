@@ -1133,6 +1133,52 @@
       }
     },
     {
+      "id": "hammerfest",
+      "name": "Hammerfest",
+      "year": 2006,
+      "folder": "Hammerfest",
+      "summary": "Jeu de plateforme : Igor, bonhomme de neige, descend les niveaux du repaire de Tuberculoz à coups de bombes.",
+      "notes": [
+        "Rendu public par Motion Twin avec son code source, sous licence CC BY-NC-SA 4.0 (LICENSE.txt du dossier).",
+        "game.swf réunit les SWF des animations, des graphismes, des sons, de la fin et de l'éditeur : seuls ses clips différents apparaissent. _code.swf et _loadercode.swf ne contiennent que du code.",
+        "worldmap : une vue de chacun des 100 premiers niveaux."
+      ],
+      "scan": [
+        "images",
+        "worldmap",
+        "sfx"
+      ],
+      "swf": [
+        {"file": "swf/_anims.swf", "work": "hammerfest/anims"},
+        {"file": "swf/_gfx.swf", "work": "hammerfest/gfx"},
+        {"file": "swf/_ending.swf", "work": "hammerfest/ending"},
+        {"file": "swf/_editor.swf", "work": "hammerfest/editor"},
+        {"file": "swf/_sounds.swf", "work": "hammerfest/sounds"},
+        {"file": "swf/game.swf", "work": "hammerfest/game"},
+        {"file": "swf/intro.swf", "work": "hammerfest/intro"},
+        {"file": "swf/introDesert.swf", "work": "hammerfest/intro_desert"},
+        {"file": "swf/loader.swf", "work": "hammerfest/loader"},
+        {"file": "swf/_loader.swf", "work": "hammerfest/loader_work"}
+      ],
+      "collections": {
+        "images": "Décors et interface",
+        "images/tiles": "Plateformes",
+        "worldmap": "Carte des niveaux",
+        "sfx": "Musiques",
+        "fla": "Sources",
+        "swf/_anims.swf": "Animations (SWF)",
+        "swf/_gfx.swf": "Graphismes (SWF)",
+        "swf/_ending.swf": "Fin (SWF)",
+        "swf/_editor.swf": "Éditeur de niveaux (SWF)",
+        "swf/_sounds.swf": "Bruitages (SWF)",
+        "swf/game.swf": "Jeu complet (SWF)",
+        "swf/intro.swf": "Introduction (SWF)",
+        "swf/introDesert.swf": "Introduction, désert (SWF)",
+        "swf/loader.swf": "Chargement (SWF)",
+        "swf/_loader.swf": "Chargement (SWF de travail)"
+      }
+    },
+    {
       "id": "cafejeux",
       "name": "CaféJeux",
       "year": 2007,

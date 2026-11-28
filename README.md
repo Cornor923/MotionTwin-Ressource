@@ -5,7 +5,7 @@ Motion Twin les a publiées dans son archive [motion-twin/WebGamesArchives](http
 (licence CC BY-NC-SA 4.0). Uniquement du matériel d'origine : rien de refait après coup (pas de remake, pas de création
 de fans), et les éléments tiers présents dans l'archive (images jQuery UI, logos de presse, logos de paiement) sont exclus.
 
-Jeux : **Mush** (2012), **Alphabounce** (2007), **Galaxy55** (alpha, 2012), **Hordes** (2008), **Teacher Story** (2013), **Rockfaller** (2015), **Monster Hotel** (2015), **Uppercup Football** (2014), **Dinoparc** (2005), **La Bourinette** (2011), **SkyWar** (2009), **Dinocard** (2006), **DinoRPG** (2008), sept jeux Muxxu
+Jeux : **Mush** (2012), **Alphabounce** (2007), **Galaxy55** (alpha, 2012), **Hordes** (2008), **Teacher Story** (2013), **Rockfaller** (2015), **Monster Hotel** (2015), **Uppercup Football** (2014), **Dinoparc** (2005), **La Bourinette** (2011), **SkyWar** (2009), **Dinocard** (2006), **DinoRPG** (2008), **Hammerfest** (2006), sept jeux Muxxu
 (**Kube** 2010, **Kingdom** 2009, **CroqueMotel** 2011, **Intrusion** 2009, **La Brute** 2010, **Odyssey** 2011,
 **Snake** 2010) et deux plateformes rangées par jeu : **CaféJeux** (2007, le café et ses treize jeux de société) et
 **KadoKado** (2004, pour l'instant son Alphabounce, première version du casse-briques).
@@ -36,10 +36,11 @@ Jeux : **Mush** (2012), **Alphabounce** (2007), **Galaxy55** (alpha, 2012), **Ho
 | SkyWar | 1 321 | 1 | 0 | 151 | 988 | 0 |
 | Dinocard | 1 153 | 4 | 0 | 51 | 2 653 | 0 |
 | DinoRPG | 753 | 0 | 0 | 130 | 5 718 | 0 |
+| Hammerfest | 426 | 0 | 0 | 212 | 4 244 | 35 |
 | CaféJeux | 596 | 0 | 0 | 243 | 1 995 | 0 |
 | KadoKado (Alphabounce) | 14 | 0 | 0 | 34 | 309 | 0 |
 
-Parmi les formes vectorielles, 4 477 symboles de `.fla` ont plusieurs images et sont animés (planche SVG).
+Parmi les formes vectorielles, 4 534 symboles de `.fla` ont plusieurs images et sont animés (planche SVG).
 
 Galaxy55 a aussi **3 modèles 3D** (cosmonaute, foreuse, porte ouverte) et **12 réglages de son LabChirp**. Ses planches
 (`texture.png`, `tiles.png`, `icons.png`) sont découpées en morceaux aux pixels d'origine, nommés d'après le tableur et le
@@ -48,8 +49,9 @@ des ressources. Seuls les fichiers publiés par Motion Twin sont montrés, pas l
 par les portages du jeu.
 
 Seuls Galaxy55 (12 bruitages WAV), Intrusion (49 sons MP3), Teacher Story (151 bruitages et musiques, plus 3
-réglages LabChirp), Rockfaller (79 bruitages, 2 musiques), Monster Hotel (209 bruitages, ambiances et musiques)
-et Uppercup Football (53 bruitages, chants du public et musiques) ont des sons dans l'archive officielle. Chaque son indique sa durée, et le tri par taille range les sons du plus long
+réglages LabChirp), Rockfaller (79 bruitages, 2 musiques), Monster Hotel (209 bruitages, ambiances et musiques),
+Uppercup Football (53 bruitages, chants du public et musiques) et Hammerfest (3 musiques, 21 bruitages, plus 12 sons
+de travail dans `sounds.fla`) ont des sons dans l'archive officielle. Chaque son indique sa durée, et le tri par taille range les sons du plus long
 au plus court (ou l'inverse).
 Les fichiers sources `.fla` sont lus aussi : symboles en SVG composés entiers (XFL d'Odyssey comme `.fla` binaires
 de Flash MX à CS4 : instances, bitmaps posés, masques, filtres, modes de fusion), animés quand ils ont plusieurs

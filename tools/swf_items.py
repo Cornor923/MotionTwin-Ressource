@@ -7,7 +7,7 @@ import hashlib, json, os, re, shutil
 from PIL import Image
 
 import swfrender as R
-import compact, swf_symbols
+import compact, fla_items, swf_symbols
 
 
 def add_swf(game, entry, ctx):
@@ -132,16 +132,29 @@ def add_bitmaps(game, swf, path, work, out, coll, ctx):
 
 
 def add_sounds(game, path, work, out, coll, ctx):
+    """sons exportés par FFDec ; un son identique (octet pour octet) à une ressource existante devient un doublon
+    (Hammerfest : game.swf reprend les sons de _sounds.swf)"""
     snd_dir = os.path.join(work, 'snd')
+    index = fla_items.sound_index(game)
     for fn in sorted(os.listdir(snd_dir)) if os.path.isdir(snd_dir) else []:
+        src = os.path.join(snd_dir, fn)
+        if fn.lower().endswith('.wav') and os.path.getsize(src) <= 44:
+            continue  # en-tête WAV sans données (son en flux déclaré, vide : « -1.wav » d'Hammerfest)
+        m = re.match(r'-?\d+', fn)
+        sid = int(m.group()) if m else -1  # -1 : son en flux de la scène (sans numéro de caractère)
+        ref = '%s#sound%d' % (path, sid) if sid >= 0 else '%s#%s' % (path, os.path.splitext(fn)[0])
+        h = hashlib.sha1(open(src, 'rb').read()).hexdigest()
+        if h in index:
+            index[h].setdefault('dup', []).append(ref)
+            continue
         os.makedirs(os.path.join(out, 'sounds'), exist_ok=True)
         dst = os.path.join(out, 'sounds', fn)
-        shutil.copy(os.path.join(snd_dir, fn), dst)
-        sid = int(re.match(r'\d+', fn).group())
-        ref = '%s#sound%d' % (path, sid)
-        game.add(dict(i=ref, t='snd', n=os.path.splitext(fn)[0], s=ctx.rel(dst), p=ref, z=os.path.getsize(dst),
-                      fmt=os.path.splitext(fn)[1][1:].upper(), c=coll + ' · sons', u=game.source_url(path),
-                      x=dict(swf=path, id=sid)))
+        shutil.copy(src, dst)
+        item = dict(i=ref, t='snd', n=os.path.splitext(fn)[0], s=ctx.rel(dst), p=ref, z=os.path.getsize(dst),
+                    fmt=os.path.splitext(fn)[1][1:].upper(), c=coll + ' · sons', u=game.source_url(path),
+                    x=dict(swf=path, id=sid))
+        game.add(item)
+        index[h] = item
 
 
 def render_hash(render, s):
